@@ -4,9 +4,11 @@
 <head>
     <meta charset="utf-8">
     <!-- make title dynamic -->
-    <title>CUthere</title> 
+    <title>CUthere</title>
     <!-- link bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- css link -->
+    <link href="/css/styles.css" rel="stylesheet" type="text/css">
 </head>
 <body>
     <!-- navbar -->
@@ -26,7 +28,7 @@
                     <a class="nav-link" href="/logout">Logout</a>
                 </li>
             <%}%>
-            <% if(currentUser == null) { %> 
+            <% if(currentUser == null) { %>
                 <li class="nav-item">
                     <a class="nav-link" href="/login">Log In</a>
                 </li>
@@ -39,13 +41,13 @@
     <!-- navbar -->
     <!-- error/ info flash messages -->
     <div class="container">
-  
+
         <%  if(error && error.length > 0) { %>
             <div class="alert alert-danger" role="alert">
               <%= error %>
             </div>
         <% } %>
-        
+
         <%  if(info && info.length > 0) { %>
             <div class="alert alert-info" role="alert">
               <%= info %>

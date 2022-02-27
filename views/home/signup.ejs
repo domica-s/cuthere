@@ -1,42 +1,44 @@
 <%- include('../_partial/_header'); %>
+<main class="form-signin text-center">
+<img class="mt-4" src="/images/logo.jfif" alt="" width="100px">
 
-<div class="col-md-8">
-
-    <div class="panel panel-default">
-
-        <div class="panel-heading">
-            <h3>Sign Up</h3>
-        </div>
-        <div class="panel-body">
             <form class="form-signin" method="POST" action="/signup">
-                <div class="input-group">
-                    <span class="input-group-addon" id="basic-addon1">@</span>
-                    <input type="text" class="form-control" placeholder="Username" name="username" aria-describedby="basic-addon1">
-                </div>
-                <br />
-                <div class="input-group">
-                    <span class="input-group-addon" id="basic-addon1">SID / TID : </span>
-                    <input type="number" class="form-control" placeholder="Student/ Teacher ID" name="sid" aria-describedby="basic-addon1">
-                </div>
-                <br />
-                <div class="input-group">
-                    <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-lock"
-                            aria-hidden="true"></span></span>
-                    <input type="password" name="password" class="form-control" placeholder="Password" aria-describedby="basic-addon1">
-                </div>
-                <br />
-                <div class="input-group">
-                    <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-lock"
-                            aria-hidden="true"></span></span>
-                    <input type="password" class="form-control" placeholder="Re-password"
-                        aria-describedby="basic-addon1" name="repassword">
+              <h1 class="h3 mb-3 ">Register</h1>
+                <div class="form-floating">
+                    <!-- <span class="input-group-addon form-label" id="basic-addon1">SID/ TID : </span> -->
+                    <input type="text" class="form-control" name="username" id="floatingUsername" placeholder="Username">
+                    <label class ="form-label" for="floatingUsername">Username</label>
                 </div>
 
-                <input type="submit" class="btn btn-default navbar-btn" value="Sign Up" />
+
+                <div class="form-floating">
+                    <!-- <span class="input-group-addon form-label" id="basic-addon1"><span class="glyphicon glyphicon-lock"
+                            aria-hidden="true"></span></span> -->
+                    <input type="number" class="form-control" name="sid" id="floatingSID" placeholder="SID">
+                    <label class ="form-label" for="floatingSID">SID</label>
+                </div>
+
+                <div class="form-floating">
+                    <!-- <span class="input-group-addon form-label" id="basic-addon1">SID/ TID : </span> -->
+                    <input type="password" class="form-control" name="password" id="floatingPassword" placeholder="Password">
+                    <label class ="form-label" for="floatingPassword">Password</label>
+                </div>
+
+
+                <div class="mb-3 form-floating">
+                    <!-- <span class="input-group-addon form-label" id="basic-addon1"><span class="glyphicon glyphicon-lock"
+                            aria-hidden="true"></span></span> -->
+                    <input type="password" class="form-control" name="repassword" id="floatingRepassword" placeholder="Re-enter Password">
+                    <label class ="form-label" for="floatingRepassword">Re-enter Password</label>
+                </div>
+
+
+                <input type="submit" class="btn btn-outline-warning navbar-btn" value="Register" />
 
             </form>
-        </div>
+        <!-- </div>
     </div>
-</div>
+</div> -->
+</main>
 
 <%- include('../_partial/_footer'); %>
