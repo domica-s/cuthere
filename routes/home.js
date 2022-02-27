@@ -3,6 +3,8 @@ var passport = require("passport");
 var User = require("../models/user");
 var router = express.Router();
 
+var ensureAuthenticated = require("../auth/auth").ensureAuthenticated;
+
 router.get("/", (req, res) =>
     res.render("home/index"));
  
@@ -34,7 +36,7 @@ router.post("/signup", function (req, res, next) {
     User.findOne({ sid: sid }, function (err, user) {
         if (err) { return next(err); }
         if (user) {
-            req.flash("error", "There's already an account with this sid");
+            req.flash("error", "There's already an account with this SID");
             return res.redirect("/signup");
         }
 
@@ -53,5 +55,8 @@ router.post("/signup", function (req, res, next) {
     failureRedirect: "/signup",
     failureFlash: true
 }));
+
+router.get("/event", ensureAuthenticated, (req, res) =>
+    res.render("home/event"));
 
 module.exports = router;

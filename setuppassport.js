@@ -23,7 +23,7 @@ module.exports = function () {
         User.findOne({ sid: sid }, function (err, user) {
             if (err) { return done(err); }
             if (!user) {
-                return done(null, false, { message: "No user has that Email!" });
+                return done(null, false, { message: "That SID is not yet registered" });
             }
             user.checkPassword(password, function (err, isMatch) {
                 if (err) { return done(err); }
