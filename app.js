@@ -6,7 +6,10 @@ var passport = require("passport");
 var session = require("express-session");
 var flash = require("connect-flash");
 
+var params = require("./params/params");
+
 var app = express();
+mongoose.connect(params.DATABASECONNECTION, {useUnifiedTopology:true, useNewUrlParser:true, useCreateIndex:true});
 
 app.set("port", process.env.PORT || 3000);
 
