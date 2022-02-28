@@ -43,7 +43,15 @@ router.post("/signup", function (req, res, next) {
         var newUser = new User({
             username: username,
             password: password,
-            sid: sid
+            sid: sid,
+            email:sid + "@link.cuhk.edu.hk",
+            mobileNumber:0,
+            // profilePicture:"",
+            interests:"",
+            college:"",
+            about:"",
+            rating:"",
+            friends:"",
         });
 
         newUser.save(next);
