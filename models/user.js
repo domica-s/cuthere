@@ -3,10 +3,19 @@ var mongoose = require("mongoose");
 
 const SALT_FACTOR = 10;
 
+// fix profilepicture, friends setup, interests
 var userSchema = mongoose.Schema({
     username:{type:String, required:true},
+    // email:{type:String, required:true, unique:true},
     sid:{type:Number, required:true, unique:true},
     password:{type:String, required:false},
+    mobileNumber:{type:Number},
+    profilePicture:{type:Number},
+    interests:{type:String},
+    college:{type:String},
+    about:{type:String},
+    rating:{type:String},
+    friends:{type:String},
     createdAt:{type:Date, default:Date.now}
 });
 
