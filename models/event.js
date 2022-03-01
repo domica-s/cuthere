@@ -4,7 +4,7 @@ var mongoose = require("mongoose");
 // fix activityCategory
 var eventSchema = mongoose.Schema({
     title:{type:String, required:true},
-    tags:{type:String},
+    tags:{type:Number, required:true, unique:true},
     venue:{type:String, required:true},
     date:{type:Date, required:true},
     numberOfParticipants:{type:Number, required:true},
