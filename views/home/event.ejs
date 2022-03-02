@@ -1,7 +1,8 @@
 <%- include('../_partial/_header'); %>
-<h1>Create Events Form</h1>
-<body> 
-    <form id="event-form" method="POST" action="/event">
+
+<body class ="form-signin text-center"> 
+    <form  class= "form-signin" id="event-form" method="POST" action="/event">
+        <h1 class="h3 mb-3">Create your event!</h1>
     <table>
         <tr>
             <td>Event Title</td>
@@ -33,5 +34,22 @@
         </tr>
     </table>
     </form>
+
+    <form  class= "form-signin" id="delete-form" method="POST" action="/event/:id">
+        <h1 class="h3 mb-3">Delete your Event!</h1>
+    <table>
+        <tr>
+            <td>Input the Event Id that you would like to delete</td>
+            <td><input type ="text" name="id" required></td>
+        </tr>
+
+        <tr>
+            <td colspan="2"><input type ="submit" value="Save"></td>
+        </tr>
+    </table>
+    </form>
 </body>
+
+
+
 <%- include('../_partial/_footer'); %>

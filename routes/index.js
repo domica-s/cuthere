@@ -10,7 +10,11 @@ router.use(function(req,res, next){
     next();
 });
 
+router.use("/", require("./event"));
+router.use("/event", require("./event"));
+router.use("/delete", require("./event"));
 router.use("/", require("./home"));
+
 
 
 module.exports = router;
