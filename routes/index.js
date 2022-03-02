@@ -12,6 +12,7 @@ router.use(function(req,res, next){
 
 router.use("/", require("./event"));
 router.use("/", require("./home"));
+router.use("/", require("./event_lists"))
 
 
 
