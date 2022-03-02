@@ -1,7 +1,8 @@
 var express = require("express");
 var passport = require("passport");
 var User = require("../models/user");
-var Event = require("../models/event")
+var Event = require("../models/event");
+const res = require("express/lib/response");
 var router = express.Router();
 
 var ensureAuthenticated = require("../auth/auth").ensureAuthenticated;
@@ -70,27 +71,34 @@ router.get("/event", ensureAuthenticated, (req, res) =>
 
 router.post("/event", function (req, res, next) {
     var title =  req.body.title
-    var tags = req.body.tags
     var location = req.body.location
     var date = req.body.date
     var quota = req.body.quota
     var category = req.body.category
-    var history = req.body.history
-    var createdOn = req.body.createdOn
-
-    var newEvent = new Event({
-        title: title,
-        tags: tags,
-        venue: location,
-        date: date,
-        numberOfParticipants: quota,
-        activityCategory: category,
-        chatHistory: history,
-        createdAt: createdOn,
-    });
-    newEvent.save(next)
-    console.log(title, tags, location)
-    res.redirect('/')
+    var theID = Event.find().sort({ eventID: -1 }).limit(1)
+    theID.exec(function (err, eventID) {
+        if (err) res.send("Error occured: " + err)
+        else {
+            var eID = 1
+            if (eventID.length > 0){
+                eID = eventID[0].eventID + 1
+            }
+        }
+        var newEvent = new Event({
+            title: title,
+            eventID: eID,
+            venue: location,
+            date: date,
+            quota: quota,
+            activityCategory: category,
+            numberOfParticipants: "",
+            chatHistory: "",
+            createdBy: req.user.sid
+        });
+    
+        newEvent.save(next)
+        res.redirect('/')        
+    });    
 });
 
 module.exports = router;
