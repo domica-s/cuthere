@@ -1,2 +1,3 @@
 docker-compose*
 Dockerfile
+.DS_Store
