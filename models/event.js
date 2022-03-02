@@ -13,6 +13,13 @@ var eventSchema = mongoose.Schema({
     createdAt:{type:Date, default:Date.now}
 });
 
+eventSchema.pre("save",function(done){
+    return done();
+});
+
+
 var Event = mongoose.model("Event", eventSchema);
+
+
 
 module.exports = Event;

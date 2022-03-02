@@ -1,6 +1,52 @@
 <%- include('../_partial/_header'); %>
+<h1>Create Events Form</h1>
+<body> 
+    <form id="event-form" method="POST" action="/event">
+    <table>
+        <tr>
+            <td>Event Title</td>
+            <td><input type ="text" name="name"></td>
+        </tr>
 
-    <p>This is from my event.ejs using includes</p>
-    <a href="/">Click to go back to index</a>
+        <tr>
+            <td>Event Tag</td>
+            <td><input type ="number" name="tags"></td>
+        </tr>
 
+        <tr>
+            <td>Location</td>
+            <td><input type ="text" name="loc"></td>
+        </tr>
+
+        <tr>
+            <td>Date</td>
+            <td><input type ="date" name="eventDate"></td>
+        </tr>
+
+        <tr>
+            <td>Number of Participants</td>
+            <td><input type ="number" name="quota"></td>
+        </tr>
+
+        <tr>
+            <td>Activity Category</td>
+            <td><input type ="text" name="category"></td>
+        </tr>
+
+        <tr>
+            <td>Chat History</td>
+            <td><input type ="text" name="history"></td>
+        </tr>
+
+        <tr>
+            <td>Created on</td>
+            <td><input type ="date" name="createdOn"></td>
+        </tr>
+
+        <tr>
+            <td colspan="2"><input type ="submit" value="Save"></td>
+        </tr>
+    </table>
+    </form>
+</body>
 <%- include('../_partial/_footer'); %>
