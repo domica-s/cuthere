@@ -101,4 +101,32 @@ router.post("/event", function (req, res, next) {
     });    
 });
 
+router.get("/event/:eventId", ensureAuthenticated, function(res, req){
+    // console.log(req)
+    // var id = req.params.eventId
+    // console.log(req.params['eventId'])
+    console.log(req.params('eventID'))
+    // console.log()
+    // console.log(id) 
+    // res.send("this is the id" + id)
+});
+
+router.delete("/event/:eventID", function(res, req) {
+    var id = req.params.eventID
+    Event.findOneAndDelete({ eventID: id }, (err, event) => {
+        if (err) res.send("Error occured: " + err)
+        else if (event == null) {
+            res.send("The event does not exist")
+        }
+        else {
+            res.send("Deleted event: " + toString(id))
+        }
+    })
+});
+
+// router.post("/event/:eventID", function(res, req) {
+
+
+// });
+
 module.exports = router;
