@@ -8,7 +8,7 @@ var eventSchema = mongoose.Schema({
     venue:{type:String, required:true},
     date:{type:Date, required:true},
     numberOfParticipants:{type:Number, required:true},
-    activityCategory:{type:Number, required:true},
+    activityCategory:{type:String, required:true},
     chatHistory:{type:String, required:true},
     createdAt:{type:Date, default:Date.now}
 });
