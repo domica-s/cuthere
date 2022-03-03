@@ -10,9 +10,11 @@ router.use(function(req,res, next){
     next();
 });
 
-router.use("/", require("./event"));
+
 router.use("/", require("./home"));
-router.use("/", require("./event_lists"))
+router.use("/", require("./event"));
+router.use("/event", require("./event"));
+
 
 
 

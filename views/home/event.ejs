@@ -35,18 +35,52 @@
     </table>
     </form>
 
-    <form  class= "form-signin" id="delete-form" method="POST" action="/event/:id">
-        <h1 class="h3 mb-3">Delete your Event!</h1>
+<!-- Edit Form, will be separated later, just for testing-->
+    <form  class= "form-signin" method="POST" action="/event/update">
+        <h1 class="h3 mb-3">Edit your Event! (Leave blanks for attributes not to be edited)</h1>
     <table>
         <tr>
-            <td>Input the Event Id that you would like to delete</td>
+            <td>Input the Event Id that you would like to Edit</td>
             <td><input type ="text" name="id" required></td>
         </tr>
 
         <tr>
-            <td colspan="2"><input type ="submit" value="Save"></td>
+            <td>Event Title:</td>
+            <td><input type ="text" name="title"></td>
         </tr>
+        
+        <tr>
+            <td>Location</td>
+            <td><input type ="text" name="location"></td>
+        </tr>
+
+        <tr>
+            <td>Date</td>
+            <td><input type ="date" name="date" ></td>
+        </tr>
+
+        <tr>
+            <td>Quota</td>
+            <td><input type ="number" name="quota"></td>
+        </tr>
+
+        <tr>
+            <td>Activity Category</td>
+            <td><input type ="text" name="category"></td>
+        </tr>
+
+        <tr>
+            <td colspan="2"><input type ="submit" value="Update"></td>
+        </tr>
+
     </table>
+    </form>
+
+    <form  class= "form-signin" method="GET" action="/allevents">
+        <tr>
+            <td colspan="2"><input type ="submit" value="View All Events"></td>
+        </tr>
+
     </form>
 </body>
 

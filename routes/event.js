@@ -1,9 +1,58 @@
 var express = require("express");
-var Event = require("../models/event");
-const res = require("express/lib/response");
-var router = express.Router();
 
 var ensureAuthenticated = require("../auth/auth").ensureAuthenticated;
+
+var Event = require("../models/event");
+
+var router = express.Router();
+
+const res = require("express/lib/response");
+
+router.use(ensureAuthenticated)
+
+// List all events
+router.get("/allevents", ensureAuthenticated, function (req, res) {
+
+    var event_dic = {}
+
+    Event.find(function (err, event) {
+        if (event.length > 0){
+            for (var i = 0; i < event.length; i++) {
+                event_dic[i] = event[i]
+            }
+            res.send(event_dic) // you can put HTML here
+        }
+    })
+})
+
+// To get the event
+router.get("/event/:eventId", function(req,res){
+    Event.findOne({ eventID: req.params["eventId"]}).then((event_to_be_displayed) => {
+        console.log(event_to_be_displayed)
+        var object = {
+            title: event_to_be_displayed.title,
+            location: event_to_be_displayed.venue,
+            date: event_to_be_displayed.date,
+            quota: event_to_be_displayed.quota,
+            category: event_to_be_displayed.activityCategory,
+
+        }
+        res.send(event_to_be_displayed)
+    })
+    .catch((err) => {
+        res.send("There error is: "+err);
+    });
+    
+
+    // Event.findOne(function(err,event){
+    //     event.eventID = req.params.eventId
+
+    //     var stringResult = "The Event that you are looking for is: " + event_to_be_displayed
+    //     res.send(stringResult);
+
+    // })
+  
+});
 
 // To create the event
 router.post("/event", ensureAuthenticated, function (req, res, next) {
@@ -38,19 +87,45 @@ router.post("/event", ensureAuthenticated, function (req, res, next) {
     });    
 });
 
-router.delete('/event/:id', ensureAuthenticated, (req, res) => {
-    let id = req.params.id
-    Event.findOneAndDelete({ eventID: id }, (err, event) => {
-        if (err){
-            res.send("Error occured: " + err)
-        } 
-        else if (event == null) {
-            res.send("There is no matching event!")
-        }
-        else {
-            res.send("Event deleted")
-        }
-    })
+// router.delete('/event/:id', ensureAuthenticated, (req, res) => {
+//     let id = req.params.id
+//     Event.findOneAndDelete({ eventID: id }, (err, event) => {
+//         if (err){
+//             res.send("Error occured: " + err)
+//         } 
+//         else if (event == null) {
+//             res.send("There is no matching event!")
+//         }
+//         else {
+//             res.send("Event deleted")
+//         }
+//     })
+// })
+
+router.post("/update", async function (req, res){
+    // Get the Event to be updated
+    event_to_be_updated = await Event.find({ eventID:req.body.id});
+
+    // Check what to update
+    if (req.body.title != null) event_to_be_updated.title = req.body.title
+    if (req.body.location != null) event_to_be_updated.location = req.body.location
+    if (req.body.date != null) event_to_be_updated.date = req.body.date
+    if (req.body.quota!= null) event_to_be_updated.quota = req.body.quota
+    if (req.body.category != null) event_to_be_updated.category = req.body.category
+    
+    // update the event
+    const updated_event = await Event.findOneAndUpdate({ eventID: req.body.id, 
+        title: event_to_be_updated.title,
+        location: event_to_be_updated.location,
+        date: event_to_be_updated.date,
+        quota: event_to_be_updated.quota,
+        category: event_to_be_updated.category
+    
+    });
+    
+    res.redirect("/event/"+req.body.id)
 })
+
+
 
 module.exports = router;
