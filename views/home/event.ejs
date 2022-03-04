@@ -1,6 +1,6 @@
 <%- include('../_partial/_header'); %>
 
-<body class ="form-signin text-center"> 
+<body class ="text-center"> 
     <form  class= "form-signin" id="event-form" method="POST" action="/event">
         <h1 class="h3 mb-3">Create your event!</h1>
     <table>
@@ -76,12 +76,31 @@
     </table>
     </form>
 
+    <!-- Form to Delete --> 
+    <form  class= "form-signin" method="POST" action="/event/delete">
+        <h1 class="h3 mb-3">Delete your event</h1>
+    <table>
+        <tr>
+            <td>Input the Event ID you would like to delete</td>
+            <td><input type ="text" name="id" required></td>
+        </tr>
+
+        <tr>
+            <td colspan="2"><input type ="submit" value="Delete"></td>
+        </tr>
+
+    </table>
+    </form>
+
+    <!-- Button to view all events --> 
     <form  class= "form-signin" method="GET" action="/allevents">
         <tr>
             <td colspan="2"><input type ="submit" value="View All Events"></td>
         </tr>
 
     </form>
+
+
 </body>
 
 

@@ -42,15 +42,6 @@ router.get("/event/:eventId", function(req,res){
     .catch((err) => {
         res.send("There error is: "+err);
     });
-    
-
-    // Event.findOne(function(err,event){
-    //     event.eventID = req.params.eventId
-
-    //     var stringResult = "The Event that you are looking for is: " + event_to_be_displayed
-    //     res.send(stringResult);
-
-    // })
   
 });
 
@@ -83,24 +74,23 @@ router.post("/event", ensureAuthenticated, function (req, res, next) {
         });
     
         newEvent.save(next)
-        res.redirect('/')        
+        res.redirect('/event')        
     });    
 });
 
-// router.delete('/event/:id', ensureAuthenticated, (req, res) => {
-//     let id = req.params.id
-//     Event.findOneAndDelete({ eventID: id }, (err, event) => {
-//         if (err){
-//             res.send("Error occured: " + err)
-//         } 
-//         else if (event == null) {
-//             res.send("There is no matching event!")
-//         }
-//         else {
-//             res.send("Event deleted")
-//         }
-//     })
-// })
+// Delete Event
+router.post('/event/delete', ensureAuthenticated, function(req,res){
+    let id = req.body.id
+    console.log(id)
+    Event.findOneAndDelete({eventID: id}).exec(function(err,event){
+        if (err) res.send("The error is: " + err); 
+        else if (event == null) res.send("No Matching Event!"); 
+        else { 
+            res.redirect("/event")
+        }
+
+    })
+})
 
 router.post("/update", async function (req, res){
     // Get the Event to be updated
