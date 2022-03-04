@@ -10,7 +10,12 @@ router.use(function(req,res, next){
     next();
 });
 
+
 router.use("/", require("./home"));
+router.use("/", require("./event"));
+router.use("/event", require("./event"));
+
+
 
 
 module.exports = router;

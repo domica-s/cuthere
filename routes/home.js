@@ -1,6 +1,8 @@
 var express = require("express");
 var passport = require("passport");
 var User = require("../models/user");
+var Event = require("../models/event");
+const res = require("express/lib/response");
 var router = express.Router();
 
 var ensureAuthenticated = require("../auth/auth").ensureAuthenticated;
