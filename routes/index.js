@@ -13,7 +13,7 @@ router.use(function(req,res, next){
 
 router.use("/", require("./home"));
 router.use("/", require("./event"));
-router.use("/event", require("./event"));
+// router.use("/event", require("./event"));
 
 
 

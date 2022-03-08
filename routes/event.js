@@ -20,6 +20,7 @@ router.get("/allevents", ensureAuthenticated, function (req, res) {
             for (var i = 0; i < event.length; i++) {
                 event_dic[i] = event[i]
             }
+            console.log(event_dic)
             res.send(event_dic) // you can put HTML here
         }
     })
@@ -106,10 +107,10 @@ router.post("/update", async function (req, res){
     // update the event
     const updated_event = await Event.findOneAndUpdate({ eventID: req.body.id, 
         title: event_to_be_updated.title,
-        location: event_to_be_updated.location,
+        venue: event_to_be_updated.location,
         date: event_to_be_updated.date,
         quota: event_to_be_updated.quota,
-        category: event_to_be_updated.category
+        activityCategory: event_to_be_updated.category
     
     });
     
