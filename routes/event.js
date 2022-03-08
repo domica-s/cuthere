@@ -20,7 +20,6 @@ router.get("/allevents", ensureAuthenticated, function (req, res) {
             for (var i = 0; i < event.length; i++) {
                 event_dic[i] = event[i]
             }
-            console.log(event_dic)
             res.send(event_dic) // you can put HTML here
         }
     })
@@ -29,7 +28,7 @@ router.get("/allevents", ensureAuthenticated, function (req, res) {
 // To get the event
 router.get("/event/:eventId", function(req,res){
     Event.findOne({ eventID: req.params["eventId"]}).then((event_to_be_displayed) => {
-        console.log(event_to_be_displayed)
+        // console.log(event_to_be_displayed)
         var object = {
             title: event_to_be_displayed.title,
             location: event_to_be_displayed.venue,
@@ -99,19 +98,19 @@ router.post("/update", async function (req, res){
 
     // Check what to update
     if (req.body.title != null) event_to_be_updated.title = req.body.title
-    if (req.body.location != null) event_to_be_updated.location = req.body.location
+    if (req.body.location != null) event_to_be_updated.venue = req.body.location
     if (req.body.date != null) event_to_be_updated.date = req.body.date
     if (req.body.quota!= null) event_to_be_updated.quota = req.body.quota
-    if (req.body.category != null) event_to_be_updated.category = req.body.category
+    if (req.body.category != null) event_to_be_updated.activityCategory = req.body.category
     
     // update the event
-    const updated_event = await Event.findOneAndUpdate({ eventID: req.body.id, 
+    const updated_event = await Event.findOneAndUpdate({ eventID: req.body.id }, 
+    {   
         title: event_to_be_updated.title,
-        venue: event_to_be_updated.location,
+        venue: event_to_be_updated.venue,
         date: event_to_be_updated.date,
         quota: event_to_be_updated.quota,
-        activityCategory: event_to_be_updated.category
-    
+        activityCategory: event_to_be_updated.activityCategory
     });
     
     res.redirect("/event/"+req.body.id)
