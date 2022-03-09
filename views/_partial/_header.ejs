@@ -17,17 +17,19 @@
             <li class="nav-item">
                 <a class="nav-link" href="/home">Home</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/event/all">See All Events</a>
+            </li>
             <% if(currentUser != null) { %>
-                <li class="nav-item">
-                    <a class="nav-link" href="/event">Events</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Welcome <%= currentUser.username %> !</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/logout">Logout</a>
-                </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/event">Create Events</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Welcome <%= currentUser.username %> !</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
+            </li>
             <%}%>
             <% if(currentUser == null) { %>
                 <li class="nav-item">

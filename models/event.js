@@ -12,7 +12,7 @@ var eventSchema = mongoose.Schema({
     activityCategory:{type: String, required: true},
     chatHistory:{type: String},
     createdAt:{type: Date, default: Date.now},
-    createdBy:{type: Number}
+    createdBy:{type: mongoose.Schema.Types.ObjectId, required: false, unique: false}
 });
 
 eventSchema.pre("save",function(done){

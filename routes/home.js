@@ -67,6 +67,6 @@ router.post("/signup", function (req, res, next) {
 }));
 
 router.get("/event", ensureAuthenticated, (req, res) =>
-    res.render("home/event"));
+    res.render("event/event"));
 
 module.exports = router;
