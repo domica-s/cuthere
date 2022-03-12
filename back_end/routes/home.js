@@ -69,4 +69,6 @@ router.post("/signup", function (req, res, next) {
 router.get("/event", ensureAuthenticated, (req, res) =>
     res.render("event/event"));
 
+router.post("/testfront", (req, res) => console.log('someone clicked test connection'));
+
 module.exports = router;
