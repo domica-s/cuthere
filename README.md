@@ -1,4 +1,4 @@
-# cuthere
+# CUthere
 CUthere is a web-app built to help members of The Chinese University of Hong Kong coordinate and participate in meetups with other members, this project is built using the MERN stack.
 
 ### Clone and start by typing:
@@ -20,14 +20,24 @@ $ npm install
 $ npm run build
 ```
 
+## Start the Service using Makefile
+``` bash
+# start
+make start
+
+# stop the service and clean the environment
+make clean
+```
+
+
 ## Dockerised Service
 
 ``` bash
-# Start the service
-docker-compose up
-
 # Re-build the image (if Dockerfile is changed, else no need)
 docker-compose build
+
+# Start the service
+docker-compose up
 
 # Stop the service
 docker-compose down
