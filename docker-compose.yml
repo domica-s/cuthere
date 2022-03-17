@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+
+  front-end:
+    build: 
+      context: ./front_end
+      dockerfile: Dockerfile
+    hostname: front
+    ports:
+      - 3000:3000
+    environment:
+      - PROXY_API:http://back:8080/
+    command: npm start
+  
+  back-end:
+    build: 
+      context: ./back_end
+      dockerfile: Dockerfile
+    hostname: back
+    ports:
+      - 8080:8080
+    command: npm start
