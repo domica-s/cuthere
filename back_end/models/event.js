@@ -5,6 +5,7 @@ var mongoose = require("mongoose");
 var eventSchema = mongoose.Schema({
     title:{type: String, required: true},
     eventID:{type: Number},
+    status:{type:String, enum: ['Open', 'Closed']},
     venue:{type: String, required: true},
     date:{type: Date, required: true},
     numberOfParticipants:{type: Number},

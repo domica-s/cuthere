@@ -78,6 +78,7 @@ router.post("/event", ensureAuthenticated, function (req, res, next) {
         var newEvent = new Event({
             title: title,
             eventID: eID,
+            status: 'Open',
             venue: location,
             date: date,
             quota: quota,
@@ -129,6 +130,9 @@ router.post("/update", async function (req, res){
     
     res.redirect("/event/"+req.body.id)
 })
+
+// register for an event
+
 
 
 
