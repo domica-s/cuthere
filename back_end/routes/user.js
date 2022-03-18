@@ -26,7 +26,7 @@ router.get("/:sid", function(req,res){
     User.findOne({sid:req.params.sid}).exec(function(err, users){
         if(err){console.log(err);}
 
-        res.render("user/user",{user:users});
+        res.render("user/user", {user:users});
     });
 });
 

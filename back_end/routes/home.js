@@ -54,6 +54,7 @@ router.post("/signup", function (req, res, next) {
             about:"",
             rating:"",
             friends:"",
+            registeredEvents: []
         });
 
         newUser.save(next);

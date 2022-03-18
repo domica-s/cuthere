@@ -16,6 +16,7 @@ var userSchema = mongoose.Schema({
     about:{type:String},
     rating:{type:String},
     friends:{type:String},
+    registeredEvents:[{type:String}],
     createdAt:{type:Date, default:Date.now}
 });
 
