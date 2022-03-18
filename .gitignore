@@ -1,2 +1,4 @@
 .DS_Store
 to_be_removed
+.md
+node_modules/
