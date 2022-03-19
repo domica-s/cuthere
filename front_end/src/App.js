@@ -3,6 +3,8 @@ import {BrowserRouter, Routes, Route, useLocation, Link} from 'react-router-dom'
 import {Home, About} from './home/homePage'
 import {Login} from './home/loginPage'
 import {Event} from './home/eventPage'
+import { SignUp } from './home/signUp';
+import { ForgotPw } from './home/forgotPwPage';
 import { Navbar, Container, Nav } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
@@ -16,6 +18,8 @@ function App() {
           <Route path='/about' element={<About/>} />
           <Route path='/login' element={<Login/>} />
           <Route path='/event' element={<Event/>} />
+          <Route path='/signup' element={<SignUp/>} />
+          <Route path='/forgotpw' element={<ForgotPw/>} />
           <Route path='/*' element={<NoMatch/>} />
         </Routes>
         <FooterBar />
