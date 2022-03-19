@@ -18,6 +18,7 @@ function App() {
           <Route path='/event' element={<Event/>} />
           <Route path='/*' element={<NoMatch/>} />
         </Routes>
+        <FooterBar />
       </BrowserRouter>
     </div>    
   );
@@ -45,6 +46,16 @@ function NavigationBar() {
         </Nav>
       </Container>
     </Navbar>
+  );
+}
+
+function FooterBar() {
+  return (
+    <footer id="footer-bar" className="page-footer font-small">
+      <div className="footer-copyright text-center">
+        <b>© CUthere</b>
+      </div>
+    </footer>
   );
 }
 
