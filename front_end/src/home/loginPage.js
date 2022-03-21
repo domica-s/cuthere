@@ -7,8 +7,12 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import { Container } from "react-bootstrap";
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
-
 import AuthService from "../services/auth.service";
+
+function LoginWithNavigate() {
+    let navigate = useNavigate();
+    return <Login navigate={navigate} />
+}
 
 class Login extends React.Component {
 
@@ -49,7 +53,8 @@ class Login extends React.Component {
         
         AuthService.login(this.state.sid, this.state.password).then(
             () => {
-                this.props.history.push("/profile");
+                this.props.navigate('/profile');
+                // GoToProfile();
                 window.location.reload();
             },
             error => {
@@ -128,4 +133,4 @@ class Login extends React.Component {
     }
 }
 
-export {Login}
+export {LoginWithNavigate}
