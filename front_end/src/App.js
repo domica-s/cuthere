@@ -8,7 +8,12 @@ import { ForgotPw } from './home/forgotPwPage';
 import { Navbar, Container, Nav } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { CreateEvent } from './home/createEventPage';
+import Modal from 'react-modal'; 
+import Calendar from "./Components/Calendar"
 
+Modal.setAppElement('#root')
+
+// Change the route path for '/' to Calendar to test
 
 function App() {
   return (
@@ -16,7 +21,7 @@ function App() {
       <BrowserRouter>
         <NavigationBar />
         <Routes>
-          <Route path="/" element={<Home/>} />
+          <Route path="/" element={<Calendar/>} /> 
           <Route path='/about' element={<About/>} />
           <Route path='/login' element={<Login/>} />
           <Route path='/event' element={<Event/>} />

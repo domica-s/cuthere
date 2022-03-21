@@ -12,7 +12,11 @@ var setuppassport = require("./setuppassport");
 const e = require("connect-flash");
 
 var app = express();
-mongoose.connect(params.DATABASECONNECTION);
+mongoose.connect(params.DATABASECONNECTION,{
+    useUnifiedTopology: true, 
+    useNewUrlParser: true
+},() => console.log("Connected to MongoDB"));
+
 setuppassport();
 
 app.set("port", process.env.PORT || 8080);
@@ -34,7 +38,6 @@ app.use(passport.session());
 app.use(flash());
 
 app.use("/", require("./routes"));
-
 
 
 app.listen(app.get("port"), function() {
