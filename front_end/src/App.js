@@ -21,6 +21,7 @@ function App() {
           <Route path='/profile' element={<Profile/>} />
           {/* <Route path='/signup' element={<SignUp/>} /> */}
           <Route path='/forgotpw' element={<ForgotPw/>} />
+          <Route path='/logout' element={<Logout/>} />
           <Route path='/*' element={<NoMatch/>} />
         </Routes>
         <FooterBar />
@@ -47,6 +48,7 @@ function NavigationBar() {
         <Nav className="me-auto">
           <Nav.Link as={Link} to="/about">About</Nav.Link>
           <Nav.Link as={Link} to="/login">Login</Nav.Link>
+          <Nav.Link as={Link} to="/logout">Logout</Nav.Link>
           <Nav.Link as={Link} to="/profile">Profile</Nav.Link>
           {/* <Nav.Link as={Link} to="/signup">Sign Up</Nav.Link> */}
           <Nav.Link as={Link} to="/event">Events</Nav.Link>
@@ -75,6 +77,11 @@ function NoMatch() {
           </h3>
       </div>
   );
+}
+
+function Logout() {
+    localStorage.clear();
+    window.location.href = '/';
 }
 
 export default App;
