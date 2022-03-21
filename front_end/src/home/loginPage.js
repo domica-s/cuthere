@@ -8,7 +8,6 @@ import Row from 'react-bootstrap/Row';
 import { Container } from "react-bootstrap";
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 
-// import CheckButton from "react-validation/build/button";
 import AuthService from "../services/auth.service";
 
 class Login extends React.Component {
@@ -18,6 +17,7 @@ class Login extends React.Component {
         this.handleLogin = this.handleLogin.bind(this);
         this.onChangeSID = this.onChangeSID.bind(this);
         this.onChangePassword = this.onChangePassword.bind(this);
+
         this.state = {
           sid: "",
           password: "",
@@ -39,7 +39,7 @@ class Login extends React.Component {
     }
 
     handleLogin(e) {
-        // console.log("Handle login called");
+
         e.preventDefault();
 
         this.setState({
@@ -49,7 +49,7 @@ class Login extends React.Component {
         
         AuthService.login(this.state.sid, this.state.password).then(
             () => {
-                // this.props.history.push("/profile");
+                this.props.history.push("/profile");
                 window.location.reload();
             },
             error => {
@@ -95,28 +95,24 @@ class Login extends React.Component {
                                 value={this.state.password} onChange={this.onChangePassword}/>
                             </FloatingLabel>
                         </Col>           
-
-                        {/* <Button className="mb-3 m-2" variant="outline-warning" type="submit" disabled={this.state.loading}>
-                            Sign In
-                        </Button> */}
-                    <div className="form-group">
-                <button
-                    className="btn btn-primary btn-block"
-                    disabled={this.state.loading}
-                >
-                    {this.state.loading && (
-                    <span className="spinner-border spinner-border-sm"></span>
-                    )}
-                    <span>Login</span>
-                </button>
-                </div>
-                {this.state.message && (
-                <div className="form-group">
-                    <div className="alert alert-danger" role="alert">
-                    {this.state.message}
-                    </div>
-                </div>
-                )}
+                        <div className="form-group">
+                            <button
+                                className="btn btn-primary btn-block"
+                                disabled={this.state.loading}
+                            >
+                                {this.state.loading && (
+                                <span className="spinner-border spinner-border-sm"></span>
+                                )}
+                                <span>Login</span>
+                            </button>
+                        </div>
+                        {this.state.message && (
+                        <div className="form-group">
+                            <div className="alert alert-danger" role="alert">
+                            {this.state.message}
+                            </div>
+                        </div>
+                        )}
 
                         <Button className="mb-3 m-2" variant="outline-warning">
                             Sign Up
@@ -125,12 +121,6 @@ class Login extends React.Component {
                         <Button className="mb-3 m-2" variant="outline-warning">
                             Forgot Password?
                         </Button>                        
-                        {/* <CheckButton
-                            style={{ display: "none" }}
-                            ref={c => {
-                                this.checkBtn = c;
-                            }}
-                        /> */}
                     </Form>
                 </Row>
             </Container>

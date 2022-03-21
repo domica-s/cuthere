@@ -3,7 +3,7 @@ import {BrowserRouter, Routes, Route, useLocation, Link} from 'react-router-dom'
 import {Home, About} from './home/homePage'
 import {Login} from './home/loginPage'
 import {Event} from './home/eventPage'
-// import { SignUp } from './home/signUp';
+import { SignUp } from  './home/signUpPage'
 import { ForgotPw } from './home/forgotPwPage';
 import { Navbar, Container, Nav } from 'react-bootstrap';
 import Profile from './home/myProfile';
@@ -19,7 +19,7 @@ function App() {
           <Route path='/login' element={<Login/>} />
           <Route path='/event' element={<Event/>} />
           <Route path='/profile' element={<Profile/>} />
-          {/* <Route path='/signup' element={<SignUp/>} /> */}
+          <Route path='/signup' element={<SignUp/>} />
           <Route path='/forgotpw' element={<ForgotPw/>} />
           <Route path='/logout' element={<Logout/>} />
           <Route path='/*' element={<NoMatch/>} />
@@ -50,7 +50,7 @@ function NavigationBar() {
           <Nav.Link as={Link} to="/login">Login</Nav.Link>
           <Nav.Link as={Link} to="/logout">Logout</Nav.Link>
           <Nav.Link as={Link} to="/profile">Profile</Nav.Link>
-          {/* <Nav.Link as={Link} to="/signup">Sign Up</Nav.Link> */}
+          <Nav.Link as={Link} to="/signup">Sign Up</Nav.Link>
           <Nav.Link as={Link} to="/event">Events</Nav.Link>
         </Nav>
       </Container>
