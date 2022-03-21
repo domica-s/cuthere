@@ -1,6 +1,7 @@
 import React from "react";
-import { Container } from "react-bootstrap";
+import Container from "react-bootstrap/Container";
 import Row from 'react-bootstrap/Row';
+import Col from "react-bootstrap/Col";
 import "./eventPage.css";
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
@@ -54,10 +55,34 @@ class Event extends React.Component {
         let e = this.state.events
         return(
             <Container>
-                <EventCard />
+                <EventWidget />
                 <h2>Here are the events</h2>
                 {e.length > 0 && e.map((data, index) => <OneEvent data={data}/>)}
             </Container>
+        );
+    }
+}
+
+class EventWidget extends React.Component{
+    constructor(props){
+        super(props);
+    }
+    render(){
+        return (
+          <Card>
+              <Card.Header style={{textAlign:"left"}}>Events you might like
+                <a href="/event" style={{float:"right"}}>See all</a>
+              </Card.Header>
+              <Card.Body>
+                <Row className="widget g-4">
+                {Array.from({ length: 4 }).map((_, idx) => (
+                        <Col>
+                        <EventCard />
+                        </Col>
+                    ))}
+                </Row>
+                </Card.Body>
+          </Card>
         );
     }
 }
@@ -68,11 +93,9 @@ class EventCard extends React.Component {
     }
     render(){
         return (
-          <Card
-            style={{width: "12rem", height: "17.5rem",display: "block",overflow: "hidden",whiteSpace: "nowrap",
-            }}
-          >
-            <Card.Img variant="top" src={require("./basket.jpeg")} />
+          <Card 
+            style={{width: "12rem", height: "17.5rem",display: "block",overflow: "hidden",whiteSpace: "nowrap"}}>
+            <Card.Img variant="top" style={{maxHeight: "200px"}} src={require("./basket.jpeg")} />
             <Card.Body>
               <Card.Title
                 style={{textAlign: "left",width: "10rem",textOverflow: "ellipsis",overflow: "hidden",}}
@@ -95,7 +118,7 @@ class EventCard extends React.Component {
               <p style={{ textAlign: "left", fontSize: "15px" }}>
                 Quota:{" "}
                 <Badge pill bg="dark">
-                  8/111
+                  8/11
                 </Badge>
                 <span style={{ float: "right" }}>
                   <Button variant="primary" size="sm">

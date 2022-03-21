@@ -13,3 +13,9 @@
     font-size: 13px;
     margin: 0;
 }
+
+.widget{
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+}
