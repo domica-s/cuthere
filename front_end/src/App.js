@@ -76,6 +76,7 @@ function NavigationBar() {
           <Nav.Link as={Link} to="/profile">Profile</Nav.Link>
           <Nav.Link as={Link} to="/signup">Sign Up</Nav.Link>
           <Nav.Link as={Link} to="/event">Events</Nav.Link>
+          <Nav.Link as={Link} to="/createEvent">Create Events</Nav.Link>
         </Nav>
       </Container>
     </Navbar>
