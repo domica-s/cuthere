@@ -8,10 +8,11 @@ import Row from 'react-bootstrap/Row';
 import { Container } from "react-bootstrap";
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 
+// import CheckButton from "react-validation/build/button";
 import AuthService from "../services/auth.service";
 
-class Login extends React.component {
-    
+class Login extends React.Component {
+
     constructor(props) {
         super(props);
         this.handleLogin = this.handleLogin.bind(this);
@@ -36,42 +37,38 @@ class Login extends React.component {
             password: e.target.value
         });
     }
+
     handleLogin(e) {
+        // console.log("Handle login called");
         e.preventDefault();
+
         this.setState({
             message: "",
             loading: true
-    });
-    
-    if (this.checkBtn.context._errors.length === 0) {
-        AuthService.login(this.state.sid, this.state.password).then(
-          () => {
-            this.props.history.push("/profile");
-            window.location.reload();
-          },
-          error => {
-            const resMessage =
-              (error.response &&
-                error.response.data &&
-                error.response.data.message) ||
-              error.message ||
-              error.toString();
-            this.setState({
-              loading: false,
-              message: resMessage
-            });
-          }
-        );
-    } 
-    else {
-        this.setState({
-          loading: false
         });
-      }
+        
+        AuthService.login(this.state.sid, this.state.password).then(
+            () => {
+                // this.props.history.push("/profile");
+                window.location.reload();
+            },
+            error => {
+                const resMessage =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
+                this.setState({
+                loading: false,
+                message: resMessage
+                });
+            }
+        );
     }
-    
+
     render() {
-        return(
+        return (
             <Container>
                 <Row xs="auto" className="justify-content-sm-center">
                     <Col>
@@ -79,7 +76,10 @@ class Login extends React.component {
                     </Col>
                 </Row>
                 <Row className="justify-content-center">
-                    <Form className="signin-form">
+                    <Form className="signin-form" onSubmit={this.handleLogin}
+                                                    ref={c => {
+                                                        this.form = c;
+                                                    }}>
                         <h1 class="h3 mb-3 ">Sign in</h1>
 
                         <Col className="form-floating">
@@ -125,7 +125,12 @@ class Login extends React.component {
                         <Button className="mb-3 m-2" variant="outline-warning">
                             Forgot Password?
                         </Button>                        
-                        
+                        {/* <CheckButton
+                            style={{ display: "none" }}
+                            ref={c => {
+                                this.checkBtn = c;
+                            }}
+                        /> */}
                     </Form>
                 </Row>
             </Container>
