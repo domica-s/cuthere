@@ -54,7 +54,7 @@ function SignUp() {
                     <Button className="mb-3 m-2" variant="outline-warning" onClick={signInChange}>
                         Already have an account? Sign in instead.
                     </Button>    
-                    <Button variant="outline-warning" type="submit">
+                    <Button className="mb-3 m-2" variant="outline-warning" type="submit">
                         Sign Up
                     </Button>
                     

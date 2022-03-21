@@ -7,6 +7,8 @@ import { SignUp } from './home/signUp';
 import { ForgotPw } from './home/forgotPwPage';
 import { Navbar, Container, Nav } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
+import { CreateEvent } from './home/createEventPage';
+
 
 function App() {
   return (
@@ -19,6 +21,7 @@ function App() {
           <Route path='/login' element={<Login/>} />
           <Route path='/event' element={<Event/>} />
           <Route path='/signup' element={<SignUp/>} />
+          <Route path='/createEvent' element={<CreateEvent/>} />
           <Route path='/forgotpw' element={<ForgotPw/>} />
           <Route path='/*' element={<NoMatch/>} />
         </Routes>
@@ -47,6 +50,7 @@ function NavigationBar() {
           <Nav.Link as={Link} to="/about">About</Nav.Link>
           <Nav.Link as={Link} to="/login">Login</Nav.Link>
           <Nav.Link as={Link} to="/event">Events</Nav.Link>
+          <Nav.Link as={Link} to="/createEvent">Create Events</Nav.Link>
         </Nav>
       </Container>
     </Navbar>
