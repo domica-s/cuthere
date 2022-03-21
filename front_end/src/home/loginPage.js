@@ -7,25 +7,73 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import { Container } from "react-bootstrap";
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import AuthService from "../services/auth.service";
 
+function LoginWithNavigate() {
+    let navigate = useNavigate();
+    return <Login navigate={navigate} />
+}
 
+class Login extends React.Component {
 
-// class Login extends React.Component {   
-function Login() {
-    let navigate = useNavigate(); 
+    constructor(props) {
+        super(props);
+        this.handleLogin = this.handleLogin.bind(this);
+        this.onChangeSID = this.onChangeSID.bind(this);
+        this.onChangePassword = this.onChangePassword.bind(this);
 
-    const signUpChange = () =>{ 
-      let path = '/signup'; 
-      navigate(path);
+        this.state = {
+          sid: "",
+          password: "",
+          loading: false,
+          message: "",
+        };
     }
 
-    const forgotPwChange = () => {
-        let path = '/forgotpw';
-        navigate(path)
-    } 
+    onChangeSID(e) {
+        this.setState({
+          sid: e.target.value
+        });
+    }
 
-    // render() {
-        return(
+    onChangePassword(e) {
+        this.setState({
+            password: e.target.value
+        });
+    }
+
+    handleLogin(e) {
+
+        e.preventDefault();
+
+        this.setState({
+            message: "",
+            loading: true
+        });
+        
+        AuthService.login(this.state.sid, this.state.password).then(
+            () => {
+                this.props.navigate('/profile');
+                // GoToProfile();
+                window.location.reload();
+            },
+            error => {
+                const resMessage =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
+                this.setState({
+                loading: false,
+                message: resMessage
+                });
+            }
+        );
+    }
+
+    render() {
+        return (
             <Container>
                 <Row xs="auto" className="justify-content-sm-center">
                     <Col>
@@ -33,38 +81,56 @@ function Login() {
                     </Col>
                 </Row>
                 <Row className="justify-content-center">
-                    <Form className="signin-form" action="../../login" method="POST">
+                    <Form className="signin-form" onSubmit={this.handleLogin}
+                                                    ref={c => {
+                                                        this.form = c;
+                                                    }}>
                         <h1 class="h3 mb-3 ">Sign in</h1>
 
                         <Col className="form-floating">
                             <FloatingLabel controlId="floatingInput" label="SID">
-                                <Form.Control name="sid" type="number" placeholder="SID" required/>
+                                <Form.Control name="sid" type="number" placeholder="SID" required 
+                                value={this.state.sid} onChange={this.onChangeSID}/>
                             </FloatingLabel>                                
                         </Col>
 
                         <Col className="mb-3 form-floating">
                             <FloatingLabel controlId="floatingPassword" label="Password">
-                                <Form.Control name="password" type="password" placeholder="Password" required/>
+                                <Form.Control name="password" type="password" placeholder="Password" required
+                                value={this.state.password} onChange={this.onChangePassword}/>
                             </FloatingLabel>
                         </Col>           
+                        <div className="form-group">
+                            <button
+                                className="btn btn-primary btn-block"
+                                disabled={this.state.loading}
+                            >
+                                {this.state.loading && (
+                                <span className="spinner-border spinner-border-sm"></span>
+                                )}
+                                <span>Login</span>
+                            </button>
+                        </div>
+                        {this.state.message && (
+                        <div className="form-group">
+                            <div className="alert alert-danger" role="alert">
+                            {this.state.message}
+                            </div>
+                        </div>
+                        )}
 
-                        <Button className="mb-3 m-2" variant="outline-warning" type="submit">
-                            Sign In
-                        </Button>
-
-                        <Button className="mb-3 m-2" variant="outline-warning" onClick={signUpChange}>
+                        <Button className="mb-3 m-2" variant="outline-warning">
                             Sign Up
                         </Button>
 
-                        <Button className="mb-3 m-2" variant="outline-warning" onClick={forgotPwChange}>
+                        <Button className="mb-3 m-2" variant="outline-warning">
                             Forgot Password?
                         </Button>                        
-                        
                     </Form>
                 </Row>
             </Container>
-        )
-    // }
+        );
+    }
 }
 
-export {Login}
+export {LoginWithNavigate}

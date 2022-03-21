@@ -1,31 +1,57 @@
 import './App.css';
-import {BrowserRouter, Routes, Route, useLocation, Link} from 'react-router-dom'
+import {BrowserRouter, Routes, Route, useLocation, Link, useNavigate} from 'react-router-dom'
 import {Home, About} from './home/homePage'
-import {Login} from './home/loginPage'
+import {LoginWithNavigate} from './home/loginPage'
 import {Event} from './home/eventPage'
-import { SignUp } from './home/signUp';
+import { SignUp } from  './home/signUpPage'
 import { ForgotPw } from './home/forgotPwPage';
 import { Navbar, Container, Nav } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
+import Profile from './home/myProfile';
+import authService from './services/auth.service';
+import React from 'react';
 
-function App() {
-  return (
-    <div className="App">
-      <BrowserRouter>
-        <NavigationBar />
-        <Routes>
-          <Route path="/" element={<Home/>} />
-          <Route path='/about' element={<About/>} />
-          <Route path='/login' element={<Login/>} />
-          <Route path='/event' element={<Event/>} />
-          <Route path='/signup' element={<SignUp/>} />
-          <Route path='/forgotpw' element={<ForgotPw/>} />
-          <Route path='/*' element={<NoMatch/>} />
-        </Routes>
-        <FooterBar />
-      </BrowserRouter>
-    </div>    
-  );
+class App extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      currentUser: undefined
+    }
+  }
+
+  componentDidMount() {
+    const user = authService.getCurrentUser();
+
+    if (user) {
+      this.setState({
+        currentUser: user,
+      });
+    }
+  }
+
+  render() {
+    const { currentUser } = this.state;
+    return (
+      <div className="App">
+        <BrowserRouter>
+          <NavigationBar isAuthUser={(currentUser != undefined)} />
+          <Routes>
+            <Route path="/" element={<Home/>} />
+            <Route path='/about' element={<About/>} />
+            <Route path='/login' element={<LoginWithNavigate/>} />
+            <Route path='/event' element={<Event/>} />
+            <Route path='/profile' element={<Profile/>} />
+            <Route path='/signup' element={<SignUp/>} />
+            <Route path='/logout' element={<LogOutWithNavigate/>} />
+            <Route path='/forgotpw' element={<ForgotPw/>} />
+            <Route path='/*' element={<NoMatch/>} />
+          </Routes>
+          <FooterBar />
+        </BrowserRouter>
+      </div>    
+    );
+  }
 }
 
 
@@ -46,6 +72,9 @@ function NavigationBar() {
         <Nav className="me-auto">
           <Nav.Link as={Link} to="/about">About</Nav.Link>
           <Nav.Link as={Link} to="/login">Login</Nav.Link>
+          <Nav.Link as={Link} to="/logout">Logout</Nav.Link>
+          <Nav.Link as={Link} to="/profile">Profile</Nav.Link>
+          <Nav.Link as={Link} to="/signup">Sign Up</Nav.Link>
           <Nav.Link as={Link} to="/event">Events</Nav.Link>
         </Nav>
       </Container>
@@ -73,5 +102,23 @@ function NoMatch() {
       </div>
   );
 }
+
+function LogOutWithNavigate() {
+  let navigate = useNavigate();
+  return <Logout navigate={navigate} />
+}
+
+class Logout extends React.Component {
+  render() {
+    authService.logout();
+    localStorage.clear();
+    this.props.navigate('/login');
+
+    return <LoginWithNavigate />
+  }
+}
+
+
+
 
 export default App;
