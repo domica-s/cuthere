@@ -8,6 +8,7 @@ var session = require("express-session");
 var flash = require("connect-flash");
 var params = require("./params/params");
 
+
 var setuppassport = require("./setuppassport");
 const e = require("connect-flash");
 
@@ -37,8 +38,19 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
+// To use the Calendar
+app.use("/api/calendar", require("./routes/calendar"));
 app.use("/", require("./routes"));
 
+//CORS Problem
+var cors = require('cors');
+app.use(cors());
+
+app.use(function(req,res,next){
+    res.header("Access-Control-Allow-Origin", "*")
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+})
 
 app.listen(app.get("port"), function() {
     console.log("Server started on port " + app.get("port"));

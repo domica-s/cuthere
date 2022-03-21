@@ -60,7 +60,7 @@ router.get("/", function (req, res) {
 });
 
 // To create the event
-router.post("/event/create", ensureAuthenticated, function (req, res, next) {
+router.post("/event", ensureAuthenticated, function (req, res, next) {
     var title =  req.body.title
     var location = req.body.location
     var date = req.body.date
