@@ -45,16 +45,19 @@ class Event extends React.Component {
 
     componentDidMount() {
       let currentUser = AuthService.getCurrentUser()
-        fetch(API, {
-          method: "GET",
-          headers: new Headers({
-            "x-access-token": currentUser.accessToken
-          })
+      if (currentUser === null) {
+        
+      }
+      {currentUser !== null && fetch(API, {
+        method: "GET",
+        headers: new Headers({
+          "x-access-token": currentUser.accessToken
         })
-            .then(res => res.json())
-            .then(data => {
-                this.setState( {events: Object.entries(data)} )
-            });
+      })
+          .then(res => res.json())
+          .then(data => {
+              this.setState( {events: Object.entries(data)} )
+          });}
     }
 
     render() {
