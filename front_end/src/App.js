@@ -33,10 +33,7 @@ class App extends React.Component {
   }
 
   handleLogout() {
-    console.log("Handle logout called");
-
-    console.log("Handle logout called 2");
-
+  
     localStorage.removeItem("user");
     localStorage.setItem("isAuthenticated", false);
 
@@ -44,7 +41,6 @@ class App extends React.Component {
     //   currentUser: undefined
     // });
 
-    console.log("Handle logout called 3");
     
     return <LoginWithNavigate/>
   }
