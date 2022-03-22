@@ -11,7 +11,7 @@ import AuthService from "../services/auth.service";
 const API = 'http://localhost:8080/allevents'
 
 class OneEvent extends React.Component {
-
+    // render one event
     render() {
         let data = this.props.data[1];
         return (
