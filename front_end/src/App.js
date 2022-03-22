@@ -33,19 +33,15 @@ class App extends React.Component {
   }
 
   handleLogout() {
-  
-    const user = authService.getCurrentUser();
+    let logoutAPI = "../../logout"
+    localStorage.removeItem("user");
+    localStorage.setItem("isAuthenticated", false);
 
-    if (user) {
-      localStorage.removeItem("user");
-      localStorage.setItem("isAuthenticated", false);
+    // this.setState({
+    //   currentUser: undefined
+    // });
 
-      this.setState({
-        currentUser: undefined
-      });
-    }
-    window.history.replaceState({}, '','/login');
-
+    
     return <LoginWithNavigate/>
   }
 
