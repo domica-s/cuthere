@@ -27,11 +27,13 @@ export default function () {
     }
     
     async function handleEventAdd(data){
-        await axios.post("/api/calendar/create-event", data.event);
+        console.log(events)
+        await axios.post("http://localhost:8080/api/calendar/create-event", data.event);
     }
 
     async function handleDatesSet(data){
-        const response = await axios.get('/api/calendar/get-event?start='+moment(data.start).toISOString() +'&end='+moment(data.end).toISOString())
+        console.log(events)
+        const response = await axios.get('http://localhost:8080/api/calendar/get-event?start='+moment(data.start).toISOString() +'&end='+moment(data.end).toISOString())
         setEvents(response.data)
     }
 

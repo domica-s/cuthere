@@ -54,7 +54,6 @@ app.use(flash());
 
 require('./routes/auth.routes')(app);
 require('./routes/user.routes')(app);
-app.use("/api/calendar", require("./routes/calendar"));
 app.use("/", require("./routes"));
 
 // app.get("/", (req, res) => {

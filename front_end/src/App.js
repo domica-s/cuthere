@@ -9,7 +9,10 @@ import { Navbar, Container, Nav } from 'react-bootstrap';
 import Profile from './home/myProfile';
 import authService from './services/auth.service';
 import React from 'react';
+import Modal from 'react-modal';
+import Calendar from "./Components/Calendar";
 
+Modal.setAppElement("#root");
 class App extends React.Component {
 
   constructor(props) {
@@ -64,6 +67,7 @@ class App extends React.Component {
             <Route path='/logout' element={<this.handleLogout/>} />
             <Route path='/profile' element={<Profile/>} />
             <Route path='/forgotpw' element={<ForgotPw/>} />
+            <Route path='/calendar' element={<Calendar/>} />
             <Route path='/*' element={<NoMatch/>} />
           </Routes>
       
@@ -95,6 +99,7 @@ class NavigationBar extends React.Component {
             {isAuth === true && <Nav.Link as={Link} to="/logout">Logout</Nav.Link>}
             {isAuth === true && <Nav.Link as={Link} to="/profile">Profile</Nav.Link>}
             {isAuth === true && <Nav.Link as={Link} to="/event">Events</Nav.Link>}
+            {isAuth === true && <Nav.Link as={Link} to="/calendar">View Calendar</Nav.Link>}
             {isAuth === true && <Nav.Link as={Link} to="/createEvent">Create Events</Nav.Link>}
           </Nav>
         </Container>
