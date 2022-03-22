@@ -1,0 +1,21 @@
+.column {
+  float: left;
+  width: 50%;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.text{
+    font-size: 13px;
+    margin: 0;
+}
+
+.widget{
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+}
