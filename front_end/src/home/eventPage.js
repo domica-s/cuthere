@@ -1,14 +1,14 @@
 import React from "react";
 import { Container } from "react-bootstrap";
 import Row from 'react-bootstrap/Row';
+import AuthService from "../services/auth.service";
 
-const API = '../../allevents'
+const API = 'http://localhost:8080/allevents'
 
 class OneEvent extends React.Component {
 
     render() {
         let data = this.props.data[1];
-        console.log(data[1]);
         return (
             <Container>
                 <Row className="justify-content-sm-center">
@@ -34,14 +34,20 @@ class Event extends React.Component {
         super(props);
         this.state = {
             events: {},
+            currentUser: AuthService.getCurrentUser()
         };
     }
 
     componentDidMount() {
-        fetch(API)
+      let currentUser = AuthService.getCurrentUser()
+        fetch(API, {
+          method: "GET",
+          headers: new Headers({
+            "x-access-token": currentUser.accessToken
+          })
+        })
             .then(res => res.json())
             .then(data => {
-                console.log('Received events: ', Object.entries(data));
                 this.setState( {events: Object.entries(data)} )
             });
     }
