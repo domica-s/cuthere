@@ -30,6 +30,10 @@ export default class Profile extends Component {
           <strong>SID:</strong>{" "}
           {currentUser.sid}
         </p>
+        <p>
+          <strong>Role:</strong>{" "}
+          {currentUser.role}
+        </p>
       </div>
     );
   }
