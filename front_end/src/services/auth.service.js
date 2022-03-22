@@ -1,5 +1,4 @@
 import axios from "axios";
-
 var params = require("../params/params");
 
 // const API_URL = "http://localhost:8080/api/auth/";
@@ -36,6 +35,8 @@ class AuthService {
   getCurrentUser() {
     return JSON.parse(localStorage.getItem('user'));;
   }
+
+  
 }
 
 export default new AuthService();

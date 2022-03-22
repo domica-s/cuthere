@@ -18,6 +18,7 @@ var userSchema = mongoose.Schema({
     friends:{type:String},
     registeredEvents:[{type:String}],
     role:{type:String, enum: ['User', 'Admin']},
+    active:{type:Boolean, default: false},
     createdAt:{type:Date, default:Date.now}
 });
 
