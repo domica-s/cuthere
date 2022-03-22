@@ -86,13 +86,6 @@ class NavigationBar extends React.Component {
       <Navbar bg="dark" variant="dark">
         <Container>
           <Navbar.Brand as={Link} to="/">
-            {/* <img
-              alt=""
-              src="/logo.svg"
-              width="30"
-              height="30"
-              className="d-inline-block align-top"
-            />{' '} */}
           CUthere
           </Navbar.Brand>
           <Nav className="me-auto">
