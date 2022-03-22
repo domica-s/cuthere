@@ -24,6 +24,25 @@ router.get("/allevents", [authJwt.verifyToken], function (req, res) {
     })
 })
 
+/*
+router.get("/intevents", [authJwt.verifyToken], function(req,res){
+    var event_dic = {}
+
+    Event.find({activityCategory:req.user._id.interest}).exec(function(err, event){
+        if (event.length > 0){
+            for (var i = 0; i < event.length; i++) {
+                event_dic[i] = event[i]
+            }
+            var int_events = {
+                "Title": "Events you might be interested in",
+                event_dic
+            }
+            res.send(int_events)
+        }
+    })
+})
+*/
+
 router.get("/", function(req, res){
     Event.find({createdBy:req.user._id}).exec(function(err, events){
         if(err){
