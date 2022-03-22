@@ -54,7 +54,7 @@ class App extends React.Component {
     return (
       <div className="App">
         <BrowserRouter>
-          <NavigationBar isAuthUser={(currentUser != undefined)} />
+          <NavigationBar isAuthUser={(currentUser !== undefined)} />
           
           <Routes>
             <Route path="/" element={<Home/>} />
@@ -98,12 +98,12 @@ class NavigationBar extends React.Component {
           </Navbar.Brand>
           <Nav className="me-auto">
             <Nav.Link as={Link} to="/about">About</Nav.Link>
-            {isAuth != true && <Nav.Link as={Link} to="/login">Login</Nav.Link>}
-            {isAuth != true && <Nav.Link as={Link} to="/signup">Sign Up</Nav.Link>}
-            {isAuth == true && <Nav.Link as={Link} to="/logout">Logout</Nav.Link>}
-            {isAuth == true && <Nav.Link as={Link} to="/profile">Profile</Nav.Link>}
-            {isAuth == true && <Nav.Link as={Link} to="/event">Events</Nav.Link>}
-            {isAuth == true && <Nav.Link as={Link} to="/createEvent">Create Events</Nav.Link>}
+            {isAuth !== true && <Nav.Link as={Link} to="/login">Login</Nav.Link>}
+            {isAuth !== true && <Nav.Link as={Link} to="/signup">Sign Up</Nav.Link>}
+            {isAuth === true && <Nav.Link as={Link} to="/logout">Logout</Nav.Link>}
+            {isAuth === true && <Nav.Link as={Link} to="/profile">Profile</Nav.Link>}
+            {isAuth === true && <Nav.Link as={Link} to="/event">Events</Nav.Link>}
+            {isAuth === true && <Nav.Link as={Link} to="/createEvent">Create Events</Nav.Link>}
           </Nav>
         </Container>
       </Navbar>
