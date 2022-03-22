@@ -1,7 +1,9 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/api/auth/";
+var params = require("../params/params");
 
+// const API_URL = "http://localhost:8080/api/auth/";
+const API_URL = params.baseBackURL + "/api/auth/";
 class AuthService {
   login(sid, password) {
       // console.log("Called login in Authservice");

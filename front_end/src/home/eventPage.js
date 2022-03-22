@@ -8,7 +8,10 @@ import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
 import AuthService from "../services/auth.service";
 
-const API = 'http://localhost:8080/allevents'
+var params = require("../params/params");
+
+// const API = 'http://localhost:8080/allevents'
+const API = params.baseBackURL + "/allevents";
 
 class OneEvent extends React.Component {
     // render one event
