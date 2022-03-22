@@ -18,6 +18,8 @@ class App extends React.Component {
     this.state = {
       currentUser: undefined
     }
+    
+    this.handleLogout = this.handleLogout.bind(this);
   }
 
   componentDidMount() {
@@ -30,23 +32,42 @@ class App extends React.Component {
     }
   }
 
+  handleLogout() {
+    console.log("Handle logout called");
+
+    console.log("Handle logout called 2");
+
+    localStorage.removeItem("user");
+    localStorage.setItem("isAuthenticated", false);
+
+    // this.setState({
+    //   currentUser: undefined
+    // });
+
+    console.log("Handle logout called 3");
+    
+    return <LoginWithNavigate/>
+  }
+
   render() {
     const { currentUser } = this.state;
     return (
       <div className="App">
         <BrowserRouter>
           <NavigationBar isAuthUser={(currentUser != undefined)} />
+          
           <Routes>
             <Route path="/" element={<Home/>} />
             <Route path='/about' element={<About/>} />
             <Route path='/login' element={<LoginWithNavigate/>} />
             <Route path='/event' element={<Event/>} />
-            <Route path='/profile' element={<Profile/>} />
             <Route path='/signup' element={<SignUp/>} />
-            <Route path='/logout' element={<LogOutWithNavigate/>} />
+            <Route path='/logout' element={<this.handleLogout/>} />
+            <Route path='/profile' element={<Profile/>} />
             <Route path='/forgotpw' element={<ForgotPw/>} />
             <Route path='/*' element={<NoMatch/>} />
           </Routes>
+      
           <FooterBar />
         </BrowserRouter>
       </div>    
@@ -54,33 +75,40 @@ class App extends React.Component {
   }
 }
 
+class NavigationBar extends React.Component {
 
-function NavigationBar() {
-  return (
-    <Navbar bg="dark" variant="dark">
-      <Container>
-        <Navbar.Brand as={Link} to="/">
-          {/* <img
-            alt=""
-            src="/logo.svg"
-            width="30"
-            height="30"
-            className="d-inline-block align-top"
-          />{' '} */}
-        CUthere
-        </Navbar.Brand>
-        <Nav className="me-auto">
-          <Nav.Link as={Link} to="/about">About</Nav.Link>
-          <Nav.Link as={Link} to="/login">Login</Nav.Link>
-          <Nav.Link as={Link} to="/logout">Logout</Nav.Link>
-          <Nav.Link as={Link} to="/profile">Profile</Nav.Link>
-          <Nav.Link as={Link} to="/signup">Sign Up</Nav.Link>
-          <Nav.Link as={Link} to="/event">Events</Nav.Link>
-          <Nav.Link as={Link} to="/createEvent">Create Events</Nav.Link>
-        </Nav>
-      </Container>
-    </Navbar>
-  );
+  constructor(props) {
+    super(props);
+  }
+
+  render () {
+    let isAuth = this.props.isAuthUser;
+    return (
+      <Navbar bg="dark" variant="dark">
+        <Container>
+          <Navbar.Brand as={Link} to="/">
+            {/* <img
+              alt=""
+              src="/logo.svg"
+              width="30"
+              height="30"
+              className="d-inline-block align-top"
+            />{' '} */}
+          CUthere
+          </Navbar.Brand>
+          <Nav className="me-auto">
+            <Nav.Link as={Link} to="/about">About</Nav.Link>
+            {isAuth != true && <Nav.Link as={Link} to="/login">Login</Nav.Link>}
+            {isAuth != true && <Nav.Link as={Link} to="/signup">Sign Up</Nav.Link>}
+            {isAuth == true && <Nav.Link as={Link} to="/logout">Logout</Nav.Link>}
+            {isAuth == true && <Nav.Link as={Link} to="/profile">Profile</Nav.Link>}
+            {isAuth == true && <Nav.Link as={Link} to="/event">Events</Nav.Link>}
+            {isAuth == true && <Nav.Link as={Link} to="/createEvent">Create Events</Nav.Link>}
+          </Nav>
+        </Container>
+      </Navbar>
+    );
+  }
 }
 
 function FooterBar() {
@@ -103,23 +131,5 @@ function NoMatch() {
       </div>
   );
 }
-
-function LogOutWithNavigate() {
-  let navigate = useNavigate();
-  return <Logout navigate={navigate} />
-}
-
-class Logout extends React.Component {
-  render() {
-    authService.logout();
-    localStorage.clear();
-    this.props.navigate('/login');
-
-    return <LoginWithNavigate />
-  }
-}
-
-
-
 
 export default App;

@@ -85,7 +85,7 @@ class Login extends React.Component {
                                                     ref={c => {
                                                         this.form = c;
                                                     }}>
-                        <h1 class="h3 mb-3 ">Sign in</h1>
+                        <h1 className="h3 mb-3 ">Sign in</h1>
 
                         <Col className="form-floating">
                             <FloatingLabel controlId="floatingInput" label="SID">
