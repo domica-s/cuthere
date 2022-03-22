@@ -4,7 +4,7 @@ const API_URL = "http://localhost:8080/api/auth/";
 
 class AuthService {
   login(sid, password) {
-      console.log("Called login in Authservice");
+      // console.log("Called login in Authservice");
     return axios
         .post(API_URL + "signin", 
             {
@@ -17,9 +17,9 @@ class AuthService {
         }
         return response.data;
       })
-      .catch((error) => {
-          console.log(error);
-      });
+      // .catch((error) => {
+      //     console.log(error);
+      // });
   }
 
   logout() {
@@ -33,8 +33,10 @@ class AuthService {
       password
     });
   }
+
   getCurrentUser() {
     return JSON.parse(localStorage.getItem('user'));;
   }
 }
+
 export default new AuthService();
