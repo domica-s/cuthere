@@ -30,8 +30,8 @@ exports.signup = (req, res) => {
         }
         user.save(err => {
             if (err) {
-            res.status(500).send({ message: err });
-            return;
+              res.status(500).send({ message: err });
+              return;
             }
             res.send({ message: "User was registered successfully!" });
         });
@@ -63,7 +63,6 @@ exports.signin = (req, res) => {
       var token = jwt.sign({ id: user.id }, config.secret, {
         expiresIn: 86400 // 24 hours
       });
-      console.log(user);
       res.status(200).send({
         accessToken: token,
         user

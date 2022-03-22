@@ -2,6 +2,8 @@ var express = require("express");
 
 var User = require("../models/user");
 
+const { authJwt } = require("../middlewares");
+
 var router = express.Router();
 
 // var userSchema = mongoose.Schema({
@@ -19,11 +21,16 @@ var router = express.Router();
 //     createdAt:{type:Date, default:Date.now}
 // });
 
-router.get("/:sid", function(req,res){
+router.get("/:sid", [authJwt.verifyToken], function(req,res){
     User.findOne({sid:req.params.sid}).exec(function(err, users){
-        if(err){console.log(err);}
-
-        res.render("user/user", {user:users});
+        if (err) {
+            res.status(500).send({ message: err });
+            return;
+        }
+        res.status(200).send({
+            user: users
+        });
+        return;
     });
 });
 
