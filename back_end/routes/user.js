@@ -1,11 +1,8 @@
 var express = require("express");
-var ensureAuthenticated = require("../auth/auth").ensureAuthenticated;
 
 var User = require("../models/user");
 
 var router = express.Router();
-
-router.use(ensureAuthenticated);
 
 // var userSchema = mongoose.Schema({
 //     username:{type:String, required:true},

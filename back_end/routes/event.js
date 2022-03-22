@@ -1,17 +1,15 @@
 var express = require("express");
 
-var ensureAuthenticated = require("../auth/auth").ensureAuthenticated;
-
 var Event = require("../models/event");
 
 var router = express.Router();
 
 const res = require("express/lib/response");
 
-router.use(ensureAuthenticated);
+const { authJwt } = require("../middlewares");
 
 // List all events
-router.get("/allevents", ensureAuthenticated, function (req, res) {
+router.get("/allevents", [authJwt.verifyToken], function (req, res) {
 
     var event_dic = {}
 
@@ -60,7 +58,7 @@ router.get("/", function (req, res) {
 });
 
 // To create the event
-router.post("/event", ensureAuthenticated, function (req, res, next) {
+router.post("/event", function (req, res, next) {
     var title =  req.body.title
     var location = req.body.location
     var date = req.body.date
@@ -94,7 +92,7 @@ router.post("/event", ensureAuthenticated, function (req, res, next) {
 });
 
 // Delete Event
-router.post('/event/delete', ensureAuthenticated, function(req,res){
+router.post('/event/delete', function(req,res){
     let id = req.body.id
     console.log(id)
     Event.findOneAndDelete({eventID: id}).exec(function(err,event){
