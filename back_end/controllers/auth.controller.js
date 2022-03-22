@@ -63,15 +63,11 @@ exports.signin = (req, res) => {
       var token = jwt.sign({ id: user.id }, config.secret, {
         expiresIn: 86400 // 24 hours
       });
-    //   var authorities = [];
-    //   for (let i = 0; i < user.roles.length; i++) {
-    //     authorities.push("ROLE_" + user.roles[i].name.toUpperCase());
-    //   }
+      console.log(user);
       res.status(200).send({
-        id: user._id,
-        sid: user.sid,
         accessToken: token,
-        role: user.role
+        user
       });
+
     });
 };
