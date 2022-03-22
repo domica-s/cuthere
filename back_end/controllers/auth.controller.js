@@ -19,7 +19,8 @@ exports.signup = (req, res) => {
         about:"",
         rating:"",
         friends:"",
-        registeredEvents: []
+        registeredEvents: [],
+        role: "User"
     });
 
     user.save((err, user) => {
@@ -69,7 +70,8 @@ exports.signin = (req, res) => {
       res.status(200).send({
         id: user._id,
         sid: user.sid,
-        accessToken: token
+        accessToken: token,
+        role: user.role
       });
     });
 };
