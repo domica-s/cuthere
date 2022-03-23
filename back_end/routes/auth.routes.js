@@ -12,4 +12,6 @@ module.exports = function(app) {
   });
   app.post("/api/auth/signup", [verifySignUp.checkDuplicateSID], controller.signup);
   app.post("/api/auth/signin", controller.signin);
+  app.post("/api/auth/confirmation/:email/:token", controller.verifyEmail);
+  app.post("/api/auth/resendverification", controller.resendVerificationLink);
 };

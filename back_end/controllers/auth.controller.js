@@ -141,6 +141,7 @@ exports.verifyEmail = (req, res) => {
 }
 
 exports.resendVerificationLink = (req, res) => {
+  // req.params.sid /:sid --> get sid from link
   User.findOne({ email: req.body.email }, function (err, user) {
       // user is not found into database
       if (!user){
