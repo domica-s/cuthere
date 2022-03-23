@@ -1,19 +1,28 @@
-const mongoose = require("mongoose");
+var mongoose = require("mongoose");
 
-
-const eventSchema = mongoose.Schema({
-
-    title:{type: String},
-    location:{type: String},
-    quota:{type: Number},
-    category:{type: String},
-    start:{type: Date},
-    end:{type: Date}
-
-  
-
+// link tags
+// fix activityCategory
+var eventSchema = mongoose.Schema({
+    title:{type: String, required: true},
+    eventID:{type: Number},
+    status:{type:String, enum: ['Open', 'Closed']},
+    venue:{type: String, required: true},
+    date:{type: Date, required: true},
+    numberOfParticipants:{type: Number},
+    quota:{type: Number, required: true},
+    activityCategory:{type: String, required: true},
+    chatHistory:{type: String},
+    createdAt:{type: Date, default: Date.now},
+    createdBy:{type: mongoose.Schema.Types.ObjectId, required: false, unique: false}
 });
 
-const Event = mongoose.model("Event", eventSchema);
+eventSchema.pre("save",function(done){
+    return done();
+});
+
+
+var Event = mongoose.model("Event", eventSchema);
+
+
 
 module.exports = Event;
