@@ -19,6 +19,8 @@ class Login extends React.Component {
     constructor(props) {
         super(props);
         this.handleLogin = this.handleLogin.bind(this);
+        this.handleForgetPw = this.handleForgetPw.bind(this);
+        this.handleSignUp = this.handleSignUp.bind(this);
         this.onChangeSID = this.onChangeSID.bind(this);
         this.onChangePassword = this.onChangePassword.bind(this);
 
@@ -72,6 +74,27 @@ class Login extends React.Component {
         );
     }
 
+    handleForgetPw(e) {
+        e.preventDefault();
+        this.setState({
+            message: "",
+            loading: true
+        })
+
+        this.props.navigate('/forgotpw');
+    }
+
+
+    handleSignUp(e) {
+        e.preventDefault();
+        this.setState({
+            message: "",
+            loading: true
+        })
+
+        this.props.navigate('/signup');
+    }
+
     render() {
         
         return (
@@ -120,11 +143,11 @@ class Login extends React.Component {
                         </div>
                         )}
 
-                        <Button className="mb-3 m-2" variant="outline-warning">
+                        <Button className="mb-3 m-2" variant="outline-warning" onClick={this.handleSignUp}>
                             Sign Up
                         </Button>
 
-                        <Button className="mb-3 m-2" variant="outline-warning">
+                        <Button className="mb-3 m-2" variant="outline-warning" onClick={this.handleForgetPw}>
                             Forgot Password?
                         </Button>                        
                     </Form>
