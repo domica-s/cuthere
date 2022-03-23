@@ -11,6 +11,7 @@ import authService from './services/auth.service';
 import React from 'react';
 import Modal from 'react-modal';
 import Calendar from "./Components/Calendar";
+import {CreateEvent} from "./home/createEventPage";
 
 Modal.setAppElement("#root");
 class App extends React.Component {
@@ -68,6 +69,7 @@ class App extends React.Component {
             <Route path='/profile' element={<Profile/>} />
             <Route path='/forgotpw' element={<ForgotPw/>} />
             <Route path='/calendar' element={<Calendar/>} />
+            <Route path='/createEvent' element={<CreateEvent/>} />
             <Route path='/*' element={<NoMatch/>} />
           </Routes>
       
