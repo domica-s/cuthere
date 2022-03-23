@@ -1,5 +1,4 @@
 import axios from "axios";
-
 var params = require("../params/params");
 
 // const API_URL = "http://localhost:8080/api/auth/";
@@ -33,9 +32,22 @@ class AuthService {
     });
   }
 
+  resendVerification(sid) {
+    let temp_url = "resendverification" + sid;
+    return axios.post(API_URL + temp_url, {
+
+    });
+  }
+
+  forgotPassword(sid) {
+    
+  }
+
   getCurrentUser() {
     return JSON.parse(localStorage.getItem('user'));;
   }
+
+  
 }
 
 export default new AuthService();
