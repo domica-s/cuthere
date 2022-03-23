@@ -3,7 +3,7 @@ import {BrowserRouter, Routes, Route, useLocation, Link, useNavigate} from 'reac
 import {Home, About} from './home/homePage'
 import {LoginWithNavigate} from './home/loginPage'
 import {Event} from './home/eventPage'
-import { SignUp } from  './home/signUpPage'
+import { SignUpWithNavigate } from  './home/signUpPage'
 import { ForgotPw } from './home/forgotPwPage';
 import { Navbar, Container, Nav } from 'react-bootstrap';
 import Profile from './home/myProfile';
@@ -63,7 +63,7 @@ class App extends React.Component {
             <Route path='/about' element={<About/>} />
             <Route path='/login' element={<LoginWithNavigate/>} />
             <Route path='/event' element={<Event/>} />
-            <Route path='/signup' element={<SignUp/>} />
+            <Route path='/signup' element={<SignUpWithNavigate/>} />
             <Route path='/logout' element={<this.handleLogout/>} />
             <Route path='/profile' element={<Profile/>} />
             <Route path='/forgotpw' element={<ForgotPw/>} />
