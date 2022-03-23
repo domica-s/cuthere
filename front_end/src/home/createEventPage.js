@@ -6,6 +6,12 @@ import Row from 'react-bootstrap/Row';
 import { Container } from "react-bootstrap";
 import logo from '../logo.jfif';
 
+
+var params = require("../params/params");
+
+const API = params.baseBackURL + "/event";
+
+
 function Logo() {
     return(
         <Row xs="auto" className="justify-content-sm-center">
@@ -34,7 +40,7 @@ function CreateEvent() {
             <Logo/>
             <Description/>
 
-            <Form className="signin-form" action="../../event" method="POST">
+            <Form className="signin-form" action={API} method="POST">
 
                 <Form.Group className="mb-3" controlId="floatingInput">
                     <Form.Label>Title of your event</Form.Label>
@@ -78,4 +84,4 @@ function CreateEvent() {
 
 }
 
-export {CreateEvent}
+export {CreateEvent};
