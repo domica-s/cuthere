@@ -23,12 +23,16 @@ class Login extends React.Component {
         this.handleSignUp = this.handleSignUp.bind(this);
         this.onChangeSID = this.onChangeSID.bind(this);
         this.onChangePassword = this.onChangePassword.bind(this);
+        this.handleReVerification = this.handleReVerification.bind(this);
 
         this.state = {
           sid: "",
           password: "",
           loading: false,
           message: "",
+          resendMessage: "",
+          isVerified: true,
+          verificationSent: false,
         };
     }
 
@@ -60,16 +64,31 @@ class Login extends React.Component {
                 window.location.reload();
             },
             error => {
-                const resMessage =
-                (error.response &&
-                    error.response.data &&
-                    error.response.data.message) ||
-                error.message ||
-                error.toString();
-                this.setState({
-                    loading: false,
-                    message: resMessage
-                });
+                if (error.response.data.isVerified == false) {
+                    const resMessage =
+                    (error.response &&
+                        error.response.data &&
+                        error.response.data.message) ||
+                    error.message ||
+                    error.toString();
+                    this.setState({
+                        loading: false,
+                        message: resMessage,
+                        isVerified: false
+                    });
+                }
+                else {
+                    const resMessage =
+                    (error.response &&
+                        error.response.data &&
+                        error.response.data.message) ||
+                    error.message ||
+                    error.toString();
+                    this.setState({
+                        loading: false,
+                        message: resMessage
+                    });
+                }
             }
         );
     }
@@ -86,13 +105,35 @@ class Login extends React.Component {
 
 
     handleSignUp(e) {
-        e.preventDefault();
+        // e.preventDefault();
         this.setState({
             message: "",
             loading: true
         })
 
         this.props.navigate('/signup');
+    }
+
+    handleReVerification(e) {
+        e.preventDefault();
+        AuthService.resendVerification(this.state.sid).then(
+            response => {
+                this.setState({
+                    resendMessage: response.data.message,
+                    verificationSent: true
+                });
+            },
+            error => {
+                const resMessage =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) || error.message || error.toString();
+                this.setState({
+                    loading: false,
+                    resendMessage: resMessage
+                });
+            }
+        );
     }
 
     render() {
@@ -136,11 +177,27 @@ class Login extends React.Component {
                             </button>
                         </div>
                         {this.state.message && (
-                        <div className="form-group">
-                            <div className="alert alert-danger" role="alert">
-                            {this.state.message}
+                            <div className="form-group">
+                                <div className="alert alert-danger" role="alert">
+                                {this.state.message}
+                                </div>
                             </div>
-                        </div>
+                        )}
+                        {!this.state.isVerified && (
+                            <Button className="mb-3 m-2" variant="outline-success" onClick={this.handleReVerification}>
+                                Resend Verification Link
+                            </Button>
+                        )}
+                        {this.state.resendMessage && (
+                            <div className="form-group">
+                                <div className={
+                                    this.state.verificationSent
+                                    ? "alert alert-success"
+                                    : "alert alert-danger"}
+                                role="alert">
+                                {this.state.resendMessage}
+                                </div>
+                            </div>
                         )}
 
                         <Button className="mb-3 m-2" variant="outline-warning" onClick={this.handleSignUp}>

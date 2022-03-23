@@ -95,6 +95,7 @@ exports.signin = (req, res) => {
     }
     else {
       return res.status(401).send({
+        isVerified: false,
         message:'Your Email has not been verified. Please click on resend to get a new verification link.'});
     }
   });

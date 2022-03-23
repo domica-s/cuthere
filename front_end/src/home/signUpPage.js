@@ -149,19 +149,19 @@ class SignUp extends React.Component {
                 Sign Up
             </Button>
             {this.state.message && (
-                <div className="form-group">
-                    <div
-                    className={
-                        this.state.successful
-                        ? "alert alert-success"
-                        : "alert alert-danger"
-                    }
-                    role="alert"
-                    >
-                    {this.state.message}
-                    </div>
+              <div className="form-group">
+                <div
+                className={
+                    this.state.successful
+                    ? "alert alert-success"
+                    : "alert alert-danger"
+                }
+                role="alert"
+                >
+                {this.state.message}
                 </div>
-              )}
+              </div>
+            )}
           </Form>
         </Row>
       </Container>

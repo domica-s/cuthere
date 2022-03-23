@@ -5,13 +5,12 @@ var params = require("../params/params");
 const API_URL = params.baseBackURL + "/api/auth/";
 class AuthService {
   login(sid, password) {
-      // console.log("Called login in Authservice");
     return axios
-        .post(API_URL + "signin", 
-            {
-                sid,
-                password
-            })
+      .post(API_URL + "signin", 
+        {
+            sid,
+            password
+        })
       .then(response => {
         if (response.data.accessToken) {
           localStorage.setItem("user", JSON.stringify(response.data));
@@ -31,15 +30,24 @@ class AuthService {
 
   resendVerification(sid) {
     let temp_url = "resendverification/" + sid;
-    return axios.get(API_URL + temp_url, {
-
-    });
+    return axios.get(API_URL + temp_url);
   }
 
   forgotPassword(sid) {
     let temp_url = "forgotpassword/" + sid;
 
     return axios.get(API_URL + temp_url);
+  }
+
+  changePassword(sid, oldPassword, newPassword) {
+    let temp_url = "changepassword";
+    // get oldPassword and newPassword from form fields, check forgotPassword for reference
+    // get sid from state -> user.sid
+    return axios.post(API_URL + temp_url, {
+      sid,
+      oldPassword,
+      newPassword
+    })
   }
 
   getCurrentUser() {
