@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import logo from '../logo.jfif';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -9,11 +10,17 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel'
 
 import AuthService from "../services/auth.service";
 
+function SignUpWithNavigate() {
+  let navigate = useNavigate();
+  return <SignUp navigate={navigate} />
+}
+
 class SignUp extends React.Component {
   
   constructor(props) {
       super(props);
       this.handleRegister = this.handleRegister.bind(this);
+      this.handleSignIn = this.handleSignIn.bind(this);
       this.onChangeUsername = this.onChangeUsername.bind(this);
       this.onChangeSID = this.onChangeSID.bind(this);
       this.onChangePassword = this.onChangePassword.bind(this);
@@ -43,6 +50,16 @@ class SignUp extends React.Component {
     this.setState({
       password: e.target.value
     });
+  }
+
+  handleSignIn(e) {
+    e.preventDefault();
+    this.setState({
+      message: "",
+      successful: false
+    });
+
+    this.props.navigate('/login');
   }
 
   handleRegister(e) {
@@ -94,7 +111,7 @@ class SignUp extends React.Component {
                                         this.form = c;
                                         }}
                                         >
-            <h1 class="h3 mb-3 ">Sign Up</h1>
+            <h1 className="h3 mb-3 ">Sign Up</h1>
 
             <Col className="form-floating">
                 <FloatingLabel controlId="floatingUsername" label="Username">
@@ -125,10 +142,10 @@ class SignUp extends React.Component {
                     <Form.Control name="repassword" type="password" placeholder="Re-enter Password" required/>
                 </FloatingLabel>
             </Col>  
-            <Button className="mb-3 m-2" variant="outline-warning">
+            <Button className="mb-3 m-2" variant="outline-warning" onClick={this.handleSignIn}>
                 Already have an account? Sign in instead.
             </Button>    
-            <Button variant="outline-warning" type="submit">
+            <Button className="mb-3 m-2" variant="outline-warning" type="submit">
                 Sign Up
             </Button>
             {this.state.message && (
@@ -152,4 +169,4 @@ class SignUp extends React.Component {
   }
 }
 
-export {SignUp}
+export {SignUpWithNavigate}
