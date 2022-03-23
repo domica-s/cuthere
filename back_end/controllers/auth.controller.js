@@ -126,17 +126,10 @@ exports.forgotPasswordRequest = (req, res) => {
       if(err){
         return res.status(500).send({msg:err.message});
       }
-
-      user.save((err, user) => {
-        if (err) {
-          res.status(500).send({ message: err });
-          return;
-        }
-        let email_content =  'Hello '+ user.username +',\n\n' + 'Please reset your password by clicking the link: \nhttp:\/\/' + req.headers.host + '\/api/auth/passwordreset\/' + user.sid + '\/' + token.token + '\n\nThank You!\n'
-        console.log(email_content)
-        res.status(200).send({
-          message: "Successfully sent password reset link."});
-      });
+      let email_content =  'Hello '+ user.username +',\n\n' + 'Please reset your password by clicking the link: \nhttp:\/\/' + req.headers.host + '\/api/auth/passwordreset\/' + user.sid + '\/' + token.token + '\n\nThank You!\n'
+      console.log(email_content)
+      return res.status(200).send({
+        message: "Successfully sent password reset link."});
     })
   });
 } 

@@ -19,9 +19,6 @@ class AuthService {
         }
         return response.data;
       })
-      // .catch((error) => {
-      //     console.log(error);
-      // });
   }
 
   register(username, sid, password) {
@@ -33,14 +30,16 @@ class AuthService {
   }
 
   resendVerification(sid) {
-    let temp_url = "resendverification" + sid;
-    return axios.post(API_URL + temp_url, {
+    let temp_url = "resendverification/" + sid;
+    return axios.get(API_URL + temp_url, {
 
     });
   }
 
   forgotPassword(sid) {
-    
+    let temp_url = "forgotpassword/" + sid;
+
+    return axios.get(API_URL + temp_url);
   }
 
   getCurrentUser() {

@@ -1,5 +1,5 @@
 import './App.css';
-import {BrowserRouter, Routes, Route, useLocation, Link, useNavigate} from 'react-router-dom'
+import {BrowserRouter, Routes, Route, useLocation, Link} from 'react-router-dom'
 import {Home, About} from './home/homePage'
 import {LoginWithNavigate} from './home/loginPage'
 import {Event} from './home/eventPage'
