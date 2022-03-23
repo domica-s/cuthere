@@ -46,7 +46,7 @@ exports.signup = (req, res) => {
             //      }
             //     return res.status(200).send('A verification email has been sent to ' + user.email + '. It will expire after one day. If you not get verification Email click on resend token.');
             // });
-            let email_content =  'Hello '+ req.body.name +',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + user.email + '\/' + token.token + '\n\nThank You!\n'
+            let email_content =  'Hello '+ req.body.name +',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + user.sid + '\/' + token.token + '\n\nThank You!\n'
             console.log(email_content)
         });
 
@@ -109,7 +109,7 @@ exports.verifyEmail = (req, res) => {
         message: "Your verification link may have expired. Please click on resend to get a new verification link. "});
     }
     else {
-      User.findOne({ _id: token._userId, email: req.params.email }, function (err, user) {
+      User.findOne({ _id: token._userId, sid: req.params.sid }, function (err, user) {
         if (!user) {
           return res.status(401).send({
             message: "We were unable to find a user for this verification. Sign up instead"});
@@ -121,7 +121,7 @@ exports.verifyEmail = (req, res) => {
         }
         // verify user
         else {
-          // change isVerified to true
+          // change active to true
           user.active = true;
           user.save(function (err) {
             // error occur

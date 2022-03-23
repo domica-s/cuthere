@@ -10,8 +10,8 @@ module.exports = function(app) {
     );
     next();
   });
-  app.post("/api/auth/signup", [verifySignUp.checkDuplicateSID], controller.signup);
+  app.post("/api/auth/signup", [verifySignUp.checkDuplicateSID, verifySignUp.checkDuplicateUsername], controller.signup);
   app.post("/api/auth/signin", controller.signin);
-  app.post("/api/auth/confirmation/:email/:token", controller.verifyEmail);
+  app.post("/confirmation/:sid/:token", controller.verifyEmail);
   app.post("/api/auth/resendverification", controller.resendVerificationLink);
 };

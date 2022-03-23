@@ -5,7 +5,7 @@ const SALT_FACTOR = 10;
 
 // fix profilepicture, friends setup, interests
 var userSchema = mongoose.Schema({
-    username:{type:String, required:true},
+    username:{type:String, required:true, unique:true},
     sid:{type:Number, required:true, unique:true},
     email:{type:String, required:true, unique:true},
     password:{type:String, required:false},
