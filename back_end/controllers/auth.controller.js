@@ -46,17 +46,16 @@ exports.signup = (req, res) => {
             //      }
             //     return res.status(200).send('A verification email has been sent to ' + user.email + '. It will expire after one day. If you not get verification Email click on resend token.');
             // });
-            let email_content =  'Hello '+ req.body.name +',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + user.sid + '\/' + token.token + '\n\nThank You!\n'
+            let email_content =  'Hello '+ user.username +',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/api/auth/confirmation\/' + user.sid + '\/' + token.token + '\n\nThank You!\n'
             console.log(email_content)
         });
 
-        res.send({ message: "User was registered successfully! Please verify your account" });
         user.save(err => {
           if (err) {
             res.status(500).send({ message: err });
             return;
           }
-          
+          res.send({ message: "User was registered successfully! Please verify your account" });
         });
     });
 };
@@ -102,6 +101,10 @@ exports.signin = (req, res) => {
     });
 };
 
+exports.forgotPassword = (req, res) => {
+  
+}
+
 exports.verifyEmail = (req, res) => {
   Token.findOne({ token: req.params.token }, function (err, token) {
     if (!token) {
@@ -142,21 +145,22 @@ exports.verifyEmail = (req, res) => {
 
 exports.resendVerificationLink = (req, res) => {
   // req.params.sid /:sid --> get sid from link
-  User.findOne({ email: req.body.email }, function (err, user) {
+  // console.log(req.params.sid);
+  User.findOne({ sid: req.params.sid }, function (err, user) {
       // user is not found into database
       if (!user){
         return res.status(400).send({
-          message: 'We were unable to find a user with that email.'});
+          message: 'We were unable to find a user with that SID.'});
       }
       // user has been already verified
-      else if (user.isVerified){
+      else if (user.active){
         return res.status(200).send({
           message: 'This account has been already verified. Please log in.'});
       } 
       // send verification link
       else{
         // delete existing token
-        Token.findOneAndDelete({ token: req.params.token });
+        Token.findOneAndDelete({ _userId: user._id });
         // generate token and save
         var token = new Token({ _userId: user._id, token: crypto.randomBytes(16).toString('hex') });
         token.save(function (err) {
@@ -165,16 +169,18 @@ exports.resendVerificationLink = (req, res) => {
           }
 
           // Send email (use credentials of SendGrid)
-          var transporter = nodemailer.createTransport({ service: 'Sendgrid', auth: { user: process.env.SENDGRID_USERNAME, pass: process.env.SENDGRID_PASSWORD } });
-          var mailOptions = { from: 'no-reply@example.com', to: user.email, subject: 'Account Verification Link', text: 'Hello '+ user.name +',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + user.email + '\/' + token.token + '\n\nThank You!\n' };
-          transporter.sendMail(mailOptions, function (err) {
-              if (err) { 
-              return res.status(500).send({
-                message: 'Technical Issue! Please click on the resend button'});
-            }
-          return res.status(200).send({
-            message: 'A verification email has been sent to ' + user.email + '. It will be valid for one day.'});
-          });
+          // var transporter = nodemailer.createTransport({ service: 'Sendgrid', auth: { user: process.env.SENDGRID_USERNAME, pass: process.env.SENDGRID_PASSWORD } });
+          // var mailOptions = { from: 'no-reply@example.com', to: user.email, subject: 'Account Verification Link', text: 'Hello '+ user.name +',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + user.email + '\/' + token.token + '\n\nThank You!\n' };
+          // transporter.sendMail(mailOptions, function (err) {
+          //     if (err) { 
+          //     return res.status(500).send({
+          //       message: 'Technical Issue! Please click on the resend button'});
+          //   }
+          // return res.status(200).send({
+          //   message: 'A verification email has been sent to ' + user.email + '. It will be valid for one day.'});
+          // });
+          let email_content =  'Hello '+ user.username +',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/api/auth/confirmation\/' + user.sid + '\/' + token.token + '\n\nThank You!\n'
+          console.log(email_content)
         });
       }
   })

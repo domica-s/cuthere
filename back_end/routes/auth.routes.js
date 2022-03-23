@@ -12,6 +12,7 @@ module.exports = function(app) {
   });
   app.post("/api/auth/signup", [verifySignUp.checkDuplicateSID, verifySignUp.checkDuplicateUsername], controller.signup);
   app.post("/api/auth/signin", controller.signin);
-  app.post("/confirmation/:sid/:token", controller.verifyEmail);
-  app.post("/api/auth/resendverification", controller.resendVerificationLink);
+  app.post("/api/auth/forgotpassword/:sid", controller.forgotPassword);
+  app.get("/api/auth/confirmation/:sid/:token", controller.verifyEmail);
+  app.get("/api/auth/resendverification/:sid", controller.resendVerificationLink);
 };

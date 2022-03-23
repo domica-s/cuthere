@@ -32,7 +32,16 @@ class AuthService {
     });
   }
 
-  
+  resendVerification(sid) {
+    let temp_url = "resendverification" + sid;
+    return axios.post(API_URL + temp_url, {
+
+    });
+  }
+
+  forgotPassword(sid) {
+    
+  }
 
   getCurrentUser() {
     return JSON.parse(localStorage.getItem('user'));;
