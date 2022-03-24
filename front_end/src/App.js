@@ -12,12 +12,14 @@ import React from 'react';
 import Modal from 'react-modal';
 import Calendar from "./Components/Calendar";
 import {CreateEvent} from "./home/createEventPage";
+import { Confirm } from './home/confirm';
 import { NavDropdown } from 'react-bootstrap';
 import {Help} from './home/helpPage';
 import {EditProfile} from './user/editProfile';
 import {AccountSetting} from './user/accountSetting';
 import { Image } from 'react-bootstrap';
 import UserIcon from './user/userProfile.png';
+import { PasswordReset } from './home/passwordReset';
 
 Modal.setAppElement("#root");
 class App extends React.Component {
@@ -74,6 +76,8 @@ class App extends React.Component {
             <Route path='/logout' element={<this.handleLogout/>} />
             <Route path='/profile' element={<Profile/>} />
             <Route path='/forgotpw' element={<ForgotPw/>} />
+            <Route path='/api/auth/passwordreset/:sid/:token' element={<PasswordReset/>} />
+            <Route path='/api/auth/confirmation/:sid/:token' element={<Confirm/>} />
             {currentUser !== undefined && <Route path='/calendar' element={<Calendar/>} />}
             {currentUser !== undefined && <Route path='/createEvent' element={<CreateEvent/>} />}
             {currentUser !== undefined && <Route path='/editProfile' element={<EditProfile/>} />}
