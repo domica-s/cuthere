@@ -20,11 +20,12 @@ class AuthService {
       })
   }
 
-  register(username, sid, password) {
+  register(username, sid, password, repassword) {
     return axios.post(API_URL + "signup", {
       username,
       sid,
-      password
+      password,
+      repassword
     });
   }
 
@@ -50,10 +51,11 @@ class AuthService {
     });
   }
 
-  resetPassword(sid, token, newPassword) {
+  resetPassword(sid, token, password, repassword) {
     let temp_url = "passwordreset/" + sid + "/" +  token;
     return axios.post(API_URL + temp_url, {
-      newPassword
+      password,
+      repassword
     });
   }
 
