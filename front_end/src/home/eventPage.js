@@ -105,8 +105,12 @@ class EventWidget extends React.Component{
           });
       }
     }
+    timeDisplay(){
+
+    }
     render(){
       let events = this.state.events
+      console.log(events)
       let title = this.state.title
         return (
           <Card>
@@ -134,39 +138,59 @@ class EventWidget extends React.Component{
 class EventCard extends React.Component {
     render(){
         let data = this.props.data[1];
+        let date = new Date(data.date).toDateString()
+        let time = new Date(data.date).toString().slice(16,21)
+        let avail = data.numberOfParticipants + "/" + data.quota
+        let quota;
+        if(data.quota-data.numberOfParticipants>3){
+          quota = <Badge pill bg="success">{avail}</Badge>;
+        }
+        else{
+          quota = <Badge pill bg="warning">{avail}</Badge>;
+        }
         return (
-          <Card 
-            style={{width: "12rem", height: "17.5rem",display: "block",overflow: "hidden",whiteSpace: "nowrap"}}>
-            <Card.Img variant="top" style={{maxHeight: "200px"}} src={require("./basket.jpeg")} />
+          <Card style={{ width: "12rem", height: "17.25rem" }}>
+            <Card.Img
+              variant="top"
+              style={{ maxHeight: "200px" }}
+              src={require("./basket.jpeg")}
+            />
             <Card.Body>
               <Card.Title
-                style={{textAlign: "left",width: "10rem",textOverflow: "ellipsis",overflow: "hidden",}}>
+                style={{
+                  textAlign: "left",
+                  width: "10rem",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
                 {data.title}
               </Card.Title>
-              <div style={{ height: "2rem" }} className="row">
-                <div
-                  className="column text">
-                  <p style ={{textOverflow: "ellipsis",overflow: "hidden",textAlign: "left"}}>{data.venue}</p>
-                </div>
-                <div className="column text" style={{textAlign: "right",}}>
-                  {data.date}
-                </div>
+              <div style={{ height: "2.75rem" }}>
+                <p className="text">
+                  {date}
+                  <span style={{ float: "right" }}>
+                    <Badge bg="dark">{time}</Badge>
+                  </span>
+                </p>
+                <p className="text">{data.venue}</p>
               </div>
-              <h6 style={{ textAlign: "left" }}>
-                {" "}
-                <Badge bg="secondary">{data.activityCategory}</Badge>
-              </h6>
-              <p style={{ textAlign: "left", fontSize: "15px" }}>
-                Quota:{" "}
-                <Badge pill bg="dark">
-                  {data.numberOfParticipants}
-                </Badge>
-                <span style={{ float: "right" }}>
-                  <Button variant="primary" size="sm">
-                    Join
-                  </Button>
-                </span>
-              </p>
+              <Container style={{ paddingLeft: "0px", paddingRight: "0px" }}>
+                <Row>
+                  <Col xs={8}>
+                    <h6 style={{ height: "1.2rem", textAlign: "left" }}>
+                      {" "}
+                      <Badge bg="secondary">{data.activityCategory}</Badge>
+                    </h6>
+                    <p className="text">Quota: {quota}</p>
+                  </Col>
+                  <Col className="align-items-end" xs={4}>
+                    <Button variant="primary" size="sm">
+                      Join
+                    </Button>
+                  </Col>
+                </Row>
+              </Container>
             </Card.Body>
           </Card>
         );  

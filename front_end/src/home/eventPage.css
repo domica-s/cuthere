@@ -1,19 +1,11 @@
-.column {
-  float: left;
-  width: 50%;
-}
-
-.row:after {
-  content: "";
-  display: table;
-  clear: both;
-}
-
 .text{
-    font-size: 13px;
-    margin: 0;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-size: 13px;
+  text-align: left;
+  width: 10rem;
+  margin: 0;
 }
-
 .widget{
     flex: 1;
     white-space: nowrap;
