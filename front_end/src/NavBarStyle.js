@@ -78,11 +78,16 @@ export const NavBtnLink = styled(Link)`
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   text-decoration: none;
-  /* Second Nav */
-  margin-left: 24px;
-  &:hover {
-    transition: all 0.2s ease-in-out;
-    background: #fff;
-    color: #010606;
-  }
 `;
+
+export const Footer = styled.footer`
+    background-color: #000;
+    display: flex;
+    color: #ffff;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    padding: 10px 22px;
+    justify-content: center;
+`

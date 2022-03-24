@@ -20,7 +20,7 @@ import {AccountSetting} from './user/accountSetting';
 import { Image } from 'react-bootstrap';
 import UserIcon from './user/userProfile.png';
 import { PasswordReset } from './home/passwordReset';
-import { Nav, NavLink,Bars, NavMenu, NavBtn, NavBtnLink} from './NavBarStyle';
+import { Nav, NavLink,Bars, NavMenu, NavBtn, NavBtnLink, Footer} from './NavBarStyle';
 import logo from './logo.jfif';
 
 Modal.setAppElement("#root");
@@ -135,11 +135,14 @@ class NavigationBar extends React.Component {
 
 function FooterBar() {
   return (
-    <footer id="footer-bar" className="page-footer font-small">
-      <div className="footer-copyright text-center">
-        <b>© CUthere</b>
-      </div>
-    </footer>
+    // <footer id="footer-bar" className="page-footer font-small">
+    //   <div className="footer-copyright text-center">
+    //     <b>© CUthere</b>
+    //   </div>
+    // </footer>
+    <Footer>
+      © CUthere
+    </Footer>
   );
 }
 
