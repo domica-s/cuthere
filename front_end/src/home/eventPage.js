@@ -8,7 +8,8 @@ import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
 import AuthService from "../services/auth.service";
 
-const API = 'http://localhost:8080/allevents'
+const APIallEvents = 'http://localhost:8080/allevents'
+const APInewEvents = 'http://localhost:8080/newestevents'
 
 class OneEvent extends React.Component {
     // render one event
@@ -48,7 +49,7 @@ class Event extends React.Component {
       if (currentUser === null) {
         
       }
-      {currentUser !== null && fetch(API, {
+      {currentUser !== null && fetch(APIallEvents, {
         method: "GET",
         headers: new Headers({
           "x-access-token": currentUser.accessToken
@@ -59,7 +60,6 @@ class Event extends React.Component {
               this.setState( {events: Object.entries(data)} )
           });}
     }
-
     render() {
         let e = this.state.events
         return(
@@ -75,59 +75,88 @@ class Event extends React.Component {
 class EventWidget extends React.Component{
     constructor(props){
         super(props);
+        this.state = {
+          title: "",
+          events: {},
+          currentUser: AuthService.getCurrentUser(),
+        };
+    }
+    componentDidMount(){
+      let currentUser = AuthService.getCurrentUser()
+      if (currentUser === null) {
+      }
+      {
+        currentUser !== null && fetch(APInewEvents, {
+            method: "GET",
+            headers: new Headers({
+              "x-access-token": currentUser.accessToken,
+            }),
+          })
+          .then((res) => res.json())
+          .then((data) => {
+            this.setState({
+              title: data.title,
+              events: Object.entries(data.event_dic)
+            });
+          });
+      }
     }
     render(){
+      // need to configure how title and event_dic json can be accessed 
+      let events = this.state.events
+      let title = this.state.title
         return (
           <Card>
-              <Card.Header style={{textAlign:"left"}}>Events you might like
-                <a href="/event" style={{float:"right"}}>See all</a>
-              </Card.Header>
-              <Card.Body>
-                <Row className="widget g-4">
-                {Array.from({ length: 4 }).map((_, idx) => (
-                        <Col>
-                        <EventCard />
-                        </Col>
-                    ))}
-                </Row>
-                </Card.Body>
+            <Card.Header style={{ textAlign: "left" }}>
+              {title}
+              <a href="/event" style={{ float: "right" }}>
+                See all
+              </a>
+            </Card.Header>
+            <Card.Body>
+              <Row className="widget g-4">
+                {events.length > 0 &&
+                  events.map((data, index) => (
+                    <Col>
+                      <EventCard data={data} />
+                    </Col>
+                  ))}
+              </Row>
+            </Card.Body>
           </Card>
         );
     }
 }
 
 class EventCard extends React.Component {
-    constructor(props){
-        super(props);
-    }
     render(){
+        let data = this.props.data[1];
         return (
           <Card 
             style={{width: "12rem", height: "17.5rem",display: "block",overflow: "hidden",whiteSpace: "nowrap"}}>
             <Card.Img variant="top" style={{maxHeight: "200px"}} src={require("./basket.jpeg")} />
             <Card.Body>
               <Card.Title
-                style={{textAlign: "left",width: "10rem",textOverflow: "ellipsis",overflow: "hidden",}}
-              >
-                CUHK ID
+                style={{textAlign: "left",width: "10rem",textOverflow: "ellipsis",overflow: "hidden",}}>
+                {data.title}
               </Card.Title>
               <div style={{ height: "2rem" }} className="row">
                 <div
                   className="column text">
-                  <p style ={{textOverflow: "ellipsis",overflow: "hidden",textAlign: "left"}}>New Asia</p>
+                  <p style ={{textOverflow: "ellipsis",overflow: "hidden",textAlign: "left"}}>{data.venue}</p>
                 </div>
                 <div className="column text" style={{textAlign: "right",}}>
-                  09.00 21/02
+                  {data.date}
                 </div>
               </div>
               <h6 style={{ textAlign: "left" }}>
                 {" "}
-                <Badge bg="secondary">Basketball</Badge>
+                <Badge bg="secondary">{data.activityCategory}</Badge>
               </h6>
               <p style={{ textAlign: "left", fontSize: "15px" }}>
                 Quota:{" "}
                 <Badge pill bg="dark">
-                  8/11
+                  {data.numberOfParticipants}
                 </Badge>
                 <span style={{ float: "right" }}>
                   <Button variant="primary" size="sm">
@@ -137,7 +166,7 @@ class EventCard extends React.Component {
               </p>
             </Card.Body>
           </Card>
-        );
+        );  
     }
 }
 
