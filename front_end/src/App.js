@@ -18,6 +18,8 @@ import {EditProfile} from './user/editProfile';
 import {AccountSetting} from './user/accountSetting';
 import { Image } from 'react-bootstrap';
 import UserIcon from './user/userProfile.png';
+import LandingPage from './home/LandingPage';
+import ProfileScreen from './home/EditProfile';
 
 Modal.setAppElement("#root");
 class App extends React.Component {
@@ -66,7 +68,7 @@ class App extends React.Component {
           <NavigationBar isAuthUser={(currentUser !== undefined)} />
           
           <Routes>
-            <Route path="/" element={<Home/>} />
+            <Route path="/" element={<LandingPage/>} />
             <Route path='/about' element={<About/>} />
             <Route path='/login' element={<LoginWithNavigate/>} />
             {currentUser !== undefined && <Route path='/event' element={<Event/>} />}
@@ -76,7 +78,7 @@ class App extends React.Component {
             <Route path='/forgotpw' element={<ForgotPw/>} />
             {currentUser !== undefined && <Route path='/calendar' element={<Calendar/>} />}
             {currentUser !== undefined && <Route path='/createEvent' element={<CreateEvent/>} />}
-            {currentUser !== undefined && <Route path='/editProfile' element={<EditProfile/>} />}
+            {currentUser !== undefined && <Route path='/editProfile' element={<ProfileScreen/>} />}
             {currentUser !== undefined && <Route path='/accountSetting' element={<AccountSetting/>} />}
             <Route path='/help' element={<Help/>} />
             <Route path='/*' element={<NoMatch/>} />
