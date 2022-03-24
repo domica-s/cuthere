@@ -6,6 +6,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import logo from '../logo.jfif';
+import AuthService from "../services/auth.service";
 
 
 function Logo() {
@@ -25,33 +26,99 @@ function Desciption() {
             <p>
                 Forgot your password? No worries, please input your Student ID or Staff ID below. 
                 <br/>
-                A new password will be sent to your CUHK email.
+                A password reset link will be sent to your email.
             </p>
         </Container>
     )
 }
 
-function ForgotPw() {
+class ForgotPw extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleForgetPw = this.handleForgetPw.bind(this);
+        this.onChangeSID = this.onChangeSID.bind(this);
 
-    return(
-        <Container>
-            <Logo/>
-            <Desciption/>
-            <Row>
-                <Form className="signin-form" action="" method="POST">
-                    <Col className="form-floating">
+        this.state = {
+          sid: "",
+          message: "",
+        };
+    }
+
+    onChangeSID(e) {
+        this.setState({
+          sid: e.target.value
+        });
+    }
+
+    handleForgetPw(e) {
+        e.preventDefault();
+
+        this.setState({
+            message: "",
+            loading: true,
+            successful: false,
+        });
+
+        AuthService.forgotPassword(this.state.sid).then(
+            response => {
+                this.setState({
+                    message: response.data.message,
+                    successful: true
+                });
+            },
+            error => {
+                const resMessage =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
+                this.setState({
+                    loading: false,
+                    message: resMessage,
+                    successful: false
+                });
+            }
+        );
+    }
+
+    render() {
+
+        return (
+            <Container>
+                <Logo/>
+                <Desciption/>
+                <Row>
+                    <Form className="signin-form" onSubmit={this.handleForgetPw} ref={c => {this.form = c;}}>
+                        <Col className="form-floating">
                             <FloatingLabel controlId="floatingInput" label="SID">
-                                <Form.Control name="sid" type="number" placeholder="SID" required/>
+                                <Form.Control name="sid" type="number" placeholder="SID" required
+                                value={this.state.sid} onChange={this.onChangeSID} />
                             </FloatingLabel>                               
-                    </Col>
-                    <Button className="mb-3 m-2" variant="outline-success" type="submit">
+                        </Col>
+                        {this.state.message && (
+                            <div className="form-group">
+                                <div
+                                className={
+                                    this.state.successful
+                                    ? "alert alert-success"
+                                    : "alert alert-danger"
+                                }
+                                role="alert"
+                                >
+                                {this.state.message}
+                                </div>
+                            </div>
+                        )}
+                        <Button className="mb-3 m-2" variant="outline-success" type="submit">
                             Confirm
-                    </Button>
-                </Form>
+                        </Button>
+                    </Form>
 
-            </Row>
-        </Container>
-    )
+                </Row>
+            </Container>
+        )
+    }
 }
 
 export {ForgotPw};

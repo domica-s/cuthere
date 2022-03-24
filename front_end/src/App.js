@@ -1,15 +1,27 @@
 import './App.css';
-import {BrowserRouter, Routes, Route, useLocation, Link, useNavigate} from 'react-router-dom'
+import {BrowserRouter, Routes, Route, useLocation, Link} from 'react-router-dom'
 import {Home, About} from './home/homePage'
 import {LoginWithNavigate} from './home/loginPage'
 import {Event} from './home/eventPage'
-import { SignUp } from  './home/signUpPage'
+import { SignUpWithNavigate } from  './home/signUpPage'
 import { ForgotPw } from './home/forgotPwPage';
 import { Navbar, Container, Nav } from 'react-bootstrap';
 import Profile from './home/myProfile';
 import authService from './services/auth.service';
 import React from 'react';
+import Modal from 'react-modal';
+import Calendar from "./Components/Calendar";
+import {CreateEvent} from "./home/createEventPage";
+import { Confirm } from './home/confirm';
+import { NavDropdown } from 'react-bootstrap';
+import {Help} from './home/helpPage';
+import {EditProfile} from './user/editProfile';
+import {AccountSetting} from './user/accountSetting';
+import { Image } from 'react-bootstrap';
+import UserIcon from './user/userProfile.png';
+import { PasswordReset } from './home/passwordReset';
 
+Modal.setAppElement("#root");
 class App extends React.Component {
 
   constructor(props) {
@@ -33,7 +45,6 @@ class App extends React.Component {
   }
 
   handleLogout() {
-  
     const user = authService.getCurrentUser();
 
     if (user) {
@@ -60,11 +71,18 @@ class App extends React.Component {
             <Route path="/" element={<Home/>} />
             <Route path='/about' element={<About/>} />
             <Route path='/login' element={<LoginWithNavigate/>} />
-            <Route path='/event' element={<Event/>} />
-            <Route path='/signup' element={<SignUp/>} />
+            {currentUser !== undefined && <Route path='/event' element={<Event/>} />}
+            <Route path='/signup' element={<SignUpWithNavigate/>} />
             <Route path='/logout' element={<this.handleLogout/>} />
             <Route path='/profile' element={<Profile/>} />
             <Route path='/forgotpw' element={<ForgotPw/>} />
+            <Route path='/api/auth/passwordreset/:sid/:token' element={<PasswordReset/>} />
+            <Route path='/api/auth/confirmation/:sid/:token' element={<Confirm/>} />
+            {currentUser !== undefined && <Route path='/calendar' element={<Calendar/>} />}
+            {currentUser !== undefined && <Route path='/createEvent' element={<CreateEvent/>} />}
+            {currentUser !== undefined && <Route path='/editProfile' element={<EditProfile/>} />}
+            {currentUser !== undefined && <Route path='/accountSetting' element={<AccountSetting/>} />}
+            <Route path='/help' element={<Help/>} />
             <Route path='/*' element={<NoMatch/>} />
           </Routes>
       
@@ -87,13 +105,6 @@ class NavigationBar extends React.Component {
       <Navbar bg="dark" variant="dark">
         <Container>
           <Navbar.Brand as={Link} to="/">
-            {/* <img
-              alt=""
-              src="/logo.svg"
-              width="30"
-              height="30"
-              className="d-inline-block align-top"
-            />{' '} */}
           CUthere
           </Navbar.Brand>
           <Nav className="me-auto">
@@ -103,7 +114,17 @@ class NavigationBar extends React.Component {
             {isAuth === true && <Nav.Link as={Link} to="/logout">Logout</Nav.Link>}
             {isAuth === true && <Nav.Link as={Link} to="/profile">Profile</Nav.Link>}
             {isAuth === true && <Nav.Link as={Link} to="/event">Events</Nav.Link>}
+            {isAuth === true && <Nav.Link as={Link} to="/calendar">View Calendar</Nav.Link>}
             {isAuth === true && <Nav.Link as={Link} to="/createEvent">Create Events</Nav.Link>}
+          </Nav>
+          <Nav>
+            <Nav.Link as={Link} to="/help">Help</Nav.Link>
+            {isAuth === true && <NavDropdown title={
+              <Image src={UserIcon} alt='' roundedCircle style={{ width: '25px' }}/>} id="user-profile-dropdown">
+              <NavDropdown.Item as={Link} to="/editProfile">Edit Profile</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/profile">View Profile</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/accountSetting">Account Setting</NavDropdown.Item>
+              </NavDropdown>}
           </Nav>
         </Container>
       </Navbar>

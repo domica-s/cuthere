@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import logo from '../logo.jfif';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -9,19 +10,27 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel'
 
 import AuthService from "../services/auth.service";
 
+function SignUpWithNavigate() {
+  let navigate = useNavigate();
+  return <SignUp navigate={navigate} />
+}
+
 class SignUp extends React.Component {
   
   constructor(props) {
       super(props);
       this.handleRegister = this.handleRegister.bind(this);
+      this.handleSignIn = this.handleSignIn.bind(this);
       this.onChangeUsername = this.onChangeUsername.bind(this);
       this.onChangeSID = this.onChangeSID.bind(this);
       this.onChangePassword = this.onChangePassword.bind(this);
+      this.onChangeRepassword = this.onChangeRepassword.bind(this);
 
       this.state = {
         username: "",
         sid: "",
         password: "",
+        repassword: "",
         successful: false,
         message: ""
       };
@@ -45,6 +54,22 @@ class SignUp extends React.Component {
     });
   }
 
+  onChangeRepassword(e) {
+    this.setState({
+      repassword: e.target.value
+    });
+  }
+
+  handleSignIn(e) {
+    e.preventDefault();
+    this.setState({
+      message: "",
+      successful: false
+    });
+
+    this.props.navigate('/login');
+  }
+
   handleRegister(e) {
     e.preventDefault();
 
@@ -56,7 +81,8 @@ class SignUp extends React.Component {
     AuthService.register(
       this.state.username,
       this.state.sid,
-      this.state.password
+      this.state.password,
+      this.state.repassword
     ).then(
       response => {
         this.setState({
@@ -94,7 +120,7 @@ class SignUp extends React.Component {
                                         this.form = c;
                                         }}
                                         >
-            <h1 class="h3 mb-3 ">Sign Up</h1>
+            <h1 className="h3 mb-3 ">Sign Up</h1>
 
             <Col className="form-floating">
                 <FloatingLabel controlId="floatingUsername" label="Username">
@@ -122,29 +148,31 @@ class SignUp extends React.Component {
 
             <Col className="mb-3 form-floating">
                 <FloatingLabel controlId="floatingRepassword" label="RePassword">
-                    <Form.Control name="repassword" type="password" placeholder="Re-enter Password" required/>
+                    <Form.Control name="repassword" type="password" placeholder="Re-enter Password" required
+                    value={this.state.repassword}
+                    onChange={this.onChangeRepassword}/>
                 </FloatingLabel>
             </Col>  
-            <Button className="mb-3 m-2" variant="outline-warning">
+            <Button className="mb-3 m-2" variant="outline-warning" onClick={this.handleSignIn}>
                 Already have an account? Sign in instead.
             </Button>    
-            <Button variant="outline-warning" type="submit">
+            <Button className="mb-3 m-2" variant="outline-warning" type="submit">
                 Sign Up
             </Button>
             {this.state.message && (
-                <div className="form-group">
-                    <div
-                    className={
-                        this.state.successful
-                        ? "alert alert-success"
-                        : "alert alert-danger"
-                    }
-                    role="alert"
-                    >
-                    {this.state.message}
-                    </div>
+              <div className="form-group">
+                <div
+                className={
+                    this.state.successful
+                    ? "alert alert-success"
+                    : "alert alert-danger"
+                }
+                role="alert"
+                >
+                {this.state.message}
                 </div>
-              )}
+              </div>
+            )}
           </Form>
         </Row>
       </Container>
@@ -152,4 +180,4 @@ class SignUp extends React.Component {
   }
 }
 
-export {SignUp}
+export {SignUpWithNavigate}

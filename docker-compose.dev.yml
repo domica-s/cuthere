@@ -4,17 +4,23 @@ services:
   front-end:
     build: 
       context: ./front_end
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./front_end:/app/
     hostname: front
     ports:
       - 3000:3000
-    command: npm start
-  
+    command: tail -f /dev/null
+
   back-end:
     build: 
       context: ./back_end
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
+
+    volumes:
+      - ./back_end:/app/
+
     hostname: back
     ports:
       - 8080:8080
-    command: npm start
+    command: tail -f /dev/null

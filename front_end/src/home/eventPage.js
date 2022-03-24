@@ -8,8 +8,12 @@ import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
 import AuthService from "../services/auth.service";
 
-const APIallEvents = 'http://localhost:8080/allevents'
-const APInewEvents = 'http://localhost:8080/newestevents'
+
+var params = require("../params/params");
+
+// const API = 'http://localhost:8080/allevents'
+const APIallEvents = params.baseBackURL + "/allevents";
+const APInewEvents = params.baseBackURL + "/newestevents";
 
 class OneEvent extends React.Component {
     // render one event
@@ -102,7 +106,6 @@ class EventWidget extends React.Component{
       }
     }
     render(){
-      // need to configure how title and event_dic json can be accessed 
       let events = this.state.events
       let title = this.state.title
         return (

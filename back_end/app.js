@@ -9,15 +9,20 @@ var flash = require("connect-flash");
 var params = require("./params/params");
 var cors = require("cors");
 
+
 var setuppassport = require("./setuppassport");
 const e = require("connect-flash");
 
 var app = express();
-//----------------------------------------- END OF IMPORTS---------------------------------------------------
-mongoose.connect(params.DATABASECONNECTION);
+mongoose.connect(params.DATABASECONNECTION,{
+    useUnifiedTopology: true, 
+    useNewUrlParser: true
+},() => console.log("Connected to MongoDB"));
+
+setuppassport();
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(
     cors({
