@@ -64,7 +64,7 @@ class Login extends React.Component {
                 window.location.reload();
             },
             error => {
-                if (error.response.data.isVerified == false) {
+                if (error.response.data.isVerified === false) {
                     const resMessage =
                     (error.response &&
                         error.response.data &&
