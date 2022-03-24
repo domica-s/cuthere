@@ -65,13 +65,13 @@ class App extends React.Component {
             <Route path="/" element={<Home/>} />
             <Route path='/about' element={<About/>} />
             <Route path='/login' element={<LoginWithNavigate/>} />
-            <Route path='/event' element={<Event/>} />
+            {currentUser !== undefined && <Route path='/event' element={<Event/>} />}
             <Route path='/signup' element={<SignUpWithNavigate/>} />
             <Route path='/logout' element={<this.handleLogout/>} />
             <Route path='/profile' element={<Profile/>} />
             <Route path='/forgotpw' element={<ForgotPw/>} />
-            <Route path='/calendar' element={<Calendar/>} />
-            <Route path='/createEvent' element={<CreateEvent/>} />
+            {currentUser !== undefined && <Route path='/calendar' element={<Calendar/>} />}
+            {currentUser !== undefined && <Route path='/createEvent' element={<CreateEvent/>} />}
             <Route path='/help' element={<Help/>} />
             <Route path='/*' element={<NoMatch/>} />
           </Routes>
