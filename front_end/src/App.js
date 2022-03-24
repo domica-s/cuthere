@@ -12,6 +12,8 @@ import React from 'react';
 import Modal from 'react-modal';
 import Calendar from "./Components/Calendar";
 import {CreateEvent} from "./home/createEventPage";
+import { NavDropdown } from 'react-bootstrap';
+import {Help} from './home/helpPage';
 
 Modal.setAppElement("#root");
 class App extends React.Component {
@@ -70,6 +72,7 @@ class App extends React.Component {
             <Route path='/forgotpw' element={<ForgotPw/>} />
             <Route path='/calendar' element={<Calendar/>} />
             <Route path='/createEvent' element={<CreateEvent/>} />
+            <Route path='/help' element={<Help/>} />
             <Route path='/*' element={<NoMatch/>} />
           </Routes>
       
@@ -103,6 +106,14 @@ class NavigationBar extends React.Component {
             {isAuth === true && <Nav.Link as={Link} to="/event">Events</Nav.Link>}
             {isAuth === true && <Nav.Link as={Link} to="/calendar">View Calendar</Nav.Link>}
             {isAuth === true && <Nav.Link as={Link} to="/createEvent">Create Events</Nav.Link>}
+          </Nav>
+          <Nav>
+            <Nav.Link as={Link} to="/help">Help</Nav.Link>
+            {isAuth === true && <NavDropdown title="My Profile" id="user-profile-dropdown">
+              <NavDropdown.Item to="/editProfile">Edit Profile</NavDropdown.Item>
+              <NavDropdown.Item to="/profile">View Profile</NavDropdown.Item>
+              <NavDropdown.Item to="/accountSetting">Account Setting</NavDropdown.Item>
+              </NavDropdown>}
           </Nav>
         </Container>
       </Navbar>
