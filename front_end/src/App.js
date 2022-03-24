@@ -5,7 +5,7 @@ import {LoginWithNavigate} from './home/loginPage'
 import {Event} from './home/eventPage'
 import { SignUpWithNavigate } from  './home/signUpPage'
 import { ForgotPw } from './home/forgotPwPage';
-import { Navbar, Container, Nav } from 'react-bootstrap';
+// import { Navbar, Container, Nav } from 'react-bootstrap';
 import Profile from './home/myProfile';
 import authService from './services/auth.service';
 import React from 'react';
@@ -20,6 +20,8 @@ import {AccountSetting} from './user/accountSetting';
 import { Image } from 'react-bootstrap';
 import UserIcon from './user/userProfile.png';
 import { PasswordReset } from './home/passwordReset';
+import { Nav, NavLink,Bars, NavMenu, NavBtn, NavBtnLink} from './NavBarStyle';
+import logo from './logo.jfif';
 
 Modal.setAppElement("#root");
 class App extends React.Component {
@@ -62,10 +64,11 @@ class App extends React.Component {
 
   render() {
     const { currentUser } = this.state;
+    let username =  (authService.getCurrentUser())? authService.getCurrentUser().user.username : "Not logged in";
     return (
       <div className="App">
         <BrowserRouter>
-          <NavigationBar isAuthUser={(currentUser !== undefined)} />
+          <NavigationBar isAuthUser={(currentUser !== undefined)} username={(username)} />
           
           <Routes>
             <Route path="/" element={<Home/>} />
@@ -102,32 +105,30 @@ class NavigationBar extends React.Component {
   render () {
     let isAuth = this.props.isAuthUser;
     return (
-      <Navbar bg="dark" variant="dark">
-        <Container>
-          <Navbar.Brand as={Link} to="/">
+      <Nav>
+        <NavLink to='/'>
+          {/* <img src={logo} alt='logo' /> */}
           CUthere
-          </Navbar.Brand>
-          <Nav className="me-auto">
-            <Nav.Link as={Link} to="/about">About</Nav.Link>
-            {isAuth !== true && <Nav.Link as={Link} to="/login">Login</Nav.Link>}
-            {isAuth !== true && <Nav.Link as={Link} to="/signup">Sign Up</Nav.Link>}
-            {isAuth === true && <Nav.Link as={Link} to="/logout">Logout</Nav.Link>}
-            {isAuth === true && <Nav.Link as={Link} to="/profile">Profile</Nav.Link>}
-            {isAuth === true && <Nav.Link as={Link} to="/event">Events</Nav.Link>}
-            {isAuth === true && <Nav.Link as={Link} to="/calendar">View Calendar</Nav.Link>}
-            {isAuth === true && <Nav.Link as={Link} to="/createEvent">Create Events</Nav.Link>}
-          </Nav>
-          <Nav>
-            <Nav.Link as={Link} to="/help">Help</Nav.Link>
-            {isAuth === true && <NavDropdown title={
-              <Image src={UserIcon} alt='' roundedCircle style={{ width: '25px' }}/>} id="user-profile-dropdown">
+        </NavLink>
+        <Bars />
+        <NavMenu>
+          <NavLink to="/about">About</NavLink>
+          {isAuth === true && <NavLink to="/event">Events</NavLink>}
+          {isAuth === true && <NavLink to="/createEvent">Create Events</NavLink>}
+          {isAuth === true && <NavLink to="/calendar">View Calendar</NavLink>}
+          {isAuth === true && 
+          <NavDropdown title={"Hello, " + this.props.username} id="user-profile-dropdown">
               <NavDropdown.Item as={Link} to="/editProfile">Edit Profile</NavDropdown.Item>
               <NavDropdown.Item as={Link} to="/profile">View Profile</NavDropdown.Item>
               <NavDropdown.Item as={Link} to="/accountSetting">Account Setting</NavDropdown.Item>
-              </NavDropdown>}
-          </Nav>
-        </Container>
-      </Navbar>
+              <NavDropdown.Item as={Link} to="/logout">Logout</NavDropdown.Item>
+          </NavDropdown>}
+          {isAuth !== true && <NavLink to="/signup">Sign Up</NavLink>}
+        </NavMenu>
+        <NavBtn>
+          {isAuth !== true && <NavBtnLink to="/login">Login</NavBtnLink>}
+        </NavBtn>
+      </Nav>
     );
   }
 }
