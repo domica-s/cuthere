@@ -6,8 +6,9 @@ function Confirm() {
 
     const [userRequest, setUserRequest] = useState({
         successful: false,
-        message: ""
+        message: "",
     });
+
 
     const { sid, token } = useParams();
 

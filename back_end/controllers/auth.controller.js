@@ -150,7 +150,7 @@ exports.resetPassword = (req, res) => {
       return res.status(404).send({ message: "User Not found." });
     }
 
-    Token.findOne({ token: req.params.token, for: "resetpassword" }, function (err, token) {
+    Token.findOneAndDelete({ token: req.params.token, for: "resetpassword" }, function (err, token) {
       if (!token) {
         return res.status(400).send({
           message: "Your password reset link may have expired. Please click on resend to get a new reset link. "});
@@ -218,7 +218,7 @@ exports.verifyEmail = (req, res) => {
   Token.findOne({ token: req.params.token, for: "verifemail" }, function (err, token) {
     if (!token) {
       res.status(400).send({
-        message: "Your verification link may have expired. Please click on resend to get a new verification link. "});
+        message: "Your verification link may have expired. Please go to the login page, sign in and click on resend to get a new verification link. "});
     }
     else {
       User.findOne({ _id: token._userId, sid: req.params.sid }, function (err, user) {

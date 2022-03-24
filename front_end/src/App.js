@@ -13,6 +13,13 @@ import Modal from 'react-modal';
 import Calendar from "./Components/Calendar";
 import {CreateEvent} from "./home/createEventPage";
 import { Confirm } from './home/confirm';
+import { NavDropdown } from 'react-bootstrap';
+import {Help} from './home/helpPage';
+import {EditProfile} from './user/editProfile';
+import {AccountSetting} from './user/accountSetting';
+import { Image } from 'react-bootstrap';
+import UserIcon from './user/userProfile.png';
+import { PasswordReset } from './home/passwordReset';
 
 Modal.setAppElement("#root");
 class App extends React.Component {
@@ -64,15 +71,18 @@ class App extends React.Component {
             <Route path="/" element={<Home/>} />
             <Route path='/about' element={<About/>} />
             <Route path='/login' element={<LoginWithNavigate/>} />
-            <Route path='/event' element={<Event/>} />
+            {currentUser !== undefined && <Route path='/event' element={<Event/>} />}
             <Route path='/signup' element={<SignUpWithNavigate/>} />
             <Route path='/logout' element={<this.handleLogout/>} />
             <Route path='/profile' element={<Profile/>} />
             <Route path='/forgotpw' element={<ForgotPw/>} />
-            {/* <Route path='/api/auth/confirmation/:sid/:token' render={(props) => <Confirm {...props}/>}/> */}
+            <Route path='/api/auth/passwordreset/:sid/:token' element={<PasswordReset/>} />
             <Route path='/api/auth/confirmation/:sid/:token' element={<Confirm/>} />
-            <Route path='/calendar' element={<Calendar/>} />
-            <Route path='/createEvent' element={<CreateEvent/>} />
+            {currentUser !== undefined && <Route path='/calendar' element={<Calendar/>} />}
+            {currentUser !== undefined && <Route path='/createEvent' element={<CreateEvent/>} />}
+            {currentUser !== undefined && <Route path='/editProfile' element={<EditProfile/>} />}
+            {currentUser !== undefined && <Route path='/accountSetting' element={<AccountSetting/>} />}
+            <Route path='/help' element={<Help/>} />
             <Route path='/*' element={<NoMatch/>} />
           </Routes>
       
@@ -106,6 +116,15 @@ class NavigationBar extends React.Component {
             {isAuth === true && <Nav.Link as={Link} to="/event">Events</Nav.Link>}
             {isAuth === true && <Nav.Link as={Link} to="/calendar">View Calendar</Nav.Link>}
             {isAuth === true && <Nav.Link as={Link} to="/createEvent">Create Events</Nav.Link>}
+          </Nav>
+          <Nav>
+            <Nav.Link as={Link} to="/help">Help</Nav.Link>
+            {isAuth === true && <NavDropdown title={
+              <Image src={UserIcon} alt='' roundedCircle style={{ width: '25px' }}/>} id="user-profile-dropdown">
+              <NavDropdown.Item as={Link} to="/editProfile">Edit Profile</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/profile">View Profile</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/accountSetting">Account Setting</NavDropdown.Item>
+              </NavDropdown>}
           </Nav>
         </Container>
       </Navbar>

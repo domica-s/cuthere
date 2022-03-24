@@ -47,7 +47,14 @@ class AuthService {
       sid,
       oldPassword,
       newPassword
-    })
+    });
+  }
+
+  resetPassword(sid, token, newPassword) {
+    let temp_url = "passwordreset/" + sid + "/" +  token;
+    return axios.post(API_URL + temp_url, {
+      newPassword
+    });
   }
 
   getCurrentUser() {
