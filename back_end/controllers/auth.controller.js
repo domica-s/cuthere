@@ -217,18 +217,18 @@ exports.changePassword = (req, res) => {
 exports.verifyEmail = (req, res) => {
   Token.findOne({ token: req.params.token, for: "verifemail" }, function (err, token) {
     if (!token) {
-      return res.status(400).send({
+      res.status(400).send({
         message: "Your verification link may have expired. Please click on resend to get a new verification link. "});
     }
     else {
       User.findOne({ _id: token._userId, sid: req.params.sid }, function (err, user) {
         if (!user) {
-          return res.status(401).send({
+          res.status(401).send({
             message: "We were unable to find a user for this verification. Sign up instead"});
         }
         // user is already verified
         else if (user.active){
-          return res.status(200).send({
+          res.status(200).send({
             message: 'User has been already verified. Please Login'});
         }
         // verify user
@@ -238,11 +238,11 @@ exports.verifyEmail = (req, res) => {
           user.save(function (err) {
             // error occur
             if(err) {
-                return res.status(500).send({message: err});
+                res.status(500).send({message: err});
             }
             // account successfully verified
             else{
-              return res.status(200).send({
+              res.status(200).send({
                 message: 'Your account has been successfully verified'});
             }
           });

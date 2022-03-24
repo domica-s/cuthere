@@ -12,6 +12,7 @@ import React from 'react';
 import Modal from 'react-modal';
 import Calendar from "./Components/Calendar";
 import {CreateEvent} from "./home/createEventPage";
+import { Confirm } from './home/confirm';
 
 Modal.setAppElement("#root");
 class App extends React.Component {
@@ -68,6 +69,8 @@ class App extends React.Component {
             <Route path='/logout' element={<this.handleLogout/>} />
             <Route path='/profile' element={<Profile/>} />
             <Route path='/forgotpw' element={<ForgotPw/>} />
+            {/* <Route path='/api/auth/confirmation/:sid/:token' render={(props) => <Confirm {...props}/>}/> */}
+            <Route path='/api/auth/confirmation/:sid/:token' element={<Confirm/>} />
             <Route path='/calendar' element={<Calendar/>} />
             <Route path='/createEvent' element={<CreateEvent/>} />
             <Route path='/*' element={<NoMatch/>} />
