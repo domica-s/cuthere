@@ -1,11 +1,12 @@
 import React from "react";
-import demo from '../../public/userProfile.png';
+import { Image } from 'react-bootstrap';
+import Demo from './userProfile.png';
 
-function Icon() {
+function UserIcon() {
     return (
-        <img className="thumbnail-image" src={demo} alt="user pic" />
+        <Image src={Demo} alt='' roundedCircle style={{ width: '25px' }}/>
     )
 }
 
 
-export {Icon}
+export {UserIcon}

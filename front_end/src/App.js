@@ -14,6 +14,10 @@ import Calendar from "./Components/Calendar";
 import {CreateEvent} from "./home/createEventPage";
 import { NavDropdown } from 'react-bootstrap';
 import {Help} from './home/helpPage';
+import {EditProfile} from './user/editProfile';
+import {AccountSetting} from './user/accountSetting';
+import { Image } from 'react-bootstrap';
+import UserIcon from './user/userProfile.png';
 
 Modal.setAppElement("#root");
 class App extends React.Component {
@@ -72,6 +76,8 @@ class App extends React.Component {
             <Route path='/forgotpw' element={<ForgotPw/>} />
             {currentUser !== undefined && <Route path='/calendar' element={<Calendar/>} />}
             {currentUser !== undefined && <Route path='/createEvent' element={<CreateEvent/>} />}
+            {currentUser !== undefined && <Route path='/editProfile' element={<EditProfile/>} />}
+            {currentUser !== undefined && <Route path='/accountSetting' element={<AccountSetting/>} />}
             <Route path='/help' element={<Help/>} />
             <Route path='/*' element={<NoMatch/>} />
           </Routes>
@@ -109,10 +115,11 @@ class NavigationBar extends React.Component {
           </Nav>
           <Nav>
             <Nav.Link as={Link} to="/help">Help</Nav.Link>
-            {isAuth === true && <NavDropdown title="My Profile" id="user-profile-dropdown">
-              <NavDropdown.Item to="/editProfile">Edit Profile</NavDropdown.Item>
-              <NavDropdown.Item to="/profile">View Profile</NavDropdown.Item>
-              <NavDropdown.Item to="/accountSetting">Account Setting</NavDropdown.Item>
+            {isAuth === true && <NavDropdown title={
+              <Image src={UserIcon} alt='' roundedCircle style={{ width: '25px' }}/>} id="user-profile-dropdown">
+              <NavDropdown.Item as={Link} to="/editProfile">Edit Profile</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/profile">View Profile</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/accountSetting">Account Setting</NavDropdown.Item>
               </NavDropdown>}
           </Nav>
         </Container>
