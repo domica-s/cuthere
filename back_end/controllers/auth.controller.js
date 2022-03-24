@@ -47,7 +47,7 @@ exports.signup = (req, res) => {
             //      }
             //     return res.status(200).send('A verification email has been sent to ' + user.email + '. It will expire after one day. If you not get verification Email click on resend token.');
             // });
-          let email_content =  'Hello '+ user.username +',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/api/auth/confirmation\/' + user.sid + '\/' + token.token + '\n\nThank You!\n'
+          let email_content =  'Hello '+ user.username +',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + "localhost:3000" + '\/api/auth/confirmation\/' + user.sid + '\/' + token.token + '\n\nThank You!\n'
           console.log(email_content)
         });
         res.send({ message: "User was registered successfully! Please verify your account" });
@@ -127,7 +127,7 @@ exports.forgotPasswordRequest = (req, res) => {
       if(err){
         return res.status(500).send({msg:err.message});
       }
-      let email_content =  'Hello '+ user.username +',\n\n' + 'Please reset your password by clicking the link: \nhttp:\/\/' + req.headers.host + '\/api/auth/passwordreset\/' + user.sid + '\/' + token.token + '\n\nThank You!\n'
+      let email_content =  'Hello '+ user.username +',\n\n' + 'Please reset your password by clicking the link: \nhttp:\/\/' + "localhost:3000" + '\/api/auth/passwordreset\/' + user.sid + '\/' + token.token + '\n\nThank You!\n'
       console.log(email_content)
       return res.status(200).send({
         message: "Successfully sent password reset link."});
@@ -292,7 +292,7 @@ exports.resendVerificationLink = (req, res) => {
           // return res.status(200).send({
           //   message: 'A verification email has been sent to ' + user.email + '. It will be valid for one day.'});
           // });
-          let email_content =  'Hello '+ user.username +',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/api/auth/confirmation\/' + user.sid + '\/' + token.token + '\n\nThank You!\n'
+          let email_content =  'Hello '+ user.username +',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + "localhost:3000" + '\/api/auth/confirmation\/' + user.sid + '\/' + token.token + '\n\nThank You!\n'
           console.log(email_content)
           res.status(200).send({
             message: "Your new verification link has been sent."});

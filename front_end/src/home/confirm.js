@@ -6,7 +6,7 @@ function Confirm() {
 
     const [userRequest, setUserRequest] = useState({
         successful: false,
-        message: null
+        message: ""
     });
 
     const { sid, token } = useParams();
@@ -14,9 +14,16 @@ function Confirm() {
     useEffect(() => {
         let FULL_URL = baseBackURL +  "/api/auth/confirmation/" + sid + "/" + token;
         fetch(FULL_URL)
-        .then(response => response.json())
-        .then(data => setUserRequest({ 
-            message : data.message}));
+        .then(response => {
+            response.json().then(data => {
+                if(response.status === 200) {
+                    setUserRequest({ successful: true, message: data.message });
+                }
+                else {
+                    setUserRequest({ successful: false, message: data.message });
+                }
+            })
+        })
     }, []);
 
     const { successful, message } = userRequest;
