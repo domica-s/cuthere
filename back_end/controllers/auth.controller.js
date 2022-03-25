@@ -325,3 +325,28 @@ exports.resendVerificationLink = (req, res) => {
       }
   })
 }
+
+exports.updateProfile =  (req, res) => {
+  User.findOne({ sid: req.body.sid }, function (err, user) {
+    // user is not found into database
+    if (!user){
+      return res.status(400).send({
+        message: 'We were unable to find a user with that SID.'});
+    }
+    user.mobileNumber = req.body.mobileNumber;
+    user.interests = req.body.interests;
+    user.about = req.body.about;
+    user.save(function (err) {
+      // error occur
+      if(err) {
+          res.status(500).send({message: err});
+      }
+      // account successfully updated
+      else{
+        res.status(200).send({
+          message: 'Your account has been successfully updated'});
+      }
+    });
+})
+
+}

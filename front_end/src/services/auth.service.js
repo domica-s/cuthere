@@ -63,6 +63,20 @@ class AuthService {
     return JSON.parse(localStorage.getItem('user'));;
   }
 
+  updateProfile(currentUser, mobileNumber, interests, about) {
+    let sid = currentUser.user.sid;
+    
+    return axios.post(params.baseBackURL + "/profile/update", {
+      sid,
+      mobileNumber,
+      interests,
+      about
+    },
+    {headers: {
+      "x-access-token": currentUser.accessToken
+    }})
+  }
+
   
 }
 

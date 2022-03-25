@@ -19,6 +19,8 @@ import {EditProfile} from './user/editProfile';
 import {AccountSetting} from './user/accountSetting';
 import { Image } from 'react-bootstrap';
 import UserIcon from './user/userProfile.png';
+import LandingPage from './home/LandingPage';
+import ProfileScreen from './home/EditProfile';
 import { PasswordReset } from './home/passwordReset';
 import { Nav, NavLink,Bars, NavMenu, NavBtn, NavBtnLink, Footer} from './NavBarStyle';
 import logo from './logo.jfif';
@@ -71,19 +73,19 @@ class App extends React.Component {
           <NavigationBar isAuthUser={(currentUser !== undefined)} username={(username)} />
           
           <Routes>
-            <Route path="/" element={<Home/>} />
+            <Route path="/" element={<LandingPage/>} />
             <Route path='/about' element={<About/>} />
             <Route path='/login' element={<LoginWithNavigate/>} />
             {currentUser !== undefined && <Route path='/event' element={<Event/>} />}
             <Route path='/signup' element={<SignUpWithNavigate/>} />
-            <Route path='/logout' element={<this.handleLogout/>} />
-            <Route path='/profile' element={<Profile/>} />
+            {currentUser !== undefined && <Route path='/logout' element={<this.handleLogout/>} />}
+            {currentUser !== undefined && <Route path='/profile' element={<Profile/>} />}
             <Route path='/forgotpw' element={<ForgotPw/>} />
             <Route path='/api/auth/passwordreset/:sid/:token' element={<PasswordReset/>} />
             <Route path='/api/auth/confirmation/:sid/:token' element={<Confirm/>} />
             {currentUser !== undefined && <Route path='/calendar' element={<Calendar/>} />}
             {currentUser !== undefined && <Route path='/createEvent' element={<CreateEvent/>} />}
-            {currentUser !== undefined && <Route path='/editProfile' element={<EditProfile/>} />}
+            {currentUser !== undefined && <Route path='/editProfile' element={<ProfileScreen/>} />}
             {currentUser !== undefined && <Route path='/accountSetting' element={<AccountSetting/>} />}
             <Route path='/help' element={<Help/>} />
             <Route path='/*' element={<NoMatch/>} />
@@ -148,11 +150,11 @@ function FooterBar() {
 function NoMatch() {
   let location = useLocation();
   return (
-      <div>
-          <h3>
-              No match for <code>{location.pathname}</code>
-          </h3>
+    <div className="form-group">
+      <div className= "alert alert-danger" role="alert">
+        Error 404: No match for <code>{location.pathname}</code>
       </div>
+    </div>
   );
 }
 
