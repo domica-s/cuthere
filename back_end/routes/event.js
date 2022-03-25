@@ -103,9 +103,9 @@ router.get("/eventsortdate", [authJwt.verifyToken], function (req, res) {
   });
 });
 
-router.get("/myevents", [authJwt.verifyToken], function(req, res){
+router.post("/myevents", [authJwt.verifyToken], function(req, res){
     var event_dic = {};
-    Event.find({ createdBy:req.user._sid }).exec(function(err, event){
+    Event.find({ createdBy:req.body._sid }).exec(function(err, event){
         if(err){
             res.status(500).send({ message: err });
         }
@@ -148,16 +148,17 @@ router.post("/event", function (req, res, next) {
             eventID: eID,
             status: 'Open',
             venue: location,
-            date: date,
+            start: start,
+            end: end,
             quota: quota,
             activityCategory: category,
             numberOfParticipants: "",
             chatHistory: "",
-            createdBy: req.user._id
+            createdBy: req.body._id
         });
     
         newEvent.save(next)
-        res.redirect('/event')        
+        res.status(200).send({message: "event created successfully"})
     });    
 });
 
