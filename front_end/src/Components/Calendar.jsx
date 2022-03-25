@@ -11,28 +11,25 @@ export default function () {
     const [events, setEvents] = useState([])
     const calendarRef = useRef(null)
 
-    console.log(events)
-
     const onEventAdded = (event) => {
         let calendarApi = calendarRef.current.getApi() 
+        console.log(event.venue, event.quota, event.activityCategory)
         calendarApi.addEvent({
             start: moment(event.start).toDate(),
             end: moment(event.end).toDate(),
+            venue: event.venue,
             title: event.title,
-            location: event.location,
             quota: event.quota,
-            category: event.category
+            activityCategory: event.activityCategory
         });
 
     }
     
     async function handleEventAdd(data){
-        console.log(events)
         await axios.post("http://localhost:8080/api/calendar/create-event", data.event);
     }
 
     async function handleDatesSet(data){
-        console.log(events)
         const response = await axios.get('http://localhost:8080/api/calendar/get-event?start='+moment(data.start).toISOString() +'&end='+moment(data.end).toISOString())
         setEvents(response.data)
     }

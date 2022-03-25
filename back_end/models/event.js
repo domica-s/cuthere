@@ -7,18 +7,19 @@ var eventSchema = mongoose.Schema({
     eventID:{type: Number},
     status:{type:String, enum: ['Open', 'Closed']},
     venue:{type: String, required: true},
-    date:{type: Date, required: true},
+    start:{type: Date, required: true},
+    end:{type: Date, required: true},
     numberOfParticipants:{type: Number},
     quota:{type: Number, required: true},
-    activityCategory:{type: String, required: true},
+    activityCategory:{type: String, required: true, enum: ['Outdoor', 'Indoor', 'Offline', 'Online']},
     chatHistory:{type: String},
     createdAt:{type: Date, default: Date.now},
     createdBy:{type: mongoose.Schema.Types.ObjectId, required: false, unique: false}
 });
 
-eventSchema.pre("save",function(done){
-    return done();
-});
+// eventSchema.pre("save",function(done){
+//     return done();
+// });
 
 
 var Event = mongoose.model("Event", eventSchema);
