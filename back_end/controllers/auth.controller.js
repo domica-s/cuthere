@@ -9,6 +9,11 @@ exports.signup = (req, res) => {
 
     const salt = bcrypt.genSaltSync(10);
     const password = req.body.password;
+    const repassword = req.body.repassword;
+
+    if (password !== repassword) {
+      return res.status(404).send({ message: "Password and RePassword does not match"});
+    }
     
     const user = new User({
         username: req.body.username,
@@ -47,7 +52,7 @@ exports.signup = (req, res) => {
             //      }
             //     return res.status(200).send('A verification email has been sent to ' + user.email + '. It will expire after one day. If you not get verification Email click on resend token.');
             // });
-          let email_content =  'Hello '+ user.username +',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/api/auth/confirmation\/' + user.sid + '\/' + token.token + '\n\nThank You!\n'
+          let email_content =  'Hello '+ user.username +',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + "localhost:3000" + '\/api/auth/confirmation\/' + user.sid + '\/' + token.token + '\n\nThank You!\n'
           console.log(email_content)
         });
         res.send({ message: "User was registered successfully! Please verify your account" });
@@ -117,7 +122,7 @@ exports.forgotPasswordRequest = (req, res) => {
     }
 
     Token.deleteMany({ _userId: user._id, for: "resetpassword" }).then(function() {
-      console.log("Old token deleted");
+      // console.log("Old token deleted");
     }).catch(function(error) {
       console.log(error);
     });
@@ -127,7 +132,7 @@ exports.forgotPasswordRequest = (req, res) => {
       if(err){
         return res.status(500).send({msg:err.message});
       }
-      let email_content =  'Hello '+ user.username +',\n\n' + 'Please reset your password by clicking the link: \nhttp:\/\/' + req.headers.host + '\/api/auth/passwordreset\/' + user.sid + '\/' + token.token + '\n\nThank You!\n'
+      let email_content =  'Hello '+ user.username +',\n\n' + 'Please reset your password by clicking the link: \nhttp:\/\/' + "localhost:3000" + '\/api/auth/passwordreset\/' + user.sid + '\/' + token.token + '\n\nThank You!\n'
       console.log(email_content)
       return res.status(200).send({
         message: "Successfully sent password reset link."});
@@ -136,8 +141,17 @@ exports.forgotPasswordRequest = (req, res) => {
 } 
 
 // POST request, with URL params sid, token -- http://localhost:8080/api/auth/passwordreset/:sid/:token
-// body password
+// body {password: { newPassword: String}, repassword: { newRePassword: String}}
 exports.resetPassword = (req, res) => {
+  let password = req.body.password.newPassword;
+  // console.log(password);
+  let repassword = req.body.repassword.newRePassword;
+  // console.log(repassword);
+
+  if (password !== repassword) {
+    return res.status(404).send({ message: "Password and RePassword does not match"});
+  }
+
   User.findOne({
     sid: req.params.sid
   })
@@ -145,18 +159,18 @@ exports.resetPassword = (req, res) => {
     if (err) {
       return res.status(500).send({ message: err });
     }
-
+    
     if (!user) {
       return res.status(404).send({ message: "User Not found." });
     }
 
-    Token.findOne({ token: req.params.token, for: "resetpassword" }, function (err, token) {
+    Token.findOneAndDelete({ token: req.params.token, for: "resetpassword" }, function (err, token) {
       if (!token) {
         return res.status(400).send({
-          message: "Your password reset link may have expired. Please click on resend to get a new reset link. "});
+          message: "Your password reset link may have expired. Please request a new link via the login page. "});
       }
-
-      let newPassword = req.body.password;
+      // console.log("Token found");
+      let newPassword = req.body.password.newPassword;
       const salt = bcrypt.genSaltSync(10);
 
       user.password = bcrypt.hashSync(newPassword, salt),
@@ -166,6 +180,7 @@ exports.resetPassword = (req, res) => {
           return res.status(500).send({message: err});
         }
         else {
+          // console.log("Change password success");
           return res.status(200).send({
             message: 'Your password has been successfully changed'});
         }
@@ -175,8 +190,18 @@ exports.resetPassword = (req, res) => {
 }
 
 // Secured POST request, with URL
-// body oldPassword, newPassword, sid
+// body oldPassword, newPassword, newRepassword, sid
 exports.changePassword = (req, res) => {
+
+  let password = req.body.newPassword;
+  console.log(password);
+  let repassword = req.body.newRepassword;
+  console.log(repassword);
+
+  if (password !== repassword) {
+    return res.status(404).send({ message: "Password and RePassword does not match"});
+  }
+
   User.findOne({
     sid: req.body.sid
   })
@@ -217,18 +242,18 @@ exports.changePassword = (req, res) => {
 exports.verifyEmail = (req, res) => {
   Token.findOne({ token: req.params.token, for: "verifemail" }, function (err, token) {
     if (!token) {
-      return res.status(400).send({
-        message: "Your verification link may have expired. Please click on resend to get a new verification link. "});
+      res.status(400).send({
+        message: "Your verification link may have expired. Please go to the login page, sign in and click on resend to get a new verification link. "});
     }
     else {
       User.findOne({ _id: token._userId, sid: req.params.sid }, function (err, user) {
         if (!user) {
-          return res.status(401).send({
+          res.status(401).send({
             message: "We were unable to find a user for this verification. Sign up instead"});
         }
         // user is already verified
         else if (user.active){
-          return res.status(200).send({
+          res.status(200).send({
             message: 'User has been already verified. Please Login'});
         }
         // verify user
@@ -238,11 +263,11 @@ exports.verifyEmail = (req, res) => {
           user.save(function (err) {
             // error occur
             if(err) {
-                return res.status(500).send({message: err});
+                res.status(500).send({message: err});
             }
             // account successfully verified
             else{
-              return res.status(200).send({
+              res.status(200).send({
                 message: 'Your account has been successfully verified'});
             }
           });
@@ -270,7 +295,7 @@ exports.resendVerificationLink = (req, res) => {
       else{
         // delete existing token
         Token.deleteMany({ _userId: user._id, for: "verifemail" }).then(function() {
-          console.log("Old token deleted");
+          // console.log("Old token deleted");
         }).catch(function(error) {
           console.log(error);
         });
@@ -292,7 +317,7 @@ exports.resendVerificationLink = (req, res) => {
           // return res.status(200).send({
           //   message: 'A verification email has been sent to ' + user.email + '. It will be valid for one day.'});
           // });
-          let email_content =  'Hello '+ user.username +',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/api/auth/confirmation\/' + user.sid + '\/' + token.token + '\n\nThank You!\n'
+          let email_content =  'Hello '+ user.username +',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + "localhost:3000" + '\/api/auth/confirmation\/' + user.sid + '\/' + token.token + '\n\nThank You!\n'
           console.log(email_content)
           res.status(200).send({
             message: "Your new verification link has been sent."});

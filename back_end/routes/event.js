@@ -24,6 +24,85 @@ router.get("/allevents", [authJwt.verifyToken], function (req, res) {
     })
 })
 
+
+router.get("/intevents", [authJwt.verifyToken], function(req,res){
+    var event_dic = {}
+    let int = req.body.interests
+
+    Event.find({
+       int: activityCategory
+    }).exec(function (err, event) {
+      if (event.length > 0) {
+        for (var i = 0; i < event.length; i++) {
+          event_dic[i] = event[i];
+        }
+        var int_events = {
+          "title": "Events you might be interested in",
+          event_dic,
+        };
+        res.send(int_events);
+      }
+    });
+})
+
+router.get("/discoverevents", [authJwt.verifyToken], function (req, res) {
+  var event_dic = {};
+  let int = req.body.interests;
+  Event.find({
+    int: { $not: { activityCategory } }
+  }).exec(function (err, event) {
+    if (event.length > 0) {
+      for (var i = 0; i < event.length; i++) {
+        event_dic[i] = event[i];
+      }
+      var int_events = {
+        title: "Explore other interests!",
+        event_dic,
+      };
+      res.send(int_events);
+    }
+  });
+});
+
+router.get("/newestevents", [authJwt.verifyToken], function (req, res) {
+  var event_dic = {};
+
+  Event.find({}).sort({
+      eventID: -1
+  }).exec(function (err, event) {
+    if (event.length > 0) {
+      for (var i = 0; i < 20; i++) {
+        event_dic[i] = event[i];
+      }
+      var int_events = {
+        title: "Newest Events",
+        event_dic,
+      };
+      res.send(int_events);
+    }
+  });
+});
+
+router.get("/eventsortdate", [authJwt.verifyToken], function (req, res) {
+  var event_dic = {};
+  let int = req.body.interests;
+
+  Event.find({
+    activityCategory: { $eq: int[0] },
+  }).exec(function (err, event) {
+    if (event.length > 0) {
+      for (var i = 0; i < event.length; i++) {
+        event_dic[i] = event[i];
+      }
+      var int_events = {
+        title: activityCategory,
+        event_dic,
+      };
+      res.send(int_events);
+    }
+  });
+});
+
 router.get("/", function(req, res){
     Event.find({createdBy:req.user._id}).exec(function(err, events){
         if(err){

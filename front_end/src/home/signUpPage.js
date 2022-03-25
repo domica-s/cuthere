@@ -24,11 +24,13 @@ class SignUp extends React.Component {
       this.onChangeUsername = this.onChangeUsername.bind(this);
       this.onChangeSID = this.onChangeSID.bind(this);
       this.onChangePassword = this.onChangePassword.bind(this);
+      this.onChangeRepassword = this.onChangeRepassword.bind(this);
 
       this.state = {
         username: "",
         sid: "",
         password: "",
+        repassword: "",
         successful: false,
         message: ""
       };
@@ -49,6 +51,12 @@ class SignUp extends React.Component {
   onChangePassword(e) {
     this.setState({
       password: e.target.value
+    });
+  }
+
+  onChangeRepassword(e) {
+    this.setState({
+      repassword: e.target.value
     });
   }
 
@@ -73,7 +81,8 @@ class SignUp extends React.Component {
     AuthService.register(
       this.state.username,
       this.state.sid,
-      this.state.password
+      this.state.password,
+      this.state.repassword
     ).then(
       response => {
         this.setState({
@@ -139,7 +148,9 @@ class SignUp extends React.Component {
 
             <Col className="mb-3 form-floating">
                 <FloatingLabel controlId="floatingRepassword" label="RePassword">
-                    <Form.Control name="repassword" type="password" placeholder="Re-enter Password" required/>
+                    <Form.Control name="repassword" type="password" placeholder="Re-enter Password" required
+                    value={this.state.repassword}
+                    onChange={this.onChangeRepassword}/>
                 </FloatingLabel>
             </Col>  
             <Button className="mb-3 m-2" variant="outline-warning" onClick={this.handleSignIn}>

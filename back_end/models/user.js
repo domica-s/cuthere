@@ -11,7 +11,7 @@ var userSchema = mongoose.Schema({
     password:{type:String, required:false},
     mobileNumber:{type:Number, default:0},
     profilePicture:{type:mongoose.Schema.Types.ObjectId},
-    interests:{type:String},
+    interests:[{type:String}],
     college:{type:String},
     about:{type:String},
     rating:{type:String},
