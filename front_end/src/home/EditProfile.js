@@ -135,7 +135,7 @@ export default function ProfileState() {
             </div>
           </div>
         )}
-        <Button type="submit" value="Update">Update</Button>
+        <Button type="submit" value="Update" className='mb-5'>Update</Button>
       </Form>
     </div>
     </div>

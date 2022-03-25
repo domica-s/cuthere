@@ -72,7 +72,7 @@ function CreateEvent() {
                     <Form.Control type="file" />
                 </Form.Group>
 
-                <Button className="mb-3 m-2" variant="outline-warning" type="submit">
+                <Button className="mb-5" variant="outline-warning" type="submit">
                     Create Event! 
                 </Button>
 
