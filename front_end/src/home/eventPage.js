@@ -25,7 +25,7 @@ class OneEvent extends React.Component {
                     <br/>
                     <p>Location: {data.venue}</p>
                     <br/>
-                    <p>Date: {data.date}</p>
+                    <p>Date: {data.start}</p>
                     <br/>
                     <p>No. of participants: {data.numberOfParticipants} Quota: {data.quota}</p>
                     <br/> 
