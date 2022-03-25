@@ -41,7 +41,9 @@ export default function () {
     async function handleEventClick(data){
 
         // Route to the corresponding event page
-        
+        const response = await axios.get("http.//localhost:8080/api/calendar/myevents", data.event);
+
+
     }
 
     console.log(events)

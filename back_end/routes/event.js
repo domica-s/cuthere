@@ -103,7 +103,7 @@ router.get("/eventsortdate", [authJwt.verifyToken], function (req, res) {
   });
 });
 
-router.post("/myevents", [authJwt.verifyToken], function(req, res){
+router.post("/myevents", [authJwt.verifyToken], function(req, res){ 
     var event_dic = {};
     Event.find({ createdBy:req.body._sid }).exec(function(err, event){
         if(err){
