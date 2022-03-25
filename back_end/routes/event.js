@@ -123,13 +123,18 @@ router.post("/myevents", [authJwt.verifyToken], function(req, res){
 
 
 // To create the event
-router.post("/event", function (req, res, next) {
+router.post("/event", [authJwt.verifyToken], function (req, res, next) {
     var title =  req.body.title
     var location = req.body.location
-    var date = req.body.date
+    var start = req.body.start
+    var end = req.body.end
     var quota = req.body.quota
     var category = req.body.category
     var theID = Event.find().sort({ eventID: -1 }).limit(1)
+    
+    if (start === end){
+      res.status(400).send({message: "error: start date and end date is equal"});
+    }
     theID.exec(function (err, eventID) {
         if (err) res.send("Error occured: " + err)
         else {
@@ -143,16 +148,17 @@ router.post("/event", function (req, res, next) {
             eventID: eID,
             status: 'Open',
             venue: location,
-            date: date,
+            start: start,
+            end: end,
             quota: quota,
             activityCategory: category,
             numberOfParticipants: "",
             chatHistory: "",
-            createdBy: req.user._id
+            createdBy: req.body._id
         });
     
         newEvent.save(next)
-        res.redirect('/event')        
+        res.status(200).send({message: "event created successfully"})
     });    
 });
 

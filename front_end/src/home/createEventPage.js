@@ -1,9 +1,11 @@
 import React from "react";
+import Datetime from 'react-datetime';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import { Container } from "react-bootstrap";
+import AuthService from "../services/auth.service";
 import logo from '../logo.jfif';
 
 
@@ -11,6 +13,8 @@ var params = require("../params/params");
 
 const API = params.baseBackURL + "/event";
 
+const currentUser = AuthService.getCurrentUser();
+const _id = currentUser.user._id;
 
 function Logo() {
     return(
@@ -53,8 +57,13 @@ function CreateEvent() {
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="floatingDate">
-                    <Form.Label>Date</Form.Label>
-                    <Form.Control name="date" type="date" placeholder="" required/>
+                    <Form.Label>Start Datetime</Form.Label>
+                    <Form.Control name="start" type="datetime-local" placeholder="" required/>
+                </Form.Group>     
+
+                <Form.Group className="mb-3" controlId="floatingDate">
+                    <Form.Label>End Datetime</Form.Label>
+                    <Form.Control name="end" type="datetime-local" placeholder="" required/>
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="floatingInput">
@@ -64,12 +73,21 @@ function CreateEvent() {
 
                 <Form.Group className="mb-3" controlId="floatingInput">
                     <Form.Label>Category of your event</Form.Label>
-                    <Form.Control name="category" type="text" placeholder="category" required/>
+                    <Form.Select name="category">
+                        <option value="Outdoor">Outdoor</option>
+                        <option value="Indoor">Indoor</option>
+                        <option value="Offline">Offline</option>
+                        <option value="Online">Online</option>
+                    </Form.Select>
                 </Form.Group>
 
                 <Form.Group controlId="formFile" className="mb-3">
                     <Form.Label>Upload a photo for your event?</Form.Label>
                     <Form.Control type="file" />
+                </Form.Group>
+
+                <Form.Group className="mb3">
+                    <Form.Control name="_id" value={_id} type="hidden"/>
                 </Form.Group>
 
                 <Button className="mb-5" variant="outline-warning" type="submit">
