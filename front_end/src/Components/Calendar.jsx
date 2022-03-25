@@ -5,6 +5,10 @@ import AddEventModal from './AddEventModal';
 import axios from 'axios';
 import moment from 'moment';
 import "react-datetime/css/react-datetime.css";
+import Button from 'react-bootstrap/Button';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import { Container } from "react-bootstrap";
 
 export default function () {
     const [modalOpen, setModalOpen] = useState(false)
@@ -34,12 +38,26 @@ export default function () {
         setEvents(response.data)
     }
 
+    async function handleEventClick(data){
+
+        // Route to the corresponding event page
+        
+    }
+
     console.log(events)
 
 
     return(
-        <section>
-            <button onClick ={() => setModalOpen(true)}> Add Event </button>
+        <React.Fragment> 
+            <Container>
+                <Col> 
+                    <Button className="mb-3 m-2" variant="outline-warning" onClick ={() => setModalOpen(true)}> Add Event </Button>
+                </Col>
+
+                <Row> 
+                    <p> Labels for filtering here </p>
+                </Row>
+            </Container>
 
             <div style ={{position: "relative", zIndex: 0}}>
                 <FullCalendar 
@@ -47,6 +65,7 @@ export default function () {
                     events = {events}
                     plugins = {[dayGridPlugin]}
                     initialView = "dayGridMonth"
+                    eventClick = {(event) => handleEventClick(event)}
                     eventAdd = {(event) => handleEventAdd(event)}
                     datesSet= {(date) => handleDatesSet(date)}
                 />
@@ -54,7 +73,7 @@ export default function () {
             
 
             <AddEventModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onEventAdded ={event => onEventAdded(event)} />
-        </section>
+        </React.Fragment>
 
     )
 }

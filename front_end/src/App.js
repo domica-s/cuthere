@@ -10,7 +10,10 @@ import Profile from './home/myProfile';
 import authService from './services/auth.service';
 import React from 'react';
 import Modal from 'react-modal';
+
+// Imports from Component
 import Calendar from "./Components/Calendar";
+
 import {CreateEvent} from "./home/createEventPage";
 import { Confirm } from './home/confirm';
 import { NavDropdown } from 'react-bootstrap';
