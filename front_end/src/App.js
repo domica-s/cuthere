@@ -78,8 +78,8 @@ class App extends React.Component {
             <Route path='/login' element={<LoginWithNavigate/>} />
             {currentUser !== undefined && <Route path='/event' element={<Event/>} />}
             <Route path='/signup' element={<SignUpWithNavigate/>} />
-            <Route path='/logout' element={<this.handleLogout/>} />
-            <Route path='/profile' element={<Profile/>} />
+            {currentUser !== undefined && <Route path='/logout' element={<this.handleLogout/>} />}
+            {currentUser !== undefined && <Route path='/profile' element={<Profile/>} />}
             <Route path='/forgotpw' element={<ForgotPw/>} />
             <Route path='/api/auth/passwordreset/:sid/:token' element={<PasswordReset/>} />
             <Route path='/api/auth/confirmation/:sid/:token' element={<Confirm/>} />
@@ -150,11 +150,11 @@ function FooterBar() {
 function NoMatch() {
   let location = useLocation();
   return (
-      <div>
-          <h3>
-              No match for <code>{location.pathname}</code>
-          </h3>
+    <div className="form-group">
+      <div className= "alert alert-danger" role="alert">
+        Error 404: No match for <code>{location.pathname}</code>
       </div>
+    </div>
   );
 }
 
