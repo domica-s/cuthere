@@ -16,7 +16,8 @@ var userSchema = mongoose.Schema({
     about:{type:String},
     rating:{type:String},
     friends:{type:String},
-    registeredEvents:[{type:String}],
+    registeredEvents:[{type: mongoose.Schema.Types.ObjectId}],
+    starredEvents:[{type: mongoose.Schema.Types.ObjectId}],
     role:{type:String, enum: ['User', 'Admin']},
     active:{type:Boolean, default: false},
     createdAt:{type:Date, default:Date.now}
