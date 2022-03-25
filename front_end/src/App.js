@@ -78,7 +78,7 @@ class App extends React.Component {
             <Route path='/login' element={<LoginWithNavigate/>} />
             {currentUser !== undefined && <Route path='/event' element={<Event/>} />}
             <Route path='/signup' element={<SignUpWithNavigate/>} />
-            {currentUser !== undefined && <Route path='/logout' element={<this.handleLogout/>} />}
+            <Route path='/logout' element={<this.handleLogout/>} />
             {currentUser !== undefined && <Route path='/profile' element={<Profile/>} />}
             <Route path='/forgotpw' element={<ForgotPw/>} />
             <Route path='/api/auth/passwordreset/:sid/:token' element={<PasswordReset/>} />
