@@ -18,4 +18,5 @@ module.exports = function(app) {
   app.post("/api/auth/changepassword", [authJwt.verifyToken], controller.changePassword);
   app.get("/api/auth/confirmation/:sid/:token", controller.verifyEmail);
   app.get("/api/auth/resendverification/:sid", controller.resendVerificationLink);
+  app.post("/profile/update",  [authJwt.verifyToken], controller.updateProfile);
 };

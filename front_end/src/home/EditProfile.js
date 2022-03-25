@@ -19,6 +19,10 @@ const INITIAL_STATE = {
 };
 export default function ProfileState() {
   const [user, setUser] = useState(INITIAL_STATE);
+  const [userRequest, setUserRequest] = useState({
+    successful: false,
+    message: "",
+});
 
   useEffect(() => {
     (async () => {
@@ -36,7 +40,7 @@ export default function ProfileState() {
           interests: user.user.interests,
           
         })
-        console.log(user);
+        // console.log(user);
         // setUser(user.data);
         
       } catch (error) {
@@ -46,21 +50,25 @@ export default function ProfileState() {
   }, []);
 
   const handleInput = (e) => {
-    console.log(e.target.name, " : ", e.target.value);
+    // console.log(e.target.name, " : ", e.target.value);
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      console.log("Data for update : ", user);
-      const response = await axios.put(`https://mongoDB?/${user.id}`, user);
-    } catch (error) {
-      console.log(error);
-    }
+
+    const currentUser = authService.getCurrentUser();
+    authService.updateProfile(currentUser, user.mobileNumber, user.interests, user.about) 
+    .then(response => {
+      setUserRequest({ successful: true, message: response.data.message });
+    },
+    error => {
+      setUserRequest({ successful: false, message: error.response.data.message });
+    }) 
   };
+  const { successful, message } = userRequest;
+
   return (
-    
     <div className="ProfileState">
       <div className="formbg-outer">
           <div className="formbg paddin-in">
@@ -118,6 +126,15 @@ export default function ProfileState() {
           handleInput={handleInput}
         />
         </div>
+        {message && (
+          <div className="form-group">
+            <div
+            className={successful? "alert alert-success": "alert alert-danger"}
+            role="alert">
+            {message}
+            </div>
+          </div>
+        )}
         <Button type="submit" value="Update">Update</Button>
       </Form>
     </div>
