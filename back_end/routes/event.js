@@ -123,7 +123,7 @@ router.post("/myevents", [authJwt.verifyToken], function(req, res){
 
 
 // To create the event
-router.post("/event", function (req, res, next) {
+router.post("/event", [authJwt.verifyToken], function (req, res, next) {
     var title =  req.body.title
     var location = req.body.location
     var start = req.body.start
