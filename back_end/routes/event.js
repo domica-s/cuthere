@@ -103,38 +103,24 @@ router.get("/eventsortdate", [authJwt.verifyToken], function (req, res) {
   });
 });
 
-router.get("/", function(req, res){
-    Event.find({createdBy:req.user._id}).exec(function(err, events){
+router.post("/myevents", [authJwt.verifyToken], function(req, res){
+    var event_dic = {};
+    Event.find({ createdBy:req.body._sid }).exec(function(err, event){
         if(err){
-            console.log(err);
+            res.status(500).send({ message: err });
         }
-        res.render("event/all", {events:events})
+        if (event.length > 0) {
+          for (var i = 0; i < event.length; i++) {
+            event_dic[i] = event[i];
+          }
+          res.status(200).send(event_dic);
+        }
+        else {
+            res.status(400).send({ message: "Seems like you have not created any events yet!" });
+        }
     })
 });
 
-// To get the event
-//router.get("/event/:eventId", function(req,res){
-router.get("/", function (req, res) {
-    /*Event.findOne({ eventID: req.params["eventId"]}).then((event_to_be_displayed) => {
-        // console.log(event_to_be_displayed)
-        var object = {
-            title: event_to_be_displayed.title,
-            location: event_to_be_displayed.venue,
-            date: event_to_be_displayed.date,
-            quota: event_to_be_displayed.quota,
-            category: event_to_be_displayed.activityCategory,
-
-        }
-        res.send(event_to_be_displayed)
-    })*/
-    Event.find({ createdBy: req.user._id }).exec(function (err, events) {
-    if (err) {
-      console.log(err);
-    }
-    console.log("success");
-    res.render("event/all", { events: events });
-  });
-});
 
 // To create the event
 router.post("/event", function (req, res, next) {
