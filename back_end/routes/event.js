@@ -66,7 +66,6 @@ router.get("/discoverevents", [authJwt.verifyToken], function (req, res) {
 
 router.get("/newestevents", [authJwt.verifyToken], function (req, res) {
   var event_dic = {};
-  let int = req.body.interests;
 
   Event.find({}).sort({
       eventID: -1

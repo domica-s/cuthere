@@ -13,7 +13,6 @@ var params = require("../params/params");
 
 // const API = 'http://localhost:8080/allevents'
 const APIallEvents = params.baseBackURL + "/allevents";
-const APInewEvents = params.baseBackURL + "/newestevents";
 
 class OneEvent extends React.Component {
     // render one event
@@ -90,7 +89,7 @@ class EventWidget extends React.Component{
       if (currentUser === null) {
       }
       {
-        currentUser !== null && fetch(APInewEvents, {
+        currentUser !== null && fetch(this.props.api, {
             method: "GET",
             headers: new Headers({
               "x-access-token": currentUser.accessToken,
@@ -104,9 +103,6 @@ class EventWidget extends React.Component{
             });
           });
       }
-    }
-    timeDisplay(){
-
     }
     render(){
       let events = this.state.events
@@ -149,7 +145,7 @@ class EventCard extends React.Component {
           quota = <Badge pill bg="warning">{avail}</Badge>;
         }
         return (
-          <Card style={{ width: "12rem", height: "17.25rem" }}>
+          <Card style={{ width: "12rem", height: "17.25rem",}}>
             <Card.Img
               variant="top"
               style={{ maxHeight: "200px" }}
@@ -197,4 +193,4 @@ class EventCard extends React.Component {
     }
 }
 
-export {Event}
+export {Event, EventWidget}

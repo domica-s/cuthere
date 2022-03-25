@@ -85,7 +85,6 @@ class App extends React.Component {
             <Route path='/help' element={<Help/>} />
             <Route path='/*' element={<NoMatch/>} />
           </Routes>
-      
           <FooterBar />
         </BrowserRouter>
       </div>    
