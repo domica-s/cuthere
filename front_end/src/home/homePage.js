@@ -1,8 +1,9 @@
 import React from "react";
-import Container from "react-bootstrap/Container";
+import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import {EventWidget} from "./eventPage"
+import AuthService from "../services/auth.service";
 
 var params = require("../params/params");
 
@@ -10,6 +11,7 @@ class Home extends React.Component {
     constructor(props){
         super(props);
         this.state = {
+            currentUser: AuthService.getCurrentUser(),
             APIintEvents: params.baseBackURL + "/intevents",
             APIdiscEvents: params.baseBackURL + "/discoverevents",
             APInewEvents: params.baseBackURL + "/newestevents",
@@ -18,11 +20,10 @@ class Home extends React.Component {
     }
     render() {
         return (
-          <div className="container">
-            Home Page of CUthere
-            <Container>
-              <Row>
-                <Col xs={9}>
+          <div>
+            {this.state.currentUser ? (
+              <Row className="m-0">
+                <Col md={10} xs={12}>
                   <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
                     <EventWidget api={this.state.APInewEvents} />
                   </div>
@@ -36,11 +37,52 @@ class Home extends React.Component {
                     <EventWidget api={this.state.APInewEvents} />
                   </div>
                 </Col>
-                <Col xs={3}>
+                <Col md={2} xs={0}>
                   <h2>Feeds</h2>
                 </Col>
               </Row>
-            </Container>
+            ) : (
+              <Row className="m-0">
+                <Col md={6}>
+                  <img src={require("./cuth.png")} />
+                </Col>
+                <Col
+                  md={6}
+                  xs={12}
+                  style={{
+                    height: "85vh",
+                    backgroundColor: "beige",
+                    paddingLeft: "30px",
+                    textAlign: "left",
+                  }}
+                >
+                  <div style={{ paddingTop: "6rem", paddingBottom: "2rem" }}>
+                    <h2>Host or Attend Exciting Events!</h2>
+                    <h5>Exclusive to CUHK Students</h5>
+                  </div>
+                  <div>
+                    <h4>Join CUThere today.</h4>
+                    <Button
+                      href="/signup"
+                      className="mb-3 m-2"
+                      variant="warning"
+                      onClick={this.handleSignUp}
+                    >
+                      Sign Up
+                    </Button>
+                    <h5>Already have an account?</h5>
+                    <Button
+                      href="/login"
+                      className="mb-3 m-2"
+                      variant="primary"
+                      onClick={this.handleSignUp}
+                    >
+                      Login
+                    </Button>
+                  </div>
+                </Col>
+              </Row>
+            )}
           </div>
         );
     }
