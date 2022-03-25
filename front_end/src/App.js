@@ -19,6 +19,8 @@ import {EditProfile} from './user/editProfile';
 import {AccountSetting} from './user/accountSetting';
 import { Image } from 'react-bootstrap';
 import UserIcon from './user/userProfile.png';
+import LandingPage from './home/LandingPage';
+import ProfileScreen from './home/EditProfile';
 import { PasswordReset } from './home/passwordReset';
 import { Nav, NavLink,Bars, NavMenu, NavBtn, NavBtnLink, Footer} from './NavBarStyle';
 import logo from './logo.jfif';
@@ -71,7 +73,7 @@ class App extends React.Component {
           <NavigationBar isAuthUser={(currentUser !== undefined)} username={(username)} />
           
           <Routes>
-            <Route path="/" element={<Home/>} />
+            <Route path="/" element={<LandingPage/>} />
             <Route path='/about' element={<About/>} />
             <Route path='/login' element={<LoginWithNavigate/>} />
             {currentUser !== undefined && <Route path='/event' element={<Event/>} />}
@@ -83,7 +85,7 @@ class App extends React.Component {
             <Route path='/api/auth/confirmation/:sid/:token' element={<Confirm/>} />
             {currentUser !== undefined && <Route path='/calendar' element={<Calendar/>} />}
             {currentUser !== undefined && <Route path='/createEvent' element={<CreateEvent/>} />}
-            {currentUser !== undefined && <Route path='/editProfile' element={<EditProfile/>} />}
+            {currentUser !== undefined && <Route path='/editProfile' element={<ProfileScreen/>} />}
             {currentUser !== undefined && <Route path='/accountSetting' element={<AccountSetting/>} />}
             <Route path='/help' element={<Help/>} />
             <Route path='/*' element={<NoMatch/>} />
