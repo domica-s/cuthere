@@ -14,12 +14,9 @@ var eventSchema = mongoose.Schema({
     activityCategory:{type: String, required: true, enum: ['Outdoor', 'Indoor', 'Offline', 'Online']},
     chatHistory:{type: String},
     createdAt:{type: Date, default: Date.now},
-    createdBy:{type: mongoose.Schema.Types.ObjectId, required: false, unique: false}
+    createdBy:{type: mongoose.Schema.Types.ObjectId, required: false, unique: false},
+    participants: [{type: mongoose.Schema.Types.ObjectId}]
 });
-
-// eventSchema.pre("save",function(done){
-//     return done();
-// });
 
 
 var Event = mongoose.model("Event", eventSchema);

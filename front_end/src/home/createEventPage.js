@@ -14,7 +14,9 @@ var params = require("../params/params");
 const API = params.baseBackURL + "/event";
 
 const currentUser = AuthService.getCurrentUser();
-const _id = currentUser.user._id;
+if (currentUser) {
+    var _id = currentUser.user._id;
+}
 
 function Logo() {
     return(

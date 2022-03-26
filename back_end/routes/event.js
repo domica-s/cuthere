@@ -25,6 +25,19 @@ router.get("/allevents", [authJwt.verifyToken], function (req, res) {
 })
 
 
+// List one event details
+router.get("/event/:id", [authJwt.verifyToken], function (req, res) {
+
+    var event_id = req.params.id;
+    Event.findOne({ eventID: event_id }, (err, result) => {
+        if (err) {
+          res.status(400).send({ message: "error occured: " + err })
+        }
+        res.status(200).send(result);
+    })
+});
+
+
 router.get("/intevents", [authJwt.verifyToken], function(req,res){
     var event_dic = {}
     let int = req.body.interests
@@ -152,9 +165,10 @@ router.post("/event", [authJwt.verifyToken], function (req, res, next) {
             end: end,
             quota: quota,
             activityCategory: category,
-            numberOfParticipants: "",
+            numberOfParticipants: 1,
             chatHistory: "",
-            createdBy: req.body._id
+            createdBy: req.body._id,
+            participants: [req.body._id]
         });
     
         newEvent.save(next)
@@ -162,18 +176,105 @@ router.post("/event", [authJwt.verifyToken], function (req, res, next) {
     });    
 });
 
-// Delete Event
-router.post('/event/delete', function(req,res){
-    let id = req.body.id
-    console.log(id)
-    Event.findOneAndDelete({eventID: id}).exec(function(err,event){
-        if (err) res.send("The error is: " + err); 
-        else if (event == null) res.send("No Matching Event!"); 
-        else { 
-            res.redirect("/event")
-        }
+router.get('/event/delete/:id', [authJwt.verifyToken], function(req, res) {
+    var event_id = req.params.id;
 
-    })
+    Event.findOneAndDelete({eventID: event_id}).exec((err, results) => {
+        if (err) {
+          res.status(400).send({message: "error occured: " + err})
+        }
+        else {
+          if (results === null) {
+            res.status(400).send({message: "No such event"});
+          }
+          else {
+            res.status(200).send({message: "Event deleted"});
+          }
+        }
+    });
+});
+
+function checkRegistered(id, participants) {
+  let registered = false;
+  for (let i = 0; i < participants.length; i++) {
+    if (id === participants[i]._id.toString()){
+      registered = true}
+  }
+  return registered
+}
+
+router.post('/event/register/:id', [authJwt.verifyToken], function(req, res) {
+    var event_id = req.params.id;
+    var _id = req.body._id;
+    var registered = false;
+    Event.findOne({ eventID: event_id }, (err, result) => {
+      if (err) {
+        res.status(400).send({ message: "error occured: " + err })
+      }
+      else if (result === null){
+        res.status(400).send({ message: "No such event!" });
+      }
+      else {
+        registered = checkRegistered(_id, result.participants);
+        if (registered) {
+          res.status(202).send({ message: "You registered for this event already" });
+        }
+        else if (result.numberOfParticipants >= result.quota) {
+          res.status(201).send({ message: "Sorry, the event is full already" });
+        }
+        else {
+          var update = {
+            $inc: { numberOfParticipants: 1 },
+            $push: { participants: _id }
+          }
+          Event.updateOne({ eventID: event_id }, update, (err, results) => {
+              if (err) {
+                res.status(400).send({ message: "error occured: " + err });
+              }
+              else {
+                res.status(200).send({ message: "OK"} );
+              }
+          });
+        }
+      }
+  });
+});
+
+router.post('/event/unregister/:id', [authJwt.verifyToken], function(req, res) {
+    var event_id = req.params.id;
+    var _id = req.body._id;
+    var registered = true;
+    Event.findOne({ eventID: event_id }, (err, result) => {
+      if (err) {
+        res.status(400).send({ message: "error occured: " + err })
+      }
+      else if (result === null){
+        res.status(400).send({ message: "No such event!" });
+      }
+      else {
+        registered = checkRegistered(_id, result.participants);
+        if (!registered){
+          res.status(202).send({ message: "You are not registered for this event" });
+        }
+        else if (result.numberOfParticipants === 0) {
+          res.status(201).send({ message: "No one is registered in this event" });
+        }
+        else {
+          var update = {
+            $inc: { numberOfParticipants: -1 },
+            $pull: { participants: _id }
+          }
+          Event.updateOne({ eventID: event_id }, update, (err, result) => {
+            if (err){
+              res.status(400).send({ message: "error occured: " + err });
+            }
+            else {
+              res.status(200).send({ message: "OK"} );                
+            }
+          });
+        }
+      }
+    });
 })
 
 router.post("/update", async function (req, res){
