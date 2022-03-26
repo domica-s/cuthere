@@ -25,6 +25,19 @@ router.get("/allevents", [authJwt.verifyToken], function (req, res) {
 })
 
 
+// List one event details
+router.get("/event/:id", [authJwt.verifyToken], function (req, res) {
+
+    var event_id = req.params.id;
+    Event.findOne({ eventID: event_id }, (err, result) => {
+        if (err) {
+          res.status(400).send({ eror: err })
+        }
+        res.status(200).send(result);
+    })
+});
+
+
 router.get("/intevents", [authJwt.verifyToken], function(req,res){
     var event_dic = {}
     let int = req.body.interests
