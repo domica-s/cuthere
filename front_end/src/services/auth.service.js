@@ -40,15 +40,19 @@ class AuthService {
     return axios.get(API_URL + temp_url);
   }
 
-  changePassword(sid, oldPassword, newPassword) {
+  changePassword(currentUser, oldPassword, newPassword) {
     let temp_url = "changepassword";
+    let sid = currentUser.user.sid;
     // get oldPassword and newPassword from form fields, check forgotPassword for reference
-    // get sid from state -> user.sid
+    // get sid from access token
     return axios.post(API_URL + temp_url, {
       sid,
       oldPassword,
       newPassword
-    });
+    },
+    {headers: {
+      "x-access-token": currentUser.accessToken
+    }});
   }
 
   resetPassword(sid, token, password, repassword) {

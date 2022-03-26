@@ -164,6 +164,15 @@ exports.resetPassword = (req, res) => {
       return res.status(404).send({ message: "User Not found." });
     }
 
+    let passwordIsSame = bcrypt.compareSync(
+      req.body.password.newPassword,
+      user.password
+    );
+
+    if (passwordIsSame) {
+      return res.status(400).send({message: "Your new password must be different from your old password."});
+    }
+
     Token.findOneAndDelete({ token: req.params.token, for: "resetpassword" }, function (err, token) {
       if (!token) {
         return res.status(400).send({
@@ -194,12 +203,18 @@ exports.resetPassword = (req, res) => {
 exports.changePassword = (req, res) => {
 
   let password = req.body.newPassword;
-  console.log(password);
+  // console.log(password);
   let repassword = req.body.newRepassword;
-  console.log(repassword);
+  // console.log(repassword);
+
+  let oldPassword = req.body.oldPassword;
 
   if (password !== repassword) {
     return res.status(404).send({ message: "Password and RePassword does not match"});
+  }
+
+  if (password === oldPassword) {
+    return res.status(400).send({message: "Your new password must be different from your old password."});
   }
 
   User.findOne({
