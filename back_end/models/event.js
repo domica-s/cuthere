@@ -12,7 +12,11 @@ var eventSchema = mongoose.Schema({
     numberOfParticipants:{type: Number},
     quota:{type: Number, required: true},
     activityCategory:{type: String, required: true, enum: ['Outdoor', 'Indoor', 'Offline', 'Online']},
-    chatHistory:{type: String},
+    chatHistory:[{
+        user: {type: mongoose.Schema.Types.ObjectId},
+        content: {type: String},
+        chatAt: {type: Date}
+    }],
     createdAt:{type: Date, default: Date.now},
     createdBy:{type: mongoose.Schema.Types.ObjectId, required: false, unique: false},
     participants: [{type: mongoose.Schema.Types.ObjectId}]
