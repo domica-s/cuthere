@@ -31,7 +31,7 @@ router.get("/event/:id", [authJwt.verifyToken], function (req, res) {
     var event_id = req.params.id;
     Event.findOne({ eventID: event_id }, (err, result) => {
         if (err) {
-          res.status(400).send({ eror: err })
+          res.status(400).send({ message: "error occured: " + err })
         }
         res.status(200).send(result);
     })
@@ -175,19 +175,23 @@ router.post("/event", [authJwt.verifyToken], function (req, res, next) {
     });    
 });
 
-// Delete Event
-router.post('/event/delete', function(req,res){
-    let id = req.body.id
-    console.log(id)
-    Event.findOneAndDelete({eventID: id}).exec(function(err,event){
-        if (err) res.send("The error is: " + err); 
-        else if (event == null) res.send("No Matching Event!"); 
-        else { 
-            res.redirect("/event")
-        }
+router.get('/event/delete/:id', [authJwt.verifyToken], function(req, res) {
+    var event_id = req.params.id;
 
-    })
-})
+    Event.findOneAndDelete({eventID: event_id}).exec((err, results) => {
+        if (err) {
+          res.status(400).send({message: "error occured: " + err})
+        }
+        else {
+          if (results === null) {
+            res.status(400).send({message: "No such event"});
+          }
+          else {
+            res.status(200).send({message: "Event deleted"});
+          }
+        }
+    });
+});
 
 router.post("/update", async function (req, res){
     // Get the Event to be updated
