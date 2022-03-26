@@ -165,7 +165,7 @@ router.post("/event", [authJwt.verifyToken], function (req, res, next) {
             end: end,
             quota: quota,
             activityCategory: category,
-            numberOfParticipants: "",
+            numberOfParticipants: 1,
             chatHistory: "",
             createdBy: req.body._id
         });
@@ -190,6 +190,26 @@ router.get('/event/delete/:id', [authJwt.verifyToken], function(req, res) {
             res.status(200).send({message: "Event deleted"});
           }
         }
+    });
+});
+
+router.post('/event/register/:id', [authJwt.verifyToken], function(req, res) {
+    var event_id = req.params.id;
+    Event.findOne({ eventID: event_id }, (err, result) => {
+      if (err) {
+        res.status(400).send({ message: "error occured: " + err })
+      }
+      else {
+        Event.updateOne({ eventID: event_id }, { $inc: { numberOfParticipants: 1 } }, (err, results) => {
+            if (err) {
+              res.status(400).send({ message: "error occured: " + err });
+            }
+            else {
+              console.log(results);
+              res.status(200).send({ message: "OK"} );
+            }
+        });
+      }
     });
 });
 
