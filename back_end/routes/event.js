@@ -232,7 +232,6 @@ router.post('/event/register/:id', [authJwt.verifyToken], function(req, res) {
                 res.status(400).send({ message: "error occured: " + err });
               }
               else {
-                console.log(results);
                 res.status(200).send({ message: "OK"} );
               }
           });
@@ -241,14 +240,42 @@ router.post('/event/register/:id', [authJwt.verifyToken], function(req, res) {
   });
 });
 
-// router.post('/event/unregister/:id', [authJwt.verifyToken], function(req, res) {
-//     var event_id = req.params.id;
-//     var _id = req.body._id;
-//     Event.findOne({ eventID: event_id }, (err, result) => {
-        
-//     })
-
-// })
+router.post('/event/unregister/:id', [authJwt.verifyToken], function(req, res) {
+    var event_id = req.params.id;
+    var _id = req.body._id;
+    var registered = true;
+    Event.findOne({ eventID: event_id }, (err, result) => {
+      if (err) {
+        res.status(400).send({ message: "error occured: " + err })
+      }
+      else if (result === null){
+        res.status(400).send({ message: "No such event!" });
+      }
+      else {
+        registered = checkRegistered(_id, result.participants);
+        if (!registered){
+          res.status(202).send({ message: "You are not registered for this event" });
+        }
+        else if (result.numberOfParticipants === 0) {
+          res.status(201).send({ message: "No one is registered in this event" });
+        }
+        else {
+          var update = {
+            $inc: { numberOfParticipants: -1 },
+            $pull: { participants: _id }
+          }
+          Event.updateOne({ eventID: event_id }, update, (err, result) => {
+            if (err){
+              res.status(400).send({ message: "error occured: " + err });
+            }
+            else {
+              res.status(200).send({ message: "OK"} );                
+            }
+          });
+        }
+      }
+    });
+})
 
 router.post("/update", async function (req, res){
     // Get the Event to be updated
