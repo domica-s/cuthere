@@ -59,7 +59,7 @@ class Login extends React.Component {
         
         AuthService.login(this.state.sid, this.state.password).then(
             () => {
-                this.props.navigate('/profile');
+                this.props.navigate('/');
                 // GoToProfile();
                 window.location.reload();
             },
