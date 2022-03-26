@@ -167,7 +167,8 @@ router.post("/event", [authJwt.verifyToken], function (req, res, next) {
             activityCategory: category,
             numberOfParticipants: 1,
             chatHistory: "",
-            createdBy: req.body._id
+            createdBy: req.body._id,
+            participants: [req.body._id]
         });
     
         newEvent.save(next)
@@ -193,25 +194,61 @@ router.get('/event/delete/:id', [authJwt.verifyToken], function(req, res) {
     });
 });
 
+function checkRegistered(id, participants) {
+  let registered = false;
+  for (let i = 0; i < participants.length; i++) {
+    if (id === participants[i]._id.toString()){
+      registered = true}
+  }
+  return registered
+}
+
 router.post('/event/register/:id', [authJwt.verifyToken], function(req, res) {
     var event_id = req.params.id;
+    var _id = req.body._id;
+    var registered = false;
     Event.findOne({ eventID: event_id }, (err, result) => {
       if (err) {
         res.status(400).send({ message: "error occured: " + err })
       }
-      else {
-        Event.updateOne({ eventID: event_id }, { $inc: { numberOfParticipants: 1 } }, (err, results) => {
-            if (err) {
-              res.status(400).send({ message: "error occured: " + err });
-            }
-            else {
-              console.log(results);
-              res.status(200).send({ message: "OK"} );
-            }
-        });
+      else if (result === null){
+        res.status(400).send({ message: "No such event!" });
       }
-    });
+      else {
+        registered = checkRegistered(_id, result.participants);
+        if (registered) {
+          res.status(202).send({ message: "You registered for this event already" });
+        }
+        else if (result.numberOfParticipants >= result.quota) {
+          res.status(201).send({ message: "Sorry, the event is full already" });
+        }
+        else {
+          var update = {
+            $inc: { numberOfParticipants: 1 },
+            $push: { participants: _id }
+          }
+          Event.updateOne({ eventID: event_id }, update, (err, results) => {
+              if (err) {
+                res.status(400).send({ message: "error occured: " + err });
+              }
+              else {
+                console.log(results);
+                res.status(200).send({ message: "OK"} );
+              }
+          });
+        }
+      }
+  });
 });
+
+// router.post('/event/unregister/:id', [authJwt.verifyToken], function(req, res) {
+//     var event_id = req.params.id;
+//     var _id = req.body._id;
+//     Event.findOne({ eventID: event_id }, (err, result) => {
+        
+//     })
+
+// })
 
 router.post("/update", async function (req, res){
     // Get the Event to be updated
