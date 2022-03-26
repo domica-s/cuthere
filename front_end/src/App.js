@@ -76,7 +76,8 @@ class App extends React.Component {
           <NavigationBar isAuthUser={(currentUser !== undefined)} username={(username)} />
           
           <Routes>
-            <Route path="/" element={<LandingPage/>} />
+            {currentUser === undefined && <Route path="/" element={<LandingPage/>} />}
+            {currentUser !== undefined && <Route path='/' element={<Home/>} />}
             <Route path='/about' element={<About/>} />
             <Route path='/login' element={<LoginWithNavigate/>} />
             {currentUser !== undefined && <Route path='/event' element={<Event/>} />}

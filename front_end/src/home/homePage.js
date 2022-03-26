@@ -21,13 +21,13 @@ class Home extends React.Component {
     render() {
         return (
           <div>
-            {this.state.currentUser ? (
+            {/* {this.state.currentUser ? ( */}
               <Row className="m-0">
                 <Col md={10} xs={12}>
                   <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
                     <EventWidget api={this.state.APInewEvents} />
                   </div>
-                  <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
+                  {/* <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
                     <EventWidget api={this.state.APInewEvents} />
                   </div>
                   <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
@@ -35,13 +35,13 @@ class Home extends React.Component {
                   </div>
                   <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
                     <EventWidget api={this.state.APInewEvents} />
-                  </div>
+                  </div> */}
                 </Col>
                 <Col md={2} xs={0}>
                   <h2>Feeds</h2>
                 </Col>
               </Row>
-            ) : (
+            {/* ) : (
               <Row className="m-0">
                 <Col md={6}>
                   <img src={require("./cuth.png")} />
@@ -81,8 +81,8 @@ class Home extends React.Component {
                     </Button>
                   </div>
                 </Col>
-              </Row>
-            )}
+              </Row> */}
+            {/* )} */}
           </div>
         );
     }
