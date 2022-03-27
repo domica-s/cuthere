@@ -7,6 +7,7 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
 import AuthService from "../services/auth.service";
+import { auto } from "@popperjs/core";
 
 
 var params = require("../params/params");
@@ -109,14 +110,14 @@ class EventWidget extends React.Component{
       console.log(events)
       let title = this.state.title
         return (
-          <Card>
+          <Card style={{ maxHeight: "22rem" }}>
             <Card.Header style={{ textAlign: "left" }}>
               {title}
               <a href="/event" style={{ float: "right" }}>
                 See all
               </a>
             </Card.Header>
-            <Card.Body>
+            <Card.Body style={{ overflowY: "hidden"}}>
               <Row className="widget g-4">
                 {events.length > 0 &&
                   events.map((data, index) => (
