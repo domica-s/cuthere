@@ -3,7 +3,58 @@ const User = require("../models/user");
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 var crypto = require("crypto")
+const nodemailer = require('nodemailer');
+const sendgridTransport = require('nodemailer-sendgrid-transport');
 const Token = require("../models/emailToken");
+var params = require("../params/params");
+
+
+function sendEmail(res, email_type, to_email, email_body) {
+  // email_type
+  // 0 for signup, 1 for resend verif link (sign up), 2 for forgot password
+  let subject;
+  let resMsgSuccess = "A verification email has been sent to " + to_email + ".";
+  let resMsgFail = "Technical Issue! Please contact our moderators.";
+  
+  console.log(email_body);
+
+  if (email_type === 0) {
+    subject = "Verify your CUthere account";
+  }
+  else if (email_type === 1) {
+    subject = "Verify your CUthere account";
+  }
+  else if (email_type === 2) {
+    subject = "Password reset request for CUthere";
+    resMsgSuccess = "A password reset link has been sent to " + to_email + ".";
+  }
+  else {
+    return res.status(500).send({message: resMsgFail});
+  }
+
+  var transporter = nodemailer.createTransport(
+    sendgridTransport({
+        auth:{
+            api_key:params.SENDGRID_APIKEY,
+        }
+    })
+  )
+
+  var mailOptions = { 
+    from: 'noreply.cuthere@gmail.com', 
+    to: to_email, 
+    subject: subject, 
+    text: email_body
+  };
+
+  transporter.sendMail(mailOptions, function (err) {
+      if (err) { 
+        console.log(err);
+        return res.status(500).send({message: resMsgFail});
+      }
+      return res.status(200).send({message: resMsgSuccess});
+  });
+}
 
 exports.signup = (req, res) => {
 
@@ -41,28 +92,11 @@ exports.signup = (req, res) => {
         token.save(function (err) {
           if(err){
             return res.status(500).send({msg:err.message});
-          }
+          } 
 
-            // Send email (use credintials of SendGrid)
-            // var transporter = nodemailer.createTransport({ service: 'Sendgrid', auth: { user: process.env.SENDGRID_USERNAME, pass: process.env.SENDGRID_PASSWORD } });
-            // var mailOptions = { from: 'no-reply@example.com', to: user.email, subject: 'Account Verification Link', text: 'Hello '+ req.body.name +',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + user.email + '\/' + token.token + '\n\nThank You!\n' };
-            // transporter.sendMail(mailOptions, function (err) {
-            //     if (err) { 
-            //         return res.status(500).send({msg:'Technical Issue!, Please click on resend for verify your Email.'});
-            //      }
-            //     return res.status(200).send('A verification email has been sent to ' + user.email + '. It will expire after one day. If you not get verification Email click on resend token.');
-            // });
-          let email_content =  'Hello '+ user.username +',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + "localhost:3000" + '\/api/auth/confirmation\/' + user.sid + '\/' + token.token + '\n\nThank You!\n'
-          console.log(email_content)
+          let email_content =  'Hello '+ user.username +',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + "localhost:3000" + '\/api/auth/confirmation\/' + user.sid + '\/' + token.token + '\n\nThank You!\n';
+          return sendEmail(res, 0, user.email, email_content);
         });
-        res.send({ message: "User was registered successfully! Please verify your account" });
-        // user.save(err => {
-        //   if (err) {
-        //     res.status(500).send({ message: err });
-        //     return;
-        //   }
-        //   res.send({ message: "User was registered successfully! Please verify your account" });
-        // });
     });
 };
 
@@ -132,10 +166,9 @@ exports.forgotPasswordRequest = (req, res) => {
       if(err){
         return res.status(500).send({msg:err.message});
       }
+
       let email_content =  'Hello '+ user.username +',\n\n' + 'Please reset your password by clicking the link: \nhttp:\/\/' + "localhost:3000" + '\/api/auth/passwordreset\/' + user.sid + '\/' + token.token + '\n\nThank You!\n'
-      console.log(email_content)
-      return res.status(200).send({
-        message: "Successfully sent password reset link."});
+      return sendEmail(res, 2, user.email, email_content);
     })
   });
 } 
@@ -321,22 +354,9 @@ exports.resendVerificationLink = (req, res) => {
             return res.status(500).send({message: err});
           }
 
-          // Send email (use credentials of SendGrid)
-          // var transporter = nodemailer.createTransport({ service: 'Sendgrid', auth: { user: process.env.SENDGRID_USERNAME, pass: process.env.SENDGRID_PASSWORD } });
-          // var mailOptions = { from: 'no-reply@example.com', to: user.email, subject: 'Account Verification Link', text: 'Hello '+ user.name +',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + user.email + '\/' + token.token + '\n\nThank You!\n' };
-          // transporter.sendMail(mailOptions, function (err) {
-          //     if (err) { 
-          //     return res.status(500).send({
-          //       message: 'Technical Issue! Please click on the resend button'});
-          //   }
-          // return res.status(200).send({
-          //   message: 'A verification email has been sent to ' + user.email + '. It will be valid for one day.'});
-          // });
           let email_content =  'Hello '+ user.username +',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + "localhost:3000" + '\/api/auth/confirmation\/' + user.sid + '\/' + token.token + '\n\nThank You!\n'
-          console.log(email_content)
-          res.status(200).send({
-            message: "Your new verification link has been sent."});
-        });
+          return sendEmail(res, 1, user.email, email_content);
+        })
       }
   })
 }

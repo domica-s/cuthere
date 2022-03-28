@@ -1,6 +1,7 @@
 var express = require("express");
 
 var Event = require("../models/event");
+var User = require("../models/user");
 
 var router = express.Router();
 
@@ -29,7 +30,8 @@ router.get("/allevents", [authJwt.verifyToken], function (req, res) {
 router.get("/event/:id", [authJwt.verifyToken], function (req, res) {
 
     var event_id = req.params.id;
-    Event.findOne({ eventID: event_id }, (err, result) => {
+    Event.findOne({ eventID: event_id }).populate('chatHistory.user').populate('participants').populate('createdBy')
+    .exec(function(err, result){
         if (err) {
           res.status(400).send({ message: "error occured: " + err })
         }
@@ -77,7 +79,7 @@ router.get("/discoverevents", [authJwt.verifyToken], function (req, res) {
   });
 });
 
-router.get("/newestevents", [authJwt.verifyToken], function (req, res) {
+router.get("/featured/new", [authJwt.verifyToken], function (req, res) {
   var event_dic = {};
 
   Event.find({}).sort({

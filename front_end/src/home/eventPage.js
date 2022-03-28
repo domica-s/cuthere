@@ -7,6 +7,7 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
 import AuthService from "../services/auth.service";
+import { auto } from "@popperjs/core";
 
 
 var params = require("../params/params");
@@ -67,7 +68,6 @@ class Event extends React.Component {
         let e = this.state.events
         return(
             <Container>
-                <EventWidget />
                 <h2>Here are the events</h2>
                 {e.length > 0 && e.map((data, index) => <OneEvent data={data}/>)}
             </Container>
@@ -99,28 +99,31 @@ class EventWidget extends React.Component{
           .then((data) => {
             this.setState({
               title: data.title,
-              events: Object.entries(data.event_dic)
+              events: data.event_dic
             });
           });
       }
     }
     render(){
-      let events = this.state.events
-      console.log(events)
+      let events = Object.entries(this.state.events)
+      let disp_events =  Object.entries(this.state.events).slice(0,5)
+      
       let title = this.state.title
         return (
-          <Card>
+          <Card style={{ maxHeight: "22rem" }}>
             <Card.Header style={{ textAlign: "left" }}>
-              {title}
-              <a href="/event" style={{ float: "right" }}>
+              <a href="featured/new">
+                <b>{title}</b>
+              </a>
+              <a href="featured/new" style={{ float: "right" }}>
                 See all
               </a>
             </Card.Header>
-            <Card.Body>
+            <Card.Body style={{ overflowY: "hidden" }}>
               <Row className="widget g-4">
                 {events.length > 0 &&
-                  events.map((data, index) => (
-                    <Col>
+                  disp_events.map((data) => (
+                    <Col style={{ justifyContent: "center", display: "flex" }}>
                       <EventCard data={data} />
                     </Col>
                   ))}
@@ -145,7 +148,7 @@ class EventCard extends React.Component {
           quota = <Badge pill bg="warning">{avail}</Badge>;
         }
         return (
-          <Card style={{ width: "12rem", height: "17.25rem",}}>
+          <Card style={{ width: "12rem", height: "17.25rem" }}>
             <Card.Img
               variant="top"
               style={{ maxHeight: "200px" }}
@@ -154,12 +157,12 @@ class EventCard extends React.Component {
             <Card.Body>
               <Card.Title
                 style={{
+                  whiteSpace: "nowrap",
                   textAlign: "left",
                   width: "10rem",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
-                }}
-              >
+                }}>
                 {data.title}
               </Card.Title>
               <div style={{ height: "2.75rem" }}>
@@ -180,8 +183,8 @@ class EventCard extends React.Component {
                     </h6>
                     <p className="text">Quota: {quota}</p>
                   </Col>
-                  <Col className="align-items-end" xs={4}>
-                    <Button variant="primary" size="sm">
+                  <Col style={{ paddingLeft: "0" }} xs={4}>
+                    <Button variant="primary" className="mt-2">
                       Join
                     </Button>
                   </Col>
@@ -193,4 +196,4 @@ class EventCard extends React.Component {
     }
 }
 
-export {Event, EventWidget}
+export {Event, EventWidget, EventCard}

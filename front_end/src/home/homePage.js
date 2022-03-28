@@ -14,7 +14,7 @@ class Home extends React.Component {
             currentUser: AuthService.getCurrentUser(),
             APIintEvents: params.baseBackURL + "/intevents",
             APIdiscEvents: params.baseBackURL + "/discoverevents",
-            APInewEvents: params.baseBackURL + "/newestevents",
+            APInewEvents: params.baseBackURL + "/featured/new",
             APIsortEvents: params.baseBackURL + "/eventssortdate",
         }
     }
