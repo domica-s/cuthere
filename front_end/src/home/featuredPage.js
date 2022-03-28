@@ -1,27 +1,24 @@
-import React from "react";
-import Container from "react-bootstrap/Container";
+import React, {useEffect, useState} from "react";
+import { useParams } from "react-router-dom";
 
+import Container from "react-bootstrap/Container";
 import {EventCard} from "./eventPage";
 import Button from "react-bootstrap/Button";
 import AuthService from "../services/auth.service";
 
 var params = require("../params/params");
 
+function Featured(){
+    const [data, setData] = useState({
+      events: {}
+    });
 
-class Featured extends React.Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            api: params.baseBackURL + "/featured/new",
-            events: {}
-        };
-    }
-    componentDidMount(){
-      let currentUser = AuthService.getCurrentUser()
-      if (currentUser === null) {
-      }
-      {
-        currentUser !== null && fetch(this.state.api, {
+    const {type} = useParams();
+    let currentUser = AuthService.getCurrentUser();
+
+    useEffect(() => {
+      let api = params.baseBackURL + "/featured/" + type;
+      currentUser !== null && fetch(api, {
             method: "GET",
             headers: new Headers({
               "x-access-token": currentUser.accessToken,
@@ -29,29 +26,31 @@ class Featured extends React.Component{
           })
           .then((res) => res.json())
           .then((data) => {
-            this.setState({
-              title: data.title,
+            setData({
               events: data.event_dic
-            });
+            })
           });
-      }
-    }
-    render(){
-        let events = Object.entries(this.state.events)
-        return (
-          <Container className="mb-5">
-            <a href="/">
-            <Button variant="secondary" className="mt-2" style={{display:"flex", justifyContent:"flex-start"}}>
-              Go back</Button></a>
-          <div style={{padding:"1rem", display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gridGap:"40px"}}>
-            {events.length > 0 &&
-              events.map((data) => 
-              <EventCard data={data} />
-              )}
-          </div>
-          </Container>
-        );
-    }
+        }
+        , []);
+
+    const {events} = data;
+    const disp_events = Object.entries(events)
+    console.log(disp_events)
+
+    return (
+      <Container className="mb-5">
+        <a href="/">
+        <Button variant="secondary" className="mt-2" style={{display:"flex", justifyContent:"flex-start"}}>
+          Go back</Button></a>
+        <div style={{padding:"1rem", display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gridGap:"40px"}}>
+          {disp_events.length > 0 &&
+            disp_events.map((data) => 
+            <EventCard data={data} />
+            )}
+        </div>
+      </Container>
+    );
 }
+
 
 export {Featured}

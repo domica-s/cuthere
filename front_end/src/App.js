@@ -82,7 +82,7 @@ class App extends React.Component {
             <Route path='/about' element={<About/>} />
             <Route path='/login' element={<LoginWithNavigate/>} />
             {currentUser !== undefined && <Route path='/event' element={<Event/>} />}
-            {currentUser !== undefined && <Route path='/featured/new' element={<Featured/>} />}
+            {currentUser !== undefined && <Route path='/featured/:type' element={<Featured/>} />}
             <Route path='/signup' element={<SignUpWithNavigate/>} />
             <Route path='/logout' element={<this.handleLogout/>} />
             {currentUser !== undefined && <Route path='/profile' element={<Profile/>} />}

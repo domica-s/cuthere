@@ -52,7 +52,7 @@ router.get("/intevents", [authJwt.verifyToken], function(req,res){
           event_dic[i] = event[i];
         }
         var int_events = {
-          "title": "Events you might be interested in",
+          title: "Events you might be interested in",
           event_dic,
         };
         res.send(int_events);
