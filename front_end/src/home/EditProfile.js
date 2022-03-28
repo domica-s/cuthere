@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Input from "./Input";
-import axios from "axios";
-import Form from "react-bootstrap/Form"
-import Button from "react-bootstrap/Button"
+import { Form, Button } from "react-bootstrap"
 import authService from "../services/auth.service";
-import Container, { FloatingLabel } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './editProfileStyles.css'
 
