@@ -3,6 +3,7 @@ import {BrowserRouter, Routes, Route, useLocation, Link} from 'react-router-dom'
 import {Home, About} from './home/homePage'
 import {LoginWithNavigate} from './home/loginPage'
 import {Event} from './home/eventPage'
+import {Featured} from './home/featuredPage'
 import { SignUpWithNavigate } from  './home/signUpPage'
 import { ForgotPw } from './home/forgotPwPage';
 // import { Navbar, Container, Nav } from 'react-bootstrap';
@@ -81,6 +82,7 @@ class App extends React.Component {
             <Route path='/about' element={<About/>} />
             <Route path='/login' element={<LoginWithNavigate/>} />
             {currentUser !== undefined && <Route path='/event' element={<Event/>} />}
+            {currentUser !== undefined && <Route path='/featured/new' element={<Featured/>} />}
             <Route path='/signup' element={<SignUpWithNavigate/>} />
             <Route path='/logout' element={<this.handleLogout/>} />
             {currentUser !== undefined && <Route path='/profile' element={<Profile/>} />}

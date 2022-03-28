@@ -77,7 +77,7 @@ router.get("/discoverevents", [authJwt.verifyToken], function (req, res) {
   });
 });
 
-router.get("/newestevents", [authJwt.verifyToken], function (req, res) {
+router.get("/featured/new", [authJwt.verifyToken], function (req, res) {
   var event_dic = {};
 
   Event.find({}).sort({
