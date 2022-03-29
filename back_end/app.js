@@ -56,10 +56,6 @@ require('./routes/auth.routes')(app);
 require('./routes/admin.routes')(app);
 app.use("/", require("./routes"));
 
-// app.get("/", (req, res) => {
-//     res.json({ message: "Welcome to bezkoder application." });
-//   });
-
 //----------------------------------------- END OF ROUTES---------------------------------------------------
 //Start Server
 app.listen(app.get("port"), function() {
