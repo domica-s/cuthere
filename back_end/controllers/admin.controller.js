@@ -42,8 +42,8 @@ exports.getEventId = (req, res) => {
       });
 }
 
-exports.loadRecentUsers = (req, res) => {
-    User.find({}, {username: 1, sid: 1}).sort({createdAt:-1}).limit(10)
+exports.loadRecentUsersAndEvents = (req, res) => {
+    User.find({ active: true }, {username: 1, sid: 1}).sort({createdAt:-1}).limit(10)
     .exec((err, user) => {
         if (err) {
             return res.status(500).send({ message: err });
@@ -53,7 +53,7 @@ exports.loadRecentUsers = (req, res) => {
             if (err) {
                 return res.status(500).send({ message: err });
             }
-            User.count()
+            User.count({ active: true })
             .exec((err, ucount) => {
                 if (err) {
                     return res.status(500).send({ message: err });

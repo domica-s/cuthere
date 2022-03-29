@@ -40,8 +40,14 @@ export function AdminDashboard() {
         message: "",
     })
 
+    const { successfulSID, messageSID, user } = sidData;
+    const { successfulEventId, messageEventId, event} = eventIdData;
+    const { successful, message, recentUsers, recentEvents, totalUsers, totalEvents } = recentData;
+
     useEffect(() => {
+
         const currentUser = AuthService.getCurrentUser();
+
         AdminService.loadRecentUsersAndEvents(currentUser)
         .then(response => {
             setRecentData({ successful: true, message: response.data.message, totalUsers: response.data.userCount, totalEvents: response.data.eventCount, recentUsers: response.data.users, recentEvents: response.data.events });
@@ -50,7 +56,7 @@ export function AdminDashboard() {
             setRecentData({ successful: false, message: error.response.data.message, totalUsers: error.response.data.userCount, totalEvents: error.response.data.eventCount,recentUsers: error.response.data.users, recentEvents: error.response.data.events });
         })
 
-    }, []);
+    });
 
     const handleInput = (e) => {
         setAdminRequest({ ...adminRequest, [e.target.name]: e.target.value });
@@ -87,16 +93,12 @@ export function AdminDashboard() {
         })
     }
 
-    const { successfulSID, messageSID, user } = sidData;
-    const { successfulEventId, messageEventId, event} = eventIdData;
-    const { successful, message, recentUsers, recentEvents, totalUsers, totalEvents } = recentData;
-
     return (
-        <>
+        <div style={{ marginBottom: 50 }}>
         <Container>
             <Row>
                 <Col>
-                    <h2>Total user count: {totalUsers}</h2>
+                    <h2>Total active user count: {recentData.totalUsers}</h2>
                     <h2>Recently created events</h2>
                     <Table striped bordered hover>
                         <thead>
@@ -156,6 +158,7 @@ export function AdminDashboard() {
                     </div>
                 </div>
             )}
+
         </Container>
         <div>
             <Container>
@@ -245,7 +248,7 @@ export function AdminDashboard() {
                 )}
             </Container>
         </div>
-        </>
+        </div>
     );
 
 }
