@@ -1,13 +1,40 @@
 var express = require("express");
+var multer = require('multer');
 
 var Event = require("../models/event");
 var User = require("../models/user");
+var Photo = require("../models/photo");
+
+var {v4:uuidv4} = require("uuid");
 
 var router = express.Router();
+
+var path = require("path");
 
 const res = require("express/lib/response");
 
 const { authJwt } = require("../middlewares");
+
+const storage = multer.diskStorage({
+  destination: function(req, file, cb){
+    cb(null, 'images');
+  },
+  filename: function(req, file, cb){
+    cb(null, uuidv4() + '-' + Date.now() + path.extname(file.originalname));
+  }
+});
+
+const fileFilter = (req, file, cb) => {
+  const allowedFileTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+  if(allowedFileTypes.includes(file.mimetype)){
+    cb(null, true);
+  }
+  else{
+    cb(null, false);
+  }
+}
+
+let upload = multer({storage, fileFilter});
 
 // List all events
 router.get("/allevents", [authJwt.verifyToken], function (req, res) {
@@ -276,6 +303,25 @@ router.post('/event/unregister/:id', [authJwt.verifyToken], function(req, res) {
         }
       }
     });
+})
+
+//post and get photo
+router.route('add').post(upload.single('photo'), [authJwt.verifyToken], (req,res) =>{
+  var photo = req.body.photo;
+
+  var newPhotoData = {photo};
+
+  var newPhoto = new Photo(newPhotoData);
+
+  newPhoto.save()
+  .then(()=> res.json('Photo Uploaded'))
+  .catch(err => res.status(400).json("Error: " + err));
+})
+
+router.route('/rec').get([authJwt.verifyToken],(req,res) => {
+  Photo.find()
+  .then(photo => res.json(photo))
+  .catch(err => res.status(400).json("Error: " + err))
 })
 
 router.post("/event/chat/:id", [authJwt.verifyToken], function(req, res) {

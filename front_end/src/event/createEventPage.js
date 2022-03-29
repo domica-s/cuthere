@@ -7,11 +7,13 @@ import Row from 'react-bootstrap/Row';
 import { Container } from "react-bootstrap";
 import AuthService from "../services/auth.service";
 import logo from '../images/logo.jfif';
+import axios from 'axios'
 
 
 var params = require("../params/params");
 
 const API = params.baseBackURL + "/event";
+const photoAPI = params.baseBackURL + "/event/pic"
 
 const quotaInvalidMsg = "Quota is invalid, please input a positive integer";
 
@@ -61,6 +63,8 @@ class CreateEvent extends React.Component {
             start: "",
             end: "",
             quota: 1,
+            photo: "",
+            photoname: "",
             category: "Outdoor",
             quotaValidate: true
         }
@@ -78,8 +82,21 @@ class CreateEvent extends React.Component {
                 start: this.state.start,
                 end: this.state.end,
                 quota: this.state.quota,
+                photo: this.state.photo,
                 category: this.state.category
             }
+            const formData = new FormData();
+            formData.append('photo', data.photo);
+            console.log(data.photo)
+
+            axios.post(photoAPI, formData)
+            .then(res => {
+                console.log(res);
+            })
+            .catch(err => {
+                console.log(err);
+            });
+
             fetch(API, {
                 method: "POST",
                 headers: new Headers({
@@ -123,6 +140,12 @@ class CreateEvent extends React.Component {
             location: e.target.value
         });
     }
+    
+    onChangePhoto(e) {
+        this.setState({
+            photo: e.target.value
+        });
+    }
 
     onChangeCategory(e) {
         this.setState({
@@ -148,7 +171,7 @@ class CreateEvent extends React.Component {
                 <Logo/>
                 <Description/>
     
-                <Form id="createEvent" className="signin-form" onSubmit={this.handleCreate}>
+                <Form id="createEvent" className="signin-form" onSubmit={this.handleCreate} encType='multipart/form-data'>
     
                     <Form.Group className="mb-3" controlId="floatingInput">
                         <Form.Label>Title of your event</Form.Label>
@@ -185,9 +208,9 @@ class CreateEvent extends React.Component {
                         </Form.Select>
                     </Form.Group>
     
-                    <Form.Group controlId="formFile" className="mb-3">
+                    <Form.Group onSubmit={handleSubmit} controlId="formFile" className="mb-3" >
                         <Form.Label>Upload a photo for your event?</Form.Label>
-                        <Form.Control type="file" />
+                        <Form.Control type="file" accept=".png, .jpg, .jpeg" name="photo" onChange={this.onChangePhoto}/>
                     </Form.Group>
     
                     <Form.Group className="mb3">
