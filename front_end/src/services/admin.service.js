@@ -31,6 +31,38 @@ class AdminService {
             }
         });
     }
+    
+    deleteSelectedEvent(currentUser, eventId, password) {
+        let temp_url = "event/" + eventId + "/delete";
+        let adminReqSID = currentUser.user.sid;
+        let adminReqPassword = password;
+
+        return axios.post(ADMIN_URL + temp_url, {
+            adminReqSID,
+            adminReqPassword
+          }, 
+          {
+            headers: {
+                "x-access-token": currentUser.accessToken
+            }
+        })
+    }
+
+    deleteSelectedUser(currentUser, sid, password) {
+        let temp_url = "user/" + sid + "/delete";
+        let adminReqSID = currentUser.user.sid;
+        let adminReqPassword = password;
+        
+        return axios.post(ADMIN_URL + temp_url, {
+            adminReqSID,
+            adminReqPassword
+          }, 
+          {
+            headers: {
+                "x-access-token": currentUser.accessToken
+            }
+        })
+    }
 }
 
 export default new AdminService();
