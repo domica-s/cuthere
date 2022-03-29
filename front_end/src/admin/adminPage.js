@@ -107,11 +107,11 @@ export function AdminDashboard() {
                         </thead>
                         <tbody>
                             {Object.keys(recentUsers).map((user) => (
-                                <tr key={user}>
+                                <tr key={"userRow" + user}>
                                     {Object.values(user).map((val) => (
                                         <>
-                                        <td>{recentUsers[val]["sid"]}</td>
-                                        <td>{recentUsers[val]["username"]}</td>
+                                        <td key={"user" + user}>{recentUsers[val]["sid"]}</td>
+                                        <td key={"user2" + user}>{recentUsers[val]["username"]}</td>
                                         </>
                                     ))}
                                 </tr>
@@ -130,12 +130,12 @@ export function AdminDashboard() {
                             </tr>
                         </thead>
                         <tbody>
-                            {Object.keys(recentEvents).map((item) => (
-                                <tr key={item}>
-                                    {Object.values(item).map((val) => (
+                            {Object.keys(recentEvents).map((event) => (
+                                <tr key={"eventRow" + event}>
+                                    {Object.values(event).map((val) => (
                                         <>
-                                        <td>{recentEvents[val]["eventID"]}</td>
-                                        <td>{recentEvents[val]["title"]}</td>
+                                        <td key={"event" + event}>{recentEvents[val]["eventID"]}</td>
+                                        <td key={"event2" + event}>{recentEvents[val]["title"]}</td>
                                         </>
                                     ))}
                                 </tr>
