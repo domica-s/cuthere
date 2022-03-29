@@ -22,6 +22,15 @@ class AdminService {
             }
         });
     }
+
+    loadRecentUsersAndEvents(currentUser) {
+        let temp_url = "query/recent";
+        return axios.get(ADMIN_URL + temp_url,  {
+            headers: {
+                "x-access-token": currentUser.accessToken
+            }
+        });
+    }
 }
 
 export default new AdminService();

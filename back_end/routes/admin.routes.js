@@ -13,4 +13,5 @@ module.exports = function(app) {
     
     app.get("/admin/query/sid/:sid", [authJwt.verifyToken, authJwt.isAdmin], controller.getSID);
     app.get("/admin/query/event/:eventid", [authJwt.verifyToken, authJwt.isAdmin], controller.getEventId);
+    app.get("/admin/query/recent", [authJwt.verifyToken, authJwt.isAdmin], controller.loadRecentUsers);
 };
