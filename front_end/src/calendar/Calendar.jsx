@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import AddEventModal from './AddEventModal';
@@ -15,7 +15,11 @@ import history from "../history";
 export default function () {
     const [modalOpen, setModalOpen] = useState(false)
     const [events, setEvents] = useState([])
-    const [all, setAll] = useState(true);
+    const [yourCalendar, setYourCalendar] = useState(false);
+
+    const [, updateState] = React.useState()
+    const forceUpdate = React.useCallback(()=> updateState({}), []);
+
     const calendarRef = useRef(null)
 
     const onEventAdded = (event) => {
@@ -31,6 +35,7 @@ export default function () {
         });
 
     }
+
     
     // To handle Event Add --> WORKING
     async function handleEventAdd(data){
@@ -41,12 +46,12 @@ export default function () {
     async function handleDatesSet(data){
         console.log(data)
         // To get all the events to the calendar --> WORKING
-        if (all){
+        if (!yourCalendar){
         const response = await axios.get('http://localhost:8080/api/calendar/get-event?start='+moment(data.start).toISOString() +'&end='+moment(data.end).toISOString())
         setEvents(response.data)
         }
 
-        // To get only your events to the calendar --> NOT WORKING
+        // To get only your events to the calendar --> WORKING
         else {
         const response = await axios.get("http://localhost:8080/api/calendar/my-event?start="+moment(data.start).toISOString()+'&end='+moment(data.end).toISOString())
         setEvents(response.data)
@@ -67,6 +72,7 @@ export default function () {
         
     }
 
+
     return(
         <React.Fragment> 
             <Container>
@@ -74,9 +80,11 @@ export default function () {
                     <Button className="mb-3 m-2" variant="outline-warning" onClick ={() => setModalOpen(true)}> Add Event </Button>
                 </Col>
 
-                <Row> 
-                    <Button className ="mb-3 m-2" variant="outline-warning" onClick={()=> setAll(false)}> Your Events </Button>
-                </Row>
+                <Col> 
+                    <Button className ="mb-3 m-2" variant="outline-secondary" onClick={()=> setYourCalendar(true)}> Your Events </Button>
+                    <Button className ="mb-3 m-2" variant="outline-secondary" onClick={()=> setYourCalendar(false)}> All Events </Button>
+                </Col>
+                
             </Container>
 
             <div style ={{position: "relative", zIndex: 0}}>

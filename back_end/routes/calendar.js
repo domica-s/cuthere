@@ -58,13 +58,14 @@ router.get("/get-event", async(req,res)=> {
 });
 
 // Filter Function - My events 
-router.post("/my-event", [authJwt.verifyToken], async(req, res) => { 
+router.get("/my-event", async(req, res) => { 
     
     const events = await Event.find({
         createdBy: req.body._sid, 
         start: {$gte: moment(req.query.start).toDate()},
         end: {$lte: moment(req.query.end).toDate()}
     })
+    
 
     res.send(events);
 
