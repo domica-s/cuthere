@@ -5,7 +5,6 @@
 // form (field) prompting event id --> redirect to event detail page 
 
 import React, { useEffect, useState } from "react";
-import { baseBackURL } from "../params/params";
 import {Form, Col, Row, Button, Container, Table} from "react-bootstrap";
 import AdminService from '../services/admin.service';
 import AuthService from '../services/auth.service';
@@ -15,6 +14,8 @@ export function AdminDashboard() {
     const [adminRequest, setAdminRequest] = useState({
         querySID: 0,
         queryEventId: 0,
+        adminPasswordEvent: "",
+        adminPasswordUser: "",
     });
 
     const [sidData, setSidData] = useState({
@@ -40,8 +41,26 @@ export function AdminDashboard() {
         message: "",
     })
 
+    const [deleteEvent, setDeleteEvent] = useState({
+        eid: eventIdData.event? eventIdData.event.eventID: "",
+        successfulDeleteEvent: false,
+        messageDeleteEvent: "",
+    })
+
+    const [deleteUser, setDeleteUser] = useState({
+        sid: sidData.user? sidData.user.sid: "",
+        successfulDeleteUser: false,
+        messageDeleteUser: "",
+    })
+
+    const { successfulSID, messageSID, user } = sidData;
+    const { successfulEventId, messageEventId, event} = eventIdData;
+    const { successful, message, recentUsers, recentEvents, totalUsers, totalEvents } = recentData;
+
     useEffect(() => {
+        
         const currentUser = AuthService.getCurrentUser();
+
         AdminService.loadRecentUsersAndEvents(currentUser)
         .then(response => {
             setRecentData({ successful: true, message: response.data.message, totalUsers: response.data.userCount, totalEvents: response.data.eventCount, recentUsers: response.data.users, recentEvents: response.data.events });
@@ -49,6 +68,10 @@ export function AdminDashboard() {
         error => {
             setRecentData({ successful: false, message: error.response.data.message, totalUsers: error.response.data.userCount, totalEvents: error.response.data.eventCount,recentUsers: error.response.data.users, recentEvents: error.response.data.events });
         })
+
+        return () => {
+            setRecentData({});
+        };
 
     }, []);
 
@@ -65,9 +88,10 @@ export function AdminDashboard() {
         AdminService.querySID(currentUser, sid)
         .then(response => {
             setSidData({ successfulSID: true, messageSID: response.data.message, user: response.data.user });
+            setDeleteUser({ sid: response.data.user.sid});
         },
         error => {
-            setSidData({ successfulSID: false, messageSID: error.response.data.message, user: error.response.data.user });
+            setSidData({ successfulSID: false, messageSID: error.response.data.message });
         })
     }
 
@@ -81,23 +105,54 @@ export function AdminDashboard() {
         AdminService.queryEventId(currentUser, eid)
         .then(response => {
             setEventIdData({ successfulEventId: true, messageEventId: response.data.message, event: response.data.event });
+            setDeleteEvent({ eid: response.data.event.eventID});
         },
         error => {
             setEventIdData({ successfulEventId: false, messageEventId: error.response.data.message, event: error.response.data.event });
         })
     }
 
-    const { successfulSID, messageSID, user } = sidData;
-    const { successfulEventId, messageEventId, event} = eventIdData;
-    const { successful, message, recentUsers, recentEvents, totalUsers, totalEvents } = recentData;
+    const handleDeleteEvent = (e) => {
+        e.preventDefault();
+
+        const currentUser = AuthService.getCurrentUser();
+        let eid = deleteEvent.eid;
+
+        AdminService.deleteSelectedEvent(currentUser, eid, adminRequest.adminPasswordEvent)
+        .then(response => {
+            setEventIdData({ event: "" });
+            setAdminRequest({ queryEventId: "" });
+            setDeleteEvent({ successfulDeleteEvent: true, messageDeleteEvent: response.data.message });
+        },
+        error => {
+            setDeleteEvent({ successfulDeleteEvent: false, messageDeleteEvent: error.response.data.message });
+        })
+    }
+    
+    const handleDeleteUser = (e) => {
+        e.preventDefault();
+
+        const currentUser = AuthService.getCurrentUser();
+        let sid = deleteUser.sid;
+
+        AdminService.deleteSelectedUser(currentUser, sid, adminRequest.adminPasswordUser)
+        .then(response => {
+            setSidData({ user: "" });
+            setAdminRequest({ querySID: "" });
+            setDeleteUser({ successfulDeleteUser: true, messageDeleteUser: response.data.message });
+        },
+        error => {
+            setDeleteUser({ successfulDeleteUser: false, messageDeleteUser: error.response.data.message });
+        })
+    }
 
     return (
-        <>
+        <div style={{ marginBottom: 50 }}>
         <Container>
             <Row>
                 <Col>
-                    <h2>Total user count: {totalUsers}</h2>
-                    <h2>Recently created events</h2>
+                    <h2>Total active user count: {recentData.totalUsers}</h2>
+                    <h2>Recently registered active users</h2>
                     <Table striped bordered hover>
                         <thead>
                             <tr>
@@ -121,7 +176,7 @@ export function AdminDashboard() {
                 </Col>
                 <Col>
                     <h2>Total event count: {totalEvents}</h2>
-                    <h2>Recently registered users</h2>
+                    <h2>Recently created events</h2>
                     <Table striped bordered hover>
                         <thead>
                             <tr>
@@ -156,6 +211,7 @@ export function AdminDashboard() {
                     </div>
                 </div>
             )}
+
         </Container>
         <div>
             <Container>
@@ -176,7 +232,7 @@ export function AdminDashboard() {
                 <div className="form-group">
                     <div
                     className={
-                        successfulSID? "alert alert-success": "alert alert-danger"
+                        successfulSID? "d-none": "alert alert-danger"
                     }
                     role="alert"
                     >
@@ -186,7 +242,8 @@ export function AdminDashboard() {
                 )}
                 {user && (
                     <div>
-                        <p>Username: <a href="">{user.username}</a></p>
+
+                        <p>Username: <a href={"/user/" + user.sid}>{user.username}</a></p>
                         <p>SID: <strong>{user.sid}</strong></p>
                         <p>Email: <strong>{user.email}</strong></p>
                         <p>Mobile Number: <strong>{user.mobileNumber}</strong></p>
@@ -196,6 +253,35 @@ export function AdminDashboard() {
                         <p>Registered Events: <strong>{user.registeredEvents}</strong></p>
                         <p>Starred Events: <strong>{user.starredEvents}</strong></p>
                         <p>Created at: <strong>{user.createdAt}</strong></p>
+
+                        <div>
+                        <Form onSubmit={handleDeleteUser}>
+                            <div className="form-group">
+                                <label className="form-label">Enter password to confirm deletion:</label>
+                                <Form.Control 
+                                    name="adminPasswordUser"
+                                    type="password" 
+                                    value={adminRequest.adminPasswordUser || ""}
+                                    placeholder={"Type in your password"}
+                                    onChange={handleInput} 
+                                />
+                            </div>
+                            <Button type="submit" variant="danger" value="Delete this user">Delete this user</Button>
+                        </Form>
+                        </div>
+
+                    </div>
+                )}
+                {deleteUser.messageDeleteUser && (
+                    <div className="form-group">
+                        <div
+                        className={
+                            deleteUser.successfulDeleteUser? "alert alert-success": "alert alert-danger"
+                        }
+                        role="alert"
+                        >
+                        {deleteUser.messageDeleteUser}
+                        </div>
                     </div>
                 )}
             </Container>
@@ -218,7 +304,7 @@ export function AdminDashboard() {
                     <div className="form-group">
                         <div
                         className={
-                            successfulEventId? "alert alert-success": "alert alert-danger"
+                            successfulEventId? "d-none": "alert alert-danger"
                         }
                         role="alert"
                         >
@@ -228,24 +314,49 @@ export function AdminDashboard() {
                 )}
                 {event && (
                     <div>
-                        <p>Title: <a href="/event/">{event.title}</a></p>
+                        <p>Title: <a href={"/event/" + event.eventID}>{event.title}</a></p>
                         <p>Event ID: <strong>{event.eventID}</strong></p>
                         <p>Status: <strong>{event.status}</strong></p>
                         <p>Venue: <strong>{event.venue}</strong></p>
                         <p>Start: <strong>{event.start}</strong></p>
                         <p>End: <strong>{event.end}</strong></p>
                         <p>Activity Category: <strong>{event.activityCategory}</strong></p>
-                        <p>Chat History: <strong>{event.chatHistory}</strong></p>
                         <p>Number of Participants: <strong>{event.numberOfParticipants}</strong></p>
                         <p>Participants: <strong>{event.participants}</strong></p>
                         <p>Created At: <strong>{event.createdAt}</strong></p>
-                        <p>Created By: <strong>{event.createdBy}</strong></p>
                         
+                        <div>
+                            <Form onSubmit={handleDeleteEvent}>
+                                <div className="form-group">
+                                    <label className="form-label">Enter password to confirm deletion:</label>
+                                    <Form.Control 
+                                        name="adminPasswordEvent"
+                                        type="password" 
+                                        value={adminRequest.adminPasswordEvent || ""}
+                                        placeholder={"Type in your password"}
+                                        onChange={handleInput} 
+                                    />
+                                </div>
+                                <Button type="submit" variant="danger" value="Delete this event">Delete this event</Button>
+                            </Form>
+                        </div>
+                    </div>
+                )}
+                {deleteEvent.messageDeleteEvent && (
+                    <div className="form-group">
+                        <div
+                        className={
+                            deleteEvent.successfulDeleteEvent? "alert alert-success": "alert alert-danger"
+                        }
+                        role="alert"
+                        >
+                        {deleteEvent.messageDeleteEvent}
+                        </div>
                     </div>
                 )}
             </Container>
         </div>
-        </>
+        </div>
     );
 
 }
