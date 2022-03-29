@@ -47,6 +47,7 @@ router.post("/create-event", async(req,res)=> {
     
 })
 
+// Filter Function - All Events
 router.get("/get-event", async(req,res)=> {
     const events = await Event.find({
         start: {$gte: moment(req.query.start).toDate()}, 
@@ -56,30 +57,35 @@ router.get("/get-event", async(req,res)=> {
     res.send(events);
 });
 
-// To route to a specific event page
-router.get("/get-event/:eventID", async(req,res)=> {
+// Filter Function - My events 
+router.post("/my-event", [authJwt.verifyToken], async(req, res) => { 
+    
+    const events = await Event.find({
+        createdBy: req.body._sid, 
+        start: {$gte: moment(req.query.start).toDate()},
+        end: {$lte: moment(req.query.end).toDate()}
+    })
 
-    // Route to specific event page
+    res.send(events);
 
+    
 });
 
-// Reference for Filtering
-router.post("/myevents", [authJwt.verifyToken], function(req, res){ 
-    var event_dic = {};
-    Event.find({ createdBy:req.body._sid }).exec(function(err, event){
-        if(err){
-            res.status(500).send({ message: err });
-        }
-        if (event.length > 0) {
-          for (var i = 0; i < event.length; i++) {
-            event_dic[i] = event[i];
-          }
-          res.status(200).send(event_dic);
+// To route to an events detail page
+router.get("/get-event/:id", async(req,res)=> {
+
+    console.log(req.params.id)
+    Event.findOne({id: req.params.id}, (err, result)=> {
+        if (err) {
+            res.status(400).send({ message: "error occured: "+ err})
         }
         else {
-            res.status(400).send({ message: "Seems like you have not created any events yet!" });
+            console.log(result)
+            res.status(200).send(result)
         }
     })
+
 });
+
 
 module.exports = router;
