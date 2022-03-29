@@ -1,5 +1,5 @@
 import React, {useState, useRef, useEffect} from 'react';
-import FullCalendar from '@fullcalendar/react'
+import FullCalendar, { preventSelection } from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import AddEventModal from './AddEventModal';
 import axios from 'axios';
@@ -43,8 +43,8 @@ export default function () {
     }
 
 
-    async function handleDatesSet(data){
-        console.log(data)
+    async function handleDatesSet(data, yourCalendar = false){
+
         // To get all the events to the calendar --> WORKING
         if (!yourCalendar){
         const response = await axios.get('http://localhost:8080/api/calendar/get-event?start='+moment(data.start).toISOString() +'&end='+moment(data.end).toISOString())
@@ -72,17 +72,11 @@ export default function () {
         
     }
 
-
     return(
         <React.Fragment> 
             <Container>
                 <Col> 
                     <Button className="mb-3 m-2" variant="outline-warning" onClick ={() => setModalOpen(true)}> Add Event </Button>
-                </Col>
-
-                <Col> 
-                    <Button className ="mb-3 m-2" variant="outline-secondary" onClick={()=> setYourCalendar(true)}> Your Events </Button>
-                    <Button className ="mb-3 m-2" variant="outline-secondary" onClick={()=> setYourCalendar(false)}> All Events </Button>
                 </Col>
                 
             </Container>
@@ -95,7 +89,34 @@ export default function () {
                     initialView = "dayGridMonth"
                     eventClick = {(event) => handleEventClick(event)}
                     eventAdd = {(event) => handleEventAdd(event)}
+                    customButtons={{
+                        yourEventButton: {
+                            text: 'Your Events',
+                            click: () => {
+                                setYourCalendar(true)
+                                const calendarApi = calendarRef.current.getApi()
+                                handleDatesSet(calendarApi.currentDataManager.data.dateProfile.currentRange, true)
+
+                            }
+                        },
+                        allEventButton: {   
+                            text: 'All Events',
+                            click:() => {
+                                setYourCalendar(false)
+                                const calendarApi = calendarRef.current.getApi()
+                                handleDatesSet(calendarApi.currentDataManager.data.dateProfile.currentRange, false)
+                            }
+                        }
+                    }}
+                    headerToolbar = {{
+                        right: 'prev,next today',
+                        left:'title',
+                        center:'yourEventButton allEventButton'
+
+                    }}
                     datesSet= {(date) => handleDatesSet(date)}
+                    
+                    
                 />
             </div>
             
