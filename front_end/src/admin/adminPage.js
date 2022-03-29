@@ -5,7 +5,6 @@
 // form (field) prompting event id --> redirect to event detail page 
 
 import React, { useEffect, useState } from "react";
-import { baseBackURL } from "../params/params";
 import {Form, Col, Row, Button, Container, Table} from "react-bootstrap";
 import AdminService from '../services/admin.service';
 import AuthService from '../services/auth.service';
@@ -244,7 +243,7 @@ export function AdminDashboard() {
                 {user && (
                     <div>
 
-                        <p>Username: <a href="">{user.username}</a></p>
+                        <p>Username: <a href={"/user/" + user.sid}>{user.username}</a></p>
                         <p>SID: <strong>{user.sid}</strong></p>
                         <p>Email: <strong>{user.email}</strong></p>
                         <p>Mobile Number: <strong>{user.mobileNumber}</strong></p>
@@ -315,18 +314,16 @@ export function AdminDashboard() {
                 )}
                 {event && (
                     <div>
-                        <p>Title: <a href="/event/">{event.title}</a></p>
+                        <p>Title: <a href={"/event/" + event.eventID}>{event.title}</a></p>
                         <p>Event ID: <strong>{event.eventID}</strong></p>
                         <p>Status: <strong>{event.status}</strong></p>
                         <p>Venue: <strong>{event.venue}</strong></p>
                         <p>Start: <strong>{event.start}</strong></p>
                         <p>End: <strong>{event.end}</strong></p>
                         <p>Activity Category: <strong>{event.activityCategory}</strong></p>
-                        <p>Chat History: <strong>{event.chatHistory}</strong></p>
                         <p>Number of Participants: <strong>{event.numberOfParticipants}</strong></p>
                         <p>Participants: <strong>{event.participants}</strong></p>
                         <p>Created At: <strong>{event.createdAt}</strong></p>
-                        <p>Created By: <strong>{event.createdBy}</strong></p>
                         
                         <div>
                             <Form onSubmit={handleDeleteEvent}>
