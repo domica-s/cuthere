@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { baseBackURL } from "../params/params";
 import { useParams } from "react-router-dom";
 import { Container, Row, Col, Logo, Form, Button, FloatingLabel } from "react-bootstrap";
-import logo from '../logo.jfif';
+import logo from '../images/logo.jfif';
 import AuthService from "../services/auth.service";
 
 function PasswordReset() {

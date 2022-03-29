@@ -1,6 +1,6 @@
 import React, { useState, Component } from "react";
 import AuthService from "../services/auth.service";
-import TestPicture from "./images/logo.svg"
+import TestPicture from "../images/logo.svg"
 import {Form, Button, Row, Col, Container, Card, CardGroup} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import "./myProfile.css"

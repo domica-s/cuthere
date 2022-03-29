@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { baseBackURL } from "../params/params";
 import { useParams } from "react-router-dom";
 
-function Confirm() {
+function ConfirmEmail() {
 
     const [userRequest, setUserRequest] = useState({
         successful: false,
@@ -48,4 +48,4 @@ function Confirm() {
 
 }
 
-export {Confirm}
+export {ConfirmEmail}

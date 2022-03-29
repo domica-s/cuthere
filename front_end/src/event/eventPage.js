@@ -152,7 +152,7 @@ class EventCard extends React.Component {
             <Card.Img
               variant="top"
               style={{ maxHeight: "200px" }}
-              src={require("./basket.jpeg")}
+              src={require("../images/basket.jpeg")}
             />
             <Card.Body>
               <Card.Title
