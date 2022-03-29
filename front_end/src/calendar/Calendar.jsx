@@ -43,9 +43,8 @@ export default function () {
     }
 
 
-    async function handleDatesSet(data, yourCalendar){
-        console.log(data)
-        console.log(yourCalendar)
+    async function handleDatesSet(data, yourCalendar = false){
+
         // To get all the events to the calendar --> WORKING
         if (!yourCalendar){
         const response = await axios.get('http://localhost:8080/api/calendar/get-event?start='+moment(data.start).toISOString() +'&end='+moment(data.end).toISOString())
@@ -90,20 +89,22 @@ export default function () {
                     initialView = "dayGridMonth"
                     eventClick = {(event) => handleEventClick(event)}
                     eventAdd = {(event) => handleEventAdd(event)}
-                    datesSet= {(date) => handleDatesSet(date)}
                     customButtons={{
                         yourEventButton: {
                             text: 'Your Events',
-                            click: (date) => {
+                            click: () => {
                                 setYourCalendar(true)
-                                alert('clicked the custom button!')
+                                const calendarApi = calendarRef.current.getApi()
+                                handleDatesSet(calendarApi.currentDataManager.data.dateProfile.currentRange, true)
+
                             }
                         },
-                        allEventButton: {
+                        allEventButton: {   
                             text: 'All Events',
                             click:() => {
                                 setYourCalendar(false)
-                                alert('clicked the custom button!')
+                                const calendarApi = calendarRef.current.getApi()
+                                handleDatesSet(calendarApi.currentDataManager.data.dateProfile.currentRange, false)
                             }
                         }
                     }}
@@ -113,6 +114,8 @@ export default function () {
                         center:'yourEventButton allEventButton'
 
                     }}
+                    datesSet= {(date) => handleDatesSet(date)}
+                    
                     
                 />
             </div>
