@@ -69,7 +69,7 @@ class App extends React.Component {
   render() {
     const { currentUser } = this.state;
     let username =  (authService.getCurrentUser())? authService.getCurrentUser().user.username : "Not logged in";
-    let isAdmin = (authService.getCurrentUser().user.role === "Admin")? true: false;
+    let isAdmin = (authService.getCurrentUser() && (authService.getCurrentUser().user.role=== "Admin"))? true: false;
 
     return (
       <div className="App">
