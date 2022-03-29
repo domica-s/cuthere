@@ -9,10 +9,13 @@ import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import { Container } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import history from "../history";
 
 export default function () {
     const [modalOpen, setModalOpen] = useState(false)
     const [events, setEvents] = useState([])
+    const [all, setAll] = useState(true);
     const calendarRef = useRef(null)
 
     const onEventAdded = (event) => {
@@ -29,25 +32,40 @@ export default function () {
 
     }
     
+    // To handle Event Add --> WORKING
     async function handleEventAdd(data){
         await axios.post("http://localhost:8080/api/calendar/create-event", data.event);
     }
 
+
     async function handleDatesSet(data){
+        console.log(data)
+        // To get all the events to the calendar --> WORKING
+        if (all){
         const response = await axios.get('http://localhost:8080/api/calendar/get-event?start='+moment(data.start).toISOString() +'&end='+moment(data.end).toISOString())
         setEvents(response.data)
+        }
+
+        // To get only your events to the calendar --> NOT WORKING
+        else {
+        const response = await axios.get("http://localhost:8080/api/calendar/my-event?start="+moment(data.start).toISOString()+'&end='+moment(data.end).toISOString())
+        setEvents(response.data)
+        }
     }
 
-    async function handleEventClick(data){
 
-        // Route to the corresponding event page
-        const response = await axios.get("http.//localhost:8080/api/calendar/myevents", data.event);
+    // To route to a specific event detail page --> WORKING, Just need to change the route
 
+    async function handleEventClick(event){
+        const id = event.event._def.extendedProps._id
 
+        await axios.get("http://localhost:8080/api/calendar/get-event/"+id);
+
+        history.push("/event");
+        history.go();
+        
+        
     }
-
-    console.log(events)
-
 
     return(
         <React.Fragment> 
@@ -57,7 +75,7 @@ export default function () {
                 </Col>
 
                 <Row> 
-                    <p> Labels for filtering here </p>
+                    <Button className ="mb-3 m-2" variant="outline-warning" onClick={()=> setAll(false)}> Your Events </Button>
                 </Row>
             </Container>
 
