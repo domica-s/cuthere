@@ -43,7 +43,32 @@ exports.getEventId = (req, res) => {
 }
 
 exports.loadRecentUsers = (req, res) => {
-    
+    User.find({}, {username: 1, sid: 1}).sort({createdAt:-1}).limit(10)
+    .exec((err, user) => {
+        if (err) {
+            return res.status(500).send({ message: err });
+        }
+        Event.find({}, {title: 1, eventID: 1}).sort({createdAt:-1}).limit(10)
+        .exec((err, event) => {
+            if (err) {
+                return res.status(500).send({ message: err });
+            }
+            User.count()
+            .exec((err, ucount) => {
+                if (err) {
+                    return res.status(500).send({ message: err });
+                }
+                Event.count()
+                .exec((err, ecount) => {
+                    if (err) {
+                        return res.status(500).send({ message: err });
+                    }
+                    return res.status(200).send({ userCount: ucount, eventCount: ecount, users: user, events: event, message: "Successfully loaded 10 recent users and events."});
+                })
+            })
+        })
+    })
+
 }
 
 // admin rights on event visit

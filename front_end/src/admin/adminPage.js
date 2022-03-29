@@ -29,7 +29,26 @@ export function AdminDashboard() {
         event: "",
     })
 
+    const [recentData, setRecentData] = useState({
+        recentUsers: "",
+        recentUsersArray: "",
+        recentEvents: "",
+        recentEventsArray: "",
+        totalUsers: "",
+        totalEvents: "",
+        successful: false,
+        message: "",
+    })
+
     useEffect(() => {
+        const currentUser = AuthService.getCurrentUser();
+        AdminService.loadRecentUsersAndEvents(currentUser)
+        .then(response => {
+            setRecentData({ successful: true, message: response.data.message, totalUsers: response.data.userCount, totalEvents: response.data.eventCount, recentUsers: response.data.users, recentEvents: response.data.events });
+        },
+        error => {
+            setRecentData({ successful: false, message: error.response.data.message, totalUsers: error.response.data.userCount, totalEvents: error.response.data.eventCount,recentUsers: error.response.data.users, recentEvents: error.response.data.events });
+        })
 
     }, []);
 
@@ -70,50 +89,73 @@ export function AdminDashboard() {
 
     const { successfulSID, messageSID, user } = sidData;
     const { successfulEventId, messageEventId, event} = eventIdData;
+    const { successful, message, recentUsers, recentEvents, totalUsers, totalEvents } = recentData;
 
     return (
         <>
         <Container>
             <Row>
                 <Col>
-                    <h1>Recently created events</h1>
+                    <h2>Total user count: {totalUsers}</h2>
+                    <h2>Recently created events</h2>
                     <Table striped bordered hover>
                         <thead>
                             <tr>
-                            <th>#</th>
-                            <th>Username</th>
-                            <th>SID</th>
+                                <th>SID</th>
+                                <th>Username</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                            </tr>
+                            {Object.keys(recentUsers).map((user) => (
+                                <tr key={user}>
+                                    {Object.values(user).map((val) => (
+                                        <>
+                                        <td>{recentUsers[val]["sid"]}</td>
+                                        <td>{recentUsers[val]["username"]}</td>
+                                        </>
+                                    ))}
+                                </tr>
+                            ))}
                         </tbody>
                     </Table>
                 </Col>
                 <Col>
-                    <h1>Recently registered users</h1>
+                    <h2>Total event count: {totalEvents}</h2>
+                    <h2>Recently registered users</h2>
                     <Table striped bordered hover>
                         <thead>
                             <tr>
-                            <th>#</th>
-                            <th>Event Title</th>
-                            <th>Event ID</th>
+                                <th>Event ID</th>
+                                <th>Event Title</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                            </tr>
+                            {Object.keys(recentEvents).map((item) => (
+                                <tr key={item}>
+                                    {Object.values(item).map((val) => (
+                                        <>
+                                        <td>{recentEvents[val]["eventID"]}</td>
+                                        <td>{recentEvents[val]["title"]}</td>
+                                        </>
+                                    ))}
+                                </tr>
+                            ))}
                         </tbody>
                     </Table>
                 </Col>
             </Row>
+            {message && (
+                <div className="form-group">
+                    <div
+                    className={
+                        successful? "d-none": "alert alert-danger"
+                    }
+                    role="alert"
+                    >
+                    {message}
+                    </div>
+                </div>
+            )}
         </Container>
         <div>
             <Container>
