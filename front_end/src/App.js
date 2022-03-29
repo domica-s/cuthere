@@ -2,32 +2,31 @@ import './App.css';
 import {BrowserRouter, Routes, Route, useLocation, Link} from 'react-router-dom'
 import {Home, About} from './home/homePage'
 import {LoginWithNavigate} from './home/loginPage'
-import {Event} from './home/eventPage'
-import {Featured} from './home/featuredPage'
+import {Event} from './event/eventPage'
+import {Featured} from './event/featuredPage'
 import { SignUpWithNavigate } from  './home/signUpPage'
 import { ForgotPw } from './home/forgotPwPage';
-// import { Navbar, Container, Nav } from 'react-bootstrap';
-import Profile from './home/myProfile';
+import Profile from './user/myProfile';
 import authService from './services/auth.service';
 import React from 'react';
 import Modal from 'react-modal';
 
-// Imports from Component
-import Calendar from "./Components/Calendar";
+// Imports from calendar
+import Calendar from "./calendar/Calendar";
 
-import {CreateEvent} from "./home/createEventPage";
-import { Confirm } from './home/confirm';
+import {CreateEvent} from "./event/createEventPage";
+import { ConfirmEmail } from './home/confirmEmail';
 import { NavDropdown } from 'react-bootstrap';
 import {Help} from './home/helpPage';
-import {EditProfile} from './user/editProfile';
+// import {EditProfile} from './user/editProfile';
 import {AccountSetting} from './user/accountSetting';
 import { Image } from 'react-bootstrap';
-import UserIcon from './user/userProfile.png';
+import UserIcon from './images/userProfile.png';
 import LandingPage from './home/LandingPage';
-import ProfileScreen from './home/EditProfile';
+import ProfileScreen from './user/EditProfile';
 import { PasswordReset } from './home/passwordReset';
 import { Nav, NavLink,Bars, NavMenu, NavBtn, NavBtnLink, Footer} from './NavBarStyle';
-import logo from './logo.jfif';
+import logo from './images/logo.jfif';
 
 Modal.setAppElement("#root");
 class App extends React.Component {
@@ -88,7 +87,7 @@ class App extends React.Component {
             {currentUser !== undefined && <Route path='/profile' element={<Profile/>} />}
             <Route path='/forgotpw' element={<ForgotPw/>} />
             <Route path='/api/auth/passwordreset/:sid/:token' element={<PasswordReset/>} />
-            <Route path='/api/auth/confirmation/:sid/:token' element={<Confirm/>} />
+            <Route path='/api/auth/confirmation/:sid/:token' element={<ConfirmEmail/>} />
             {currentUser !== undefined && <Route path='/calendar' element={<Calendar/>} />}
             {currentUser !== undefined && <Route path='/createEvent' element={<CreateEvent/>} />}
             {currentUser !== undefined && <Route path='/editProfile' element={<ProfileScreen/>} />}

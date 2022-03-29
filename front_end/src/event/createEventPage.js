@@ -6,7 +6,7 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import { Container } from "react-bootstrap";
 import AuthService from "../services/auth.service";
-import logo from '../logo.jfif';
+import logo from '../images/logo.jfif';
 
 
 var params = require("../params/params");

@@ -5,7 +5,7 @@ import Row from 'react-bootstrap/Row';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
-import logo from '../logo.jfif';
+import logo from '../images/logo.jfif';
 import AuthService from "../services/auth.service";
 
 

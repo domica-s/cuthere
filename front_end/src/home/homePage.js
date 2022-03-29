@@ -2,7 +2,7 @@ import React from "react";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import {EventWidget} from "./eventPage"
+import {EventWidget} from "../event/eventPage"
 import AuthService from "../services/auth.service";
 
 var params = require("../params/params");
