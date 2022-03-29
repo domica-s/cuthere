@@ -16,7 +16,7 @@ function sendEmail(res, email_type, to_email, email_body) {
   let resMsgSuccess = "A verification email has been sent to " + to_email + ".";
   let resMsgFail = "Technical Issue! Please contact our moderators.";
   
-  console.log(email_body);
+  // console.log(email_body);
 
   if (email_type === 0) {
     subject = "Verify your CUthere account";
