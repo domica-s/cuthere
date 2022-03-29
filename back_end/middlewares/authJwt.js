@@ -23,7 +23,7 @@ isAdmin = (req, res, next) => {
       return;
     }
 
-    if (user.role == "Admin") {
+    if (user.role === "Admin") {
       next();
       return;
     }

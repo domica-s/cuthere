@@ -11,7 +11,6 @@ router.use(function(req,res, next){
 });
 
 
-router.use("/", require("./home"));
 router.use("/", require("./event"));
 router.use("/api/calendar", require("./calendar"));
 router.use("/event/all", require("./event"));
