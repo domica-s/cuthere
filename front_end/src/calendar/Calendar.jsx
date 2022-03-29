@@ -1,5 +1,5 @@
 import React, {useState, useRef, useEffect} from 'react';
-import FullCalendar from '@fullcalendar/react'
+import FullCalendar, { preventSelection } from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import AddEventModal from './AddEventModal';
 import axios from 'axios';
@@ -43,8 +43,9 @@ export default function () {
     }
 
 
-    async function handleDatesSet(data){
+    async function handleDatesSet(data, yourCalendar){
         console.log(data)
+        console.log(yourCalendar)
         // To get all the events to the calendar --> WORKING
         if (!yourCalendar){
         const response = await axios.get('http://localhost:8080/api/calendar/get-event?start='+moment(data.start).toISOString() +'&end='+moment(data.end).toISOString())
@@ -72,17 +73,11 @@ export default function () {
         
     }
 
-
     return(
         <React.Fragment> 
             <Container>
                 <Col> 
                     <Button className="mb-3 m-2" variant="outline-warning" onClick ={() => setModalOpen(true)}> Add Event </Button>
-                </Col>
-
-                <Col> 
-                    <Button className ="mb-3 m-2" variant="outline-secondary" onClick={()=> setYourCalendar(true)}> Your Events </Button>
-                    <Button className ="mb-3 m-2" variant="outline-secondary" onClick={()=> setYourCalendar(false)}> All Events </Button>
                 </Col>
                 
             </Container>
@@ -96,6 +91,29 @@ export default function () {
                     eventClick = {(event) => handleEventClick(event)}
                     eventAdd = {(event) => handleEventAdd(event)}
                     datesSet= {(date) => handleDatesSet(date)}
+                    customButtons={{
+                        yourEventButton: {
+                            text: 'Your Events',
+                            click: (date) => {
+                                setYourCalendar(true)
+                                alert('clicked the custom button!')
+                            }
+                        },
+                        allEventButton: {
+                            text: 'All Events',
+                            click:() => {
+                                setYourCalendar(false)
+                                alert('clicked the custom button!')
+                            }
+                        }
+                    }}
+                    headerToolbar = {{
+                        right: 'prev,next today',
+                        left:'title',
+                        center:'yourEventButton allEventButton'
+
+                    }}
+                    
                 />
             </div>
             
