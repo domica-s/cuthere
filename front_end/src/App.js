@@ -23,7 +23,7 @@ import {AccountSetting} from './user/accountSetting';
 import { Image } from 'react-bootstrap';
 import UserIcon from './images/userProfile.png';
 import LandingPage from './home/LandingPage';
-import ProfileScreen from './user/EditProfile';
+import ProfileState from './user/editProfile';
 import { PasswordReset } from './home/passwordReset';
 import { Nav, NavLink,Bars, NavMenu, NavBtn, NavBtnLink, Footer} from './NavBarStyle';
 import logo from './images/logo.jfif';
@@ -90,7 +90,7 @@ class App extends React.Component {
             <Route path='/api/auth/confirmation/:sid/:token' element={<ConfirmEmail/>} />
             {currentUser !== undefined && <Route path='/calendar' element={<Calendar/>} />}
             {currentUser !== undefined && <Route path='/createEvent' element={<CreateEvent/>} />}
-            {currentUser !== undefined && <Route path='/editProfile' element={<ProfileScreen/>} />}
+            {currentUser !== undefined && <Route path='/editProfile' element={<ProfileState/>} />}
             {currentUser !== undefined && <Route path='/accountSetting' element={<AccountSetting/>} />}
             <Route path='/help' element={<Help/>} />
             <Route path='/*' element={<NoMatch/>} />

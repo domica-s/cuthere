@@ -14,6 +14,7 @@ const INITIAL_STATE = {
   about: "",
   interests: "",
 };
+
 export default function ProfileState() {
   const [user, setUser] = useState(INITIAL_STATE);
   const [userRequest, setUserRequest] = useState({
