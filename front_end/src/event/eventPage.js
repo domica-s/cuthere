@@ -105,31 +105,40 @@ class EventWidget extends React.Component{
       }
     }
     render(){
-      let events = Object.entries(this.state.events)
-      let disp_events =  Object.entries(this.state.events).slice(0,5)
-      
+      let events = {}
+      let disp_events = {}
+      if(this.state.events!=null){
+        events = Object.entries(this.state.events)
+        disp_events =  Object.entries(this.state.events).slice(0,5)
+      }
       let title = this.state.title
         return (
-          <Card style={{ maxHeight: "22rem" }}>
-            <Card.Header style={{ textAlign: "left" }}>
-              <a href="featured/new">
-                <b>{title}</b>
-              </a>
-              <a href="featured/new" style={{ float: "right" }}>
-                See all
-              </a>
-            </Card.Header>
-            <Card.Body style={{ overflowY: "hidden" }}>
-              <Row className="widget g-4">
-                {events.length > 0 &&
-                  disp_events.map((data) => (
-                    <Col style={{ justifyContent: "center", display: "flex" }}>
-                      <EventCard data={data} />
-                    </Col>
-                  ))}
-              </Row>
-            </Card.Body>
-          </Card>
+          <div>
+            {events.length > 0 && (
+              <Card style={{ maxHeight: "22rem" }}>
+                <Card.Header style={{ textAlign: "left" }}>
+                  <a href="featured/new">
+                    <b>{title}</b>
+                  </a>
+                  <a href="featured/new" style={{ float: "right" }}>
+                    See all
+                  </a>
+                </Card.Header>
+                <Card.Body style={{ overflowY: "hidden" }}>
+                  <Row className="widget g-4">
+                    {disp_events.map((data) => (
+                      <Col
+                        style={{ justifyContent: "center", display: "flex" }}
+                      >
+                        <EventCard data={data} />
+                      </Col>
+                    ))
+                    }
+                  </Row>
+                </Card.Body>
+              </Card>
+            )}
+          </div>
         );
     }
 }
