@@ -68,7 +68,7 @@ function GeneralInformation() {
                   </label> &nbsp;
                   <button type="button" className="btn btn-default md-btn-flat">Reset</button>
 
-                  <div className="text-light small mt-1">Allowed JPG, GIF or PNG. Max size of 800K</div>
+                  <div className="text-light small mt-1">Allowed JPG or PNG.</div>
                 </div>
               </div>
               <hr className="border-light m-0" />
@@ -177,7 +177,7 @@ function ChangePassword() {
         <Form onSubmit={handleSubmit}>
         <div className="tab-content">
             <div className="tab-pane fade active show" id="account-change-password">
-            <hr className="border-light m-0" />
+        
             
               <div className="card-body">
                 <div className="form-group">
@@ -268,7 +268,7 @@ function BioInformation() {
         <Form onSubmit={handleSubmit}>
         <div className="tab-content">
             <div className="tab-pane fade active show" id="account-change-password">
-            <hr className="border-light m-0" />
+          
             
               <div className="card-body">
                 <div className="form-group">
