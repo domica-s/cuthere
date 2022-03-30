@@ -211,9 +211,7 @@ function checkRegistered(id, participants) {
 
 router.post('/event/register/:id', [authJwt.verifyToken], function(req, res) {
     var event_id = req.params.id;
-    console.log(req.body);
     var _id = req.body._id;
-    console.log(_id);
     var registered = false;
     Event.findOne({ eventID: event_id }, (err, result) => {
       if (err) {

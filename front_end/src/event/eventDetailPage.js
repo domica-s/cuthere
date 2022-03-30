@@ -26,6 +26,7 @@ class OneEvent extends React.Component {
         this.onRegister = this.onRegister.bind(this);
         this.onUnregister = this.onUnregister.bind(this);
         this.onSend = this.onSend.bind(this);
+        this.onChangeChat = this.onChangeChat.bind(this);
 
         this.state = {
             title: "",
@@ -38,6 +39,7 @@ class OneEvent extends React.Component {
             activityCategory: "",
             chatHistory: [],
             createdAt: "",
+            chatInput: ""
         };
     }
 
@@ -53,35 +55,56 @@ class OneEvent extends React.Component {
             body: JSON.stringify(data)     
         })
         .then(res => res.json())
-        .then(data => window.alert(data.message))
+        .then(data => {
+            window.alert(data.message);
+            window.location.reload(false);
+        })
     }
 
     onUnregister(e) {
-        let API_register = API + 'register/' + this.props.eventId;
+        let API_register = API + 'unregister/' + this.props.eventId;
         let data = { _id: currentUser._id };
         fetch(API_register, {
             method: "POST",
             headers: new Headers({
                 "x-access-token": currentUser.accessToken,
+                "content-type": 'application/json'
               }),
             body: JSON.stringify(data)             
         })
         .then(res => res.json())
-        .then(data => window.alert(data.message))
+        .then(data => {
+            window.alert(data.message);
+            window.location.reload(false);
+        })
+    }
+
+    onChangeChat(e) {
+        this.setState({
+            chatInput: e.target.value
+        });
     }
     
     onSend(e) {
-        let API_register = API + 'register/' + this.props.eventId;
-        let data = { _id: currentUser._id };
+        e.preventDefault();
+        let API_register = API + 'chat/' + this.props.eventId;
+        let data = { 
+            _id: currentUser._id,
+            content: this.state.chatInput
+        };
         fetch(API_register, {
             method: "POST",
             headers: new Headers({
                 "x-access-token": currentUser.accessToken,
+                "content-type": 'application/json'
               }),
             body: JSON.stringify(data)             
         })
         .then(res => res.json())
-        .then(data => window.alert(data.message))
+        .then(data => {
+            window.alert(data.message);
+            window.location.reload(false);
+        })
     }
 
     componentDidMount() {
@@ -115,18 +138,17 @@ class OneEvent extends React.Component {
             <Container>
                 <h2>Title: {this.state.title}</h2>
                 <Button className="mb-2 mx-2" variant="outline-success" type="button" onClick={this.onRegister}>Register</Button>
-                <Button className="mb-2 mx-2" variant="outline-danger" type="button">Unregister</Button>
+                <Button className="mb-2 mx-2" variant="outline-danger" type="button" onClick={this.onUnregister}>Unregister</Button>
                 <p>Status: {this.state.status}</p>
                 <p>Start time: {this.state.start}</p>
                 <p>End time: {this.state.end}</p>
                 <p>Number of participants: {this.state.numberOfParticipants}</p>
                 <p>Quota: {this.state.quota}</p>
                 <p>Activity Category: {this.state.activityCategory}</p>
-                <p>Chat History: {this.state.chatHistory}</p> 
-                <Form>
+                <Form  onSubmit={this.onSend}>
                     <Form.Group className="mb-3" controlId="chat-area">
                         <Form.Label>Chat</Form.Label>
-                        <Form.Control as="textarea" rows={3} />
+                        <Form.Control as="textarea" rows={3} onChange={this.onChangeChat}/>
                     </Form.Group>
                     <Button className="mb-5" variant="outline-warning" type="submit">
                         Send
