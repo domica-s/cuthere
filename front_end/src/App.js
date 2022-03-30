@@ -26,7 +26,6 @@ import {AccountSetting} from './user/accountSetting';
 import { Image } from 'react-bootstrap';
 import UserIcon from './images/userProfile.png';
 import LandingPage from './home/LandingPage';
-import ProfileState from './user/editProfile';
 import { PasswordReset } from './home/passwordReset';
 import { Nav, NavLink,Bars, NavMenu, NavBtn, NavBtnLink, Footer} from './NavBarStyle';
 import logo from './images/logo.jfif';
@@ -99,7 +98,6 @@ class App extends React.Component {
             
             {currentUser !== undefined && <Route path='/event/:id' element={<EventDetail/>} />}
             {currentUser !== undefined && <Route path='/createEvent' element={<CreateEvent/>} />}
-            {currentUser !== undefined && <Route path='/editProfile' element={<ProfileState/>} />}
             {currentUser !== undefined && <Route path='/accountSetting' element={<AccountSetting/>} />}
             {isAdmin && <Route path='/admin' element={<AdminDashboard/>} />}
             <Route path='/help' element={<Help/>} />
@@ -136,7 +134,6 @@ class NavigationBar extends React.Component {
           {isAuth === true && isAdmin && <NavLink to="/admin">Admin Dashboard</NavLink>}
           {isAuth === true && 
           <NavDropdown title={"Hello, " + this.props.username} id="user-profile-dropdown">
-              <NavDropdown.Item as={Link} to="/editProfile">Edit Profile</NavDropdown.Item>
               <NavDropdown.Item as={Link} to="/profile">View Profile</NavDropdown.Item>
               <NavDropdown.Item as={Link} to="/accountSetting">Account Setting</NavDropdown.Item>
               <NavDropdown.Item as={Link} to="/logout">Logout</NavDropdown.Item>
