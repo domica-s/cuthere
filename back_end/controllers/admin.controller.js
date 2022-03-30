@@ -45,17 +45,17 @@ exports.getEventId = (req, res) => {
 }
 
 exports.loadRecentUsersAndEvents = (req, res) => {
-    User.find({ active: true }, {username: 1, sid: 1}).sort({createdAt:-1}).limit(10)
+    User.find({}, {username: 1, sid: 1}).sort({createdAt:-1})
     .exec((err, user) => {
         if (err) {
             return res.status(500).send({ message: err });
         }
-        Event.find({}, {title: 1, eventID: 1}).sort({createdAt:-1}).limit(10)
+        Event.find({}, {title: 1, eventID: 1}).sort({createdAt:-1})
         .exec((err, event) => {
             if (err) {
                 return res.status(500).send({ message: err });
             }
-            User.count({ active: true })
+            User.count({ })
             .exec((err, ucount) => {
                 if (err) {
                     return res.status(500).send({ message: err });
