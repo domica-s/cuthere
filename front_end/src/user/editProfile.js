@@ -31,11 +31,11 @@ export default function ProfileState() {
         const user = authService.getCurrentUser();
 
         setUser({
-          username: user.user.username,
-          email: user.user.email,
-          mobileNumber: user.user.mobileNumber,
-          about: user.user.about,
-          interests: user.user.interests,
+          username: user.username,
+          email: user.email,
+          mobileNumber: user.mobileNumber,
+          about: user.about,
+          interests: user.interests,
           
         })
         // console.log(user);

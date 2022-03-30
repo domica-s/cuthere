@@ -13,6 +13,6 @@ router.use(function(req,res, next){
 
 router.use("/", require("./event"));
 router.use("/api/calendar", require("./calendar"));
-router.use("/user/", require("./user"));
+router.use("/user/", require("./user.routes"));
 
 module.exports = router;

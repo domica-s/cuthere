@@ -26,10 +26,10 @@ function GeneralInformation() {
             const user = authService.getCurrentUser();
 
             setUser({
-            username: user.user.username,
-            email: user.user.email,
-            mobileNumber: user.user.mobileNumber,
-            name: user.user.name,
+            username: user.username,
+            email: user.email,
+            mobileNumber: user.mobileNumber,
+            name: user.name,
             })
             console.log(user);
             // setUser(user.data);
@@ -235,10 +235,10 @@ function BioInformation() {
             const user = authService.getCurrentUser();
 
             setUser({
-            about: user.user.about,
-            birthday: user.user.birthday,
-            country: user.user.country,
-            interests: user.user.interests,
+            about: user.about,
+            birthday: user.birthday,
+            country: user.country,
+            interests: user.interests,
             })
             console.log(user);
             // setUser(user.data);
