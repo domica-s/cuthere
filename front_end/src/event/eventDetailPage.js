@@ -1,0 +1,81 @@
+import React from "react";
+import Container from "react-bootstrap/Container";
+import {useParams} from "react-router-dom";
+import Row from 'react-bootstrap/Row';
+import Col from "react-bootstrap/Col";
+import Button from 'react-bootstrap/Button';
+import AuthService from "../services/auth.service";
+
+var params = require("../params/params");
+var currentUser = AuthService.getCurrentUser();
+const API = params.baseBackURL + "/event/";
+
+
+function EventDetail() {
+    let { id } = useParams();
+    return (
+        <OneEvent eventId={id}/>
+    )
+}
+
+class OneEvent extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            title: "",
+            status: "",
+            venue: "",
+            start: "",
+            end: "",
+            numberOfParticipants: 0,
+            quota: 0,
+            activityCategory: "",
+            chatHistory: [],
+            createdAt: "",
+        };
+    }
+
+    componentDidMount() {
+        let API_event = API + this.props.eventId;
+        if (currentUser !== null){
+            fetch(API_event, {
+                method: "GET",
+                headers: new Headers({
+                    "x-access-token": currentUser.accessToken,
+                  }),
+            })
+            .then(res => res.json())
+            .then(data => {
+                this.setState({
+                    title: data.title,
+                    status: data.status,
+                    venue: data.venue,
+                    start: data.start,
+                    end: data.end,
+                    numberOfParticipants: data.numberOfParticipants,
+                    quota: data.quota,
+                    activityCategory: data.activityCategory,
+                    chatHistory: data.chatHistory,
+                    createdAt: data.createdAt
+                });
+            })            
+        }
+    }
+    render() {
+        return (
+            <Container>
+                <h2>Title: {this.state.title}</h2>
+                <p>Status: {this.state.status}</p>
+                <p>Start time: {this.state.start}</p>
+                <p>End time: {this.state.end}</p>
+                <p>Number of participants: {this.state.numberOfParticipants}</p>
+                <p>Quota: {this.state.quota}</p>
+                <p>Activity Category: {this.state.activityCategory}</p>
+                <p>Chat: {this.state.chatHistory}</p>                
+            </Container>
+        )
+    }
+}
+
+
+export {EventDetail}

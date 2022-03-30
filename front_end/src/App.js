@@ -1,5 +1,5 @@
 import './App.css';
-import {BrowserRouter, Routes, Route, useLocation, Link} from 'react-router-dom'
+import {BrowserRouter, Routes, Route, useLocation, Link, useParams} from 'react-router-dom'
 import {Home, About} from './home/homePage'
 import {LoginWithNavigate} from './home/loginPage'
 import {Event} from './event/eventPage'
@@ -21,7 +21,7 @@ import {Help} from './home/helpPage';
 
 // import {EditProfile} from './user/editProfile';
 
-import EventDetail from './event/EventDetail';
+import {EventDetail} from './event/eventDetailPage';
 import {AccountSetting} from './user/accountSetting';
 import { Image } from 'react-bootstrap';
 import UserIcon from './images/userProfile.png';
