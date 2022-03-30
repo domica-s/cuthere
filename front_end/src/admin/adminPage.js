@@ -67,12 +67,18 @@ export function AdminDashboard() {
 
     }, []);
 
+    let loadedUsers = 0;
+    let loadedEvents = 0;
+    let userData = 0;
+    let eventData = 0;
+
     const loadRecentData = () => {
         const currentUser = AuthService.getCurrentUser();
 
         AdminService.loadRecentUsersAndEvents(currentUser)
         .then(response => {
             setRecentData({ successful: true, message: response.data.message, totalUsers: response.data.userCount, totalEvents: response.data.eventCount, recentUsers: response.data.users, recentEvents: response.data.events });
+            [userData, eventData] = convertToArrayObject(recentUsers, recentEvents);
         },
         error => {
             setRecentData({ successful: false, message: error.response.data.message, totalUsers: error.response.data.userCount, totalEvents: error.response.data.eventCount,recentUsers: error.response.data.users, recentEvents: error.response.data.events });
@@ -152,81 +158,22 @@ export function AdminDashboard() {
         })
     }
 
+    function convertToArrayObject (recentUsers, recentEvents) {
+        let loadedUsers = Object.keys(recentUsers).map((key) => (
+            {"sid": recentUsers[key]["sid"], "username": recentUsers[key]["username"]}
+        ));
+
+        let loadedEvents = Object.keys(recentEvents).map((key) => (
+            {"eventID": recentEvents[key]["eventID"], "title": recentEvents[key]["title"]}
+        ));
+
+        return [loadedUsers, loadedEvents];
+    }
+
+    [userData, eventData] = convertToArrayObject(recentUsers, recentEvents);
+
     return (
         <div style={{ marginBottom: 50 }}>
-        <Container>
-            <Row>
-                <Col>
-                    <h2>Total active user count: {totalUsers}</h2>
-                    <h2>Recently registered active users</h2>
-                    <Table striped bordered hover>
-                        <thead>
-                            <tr>
-                                <th>SID</th>
-                                <th>Username</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {recentUsers ? (
-                                <>
-                                {Object.keys(recentUsers).map((user) => (
-                                    <tr key={"userRow" + user}>
-                                        {Object.values(user).map((val) => (
-                                            <>
-                                            <td key={"user" + user}>{recentUsers[val]["sid"]}</td>
-                                            <td key={"user2" + user}>{recentUsers[val]["username"]}</td>
-                                            </>
-                                        ))}
-                                    </tr>
-                                ))}
-                                </>
-                            ): null}
-                        </tbody>
-                    </Table>
-                </Col>
-                <Col>
-                    <h2>Total event count: {totalEvents}</h2>
-                    <h2>Recently created events</h2>
-                    <Table striped bordered hover>
-                        <thead>
-                            <tr>
-                                <th>Event ID</th>
-                                <th>Event Title</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {recentEvents ? (
-                                <>
-                                {Object.keys(recentEvents).map((event) => (
-                                    <tr key={"userRow" + event}>
-                                        {Object.values(event).map((val) => (
-                                            <>
-                                            <td key={"event" + event}>{recentEvents[val]["eventID"]}</td>
-                                            <td key={"event2" + event}>{recentEvents[val]["title"]}</td>
-                                            </>
-                                        ))}
-                                    </tr>
-                                ))}
-                                </>
-                            ): null}
-                        </tbody>
-                    </Table>
-                </Col>
-            </Row>
-            {message && (
-                <div className="form-group">
-                    <div
-                    className={
-                        successful? "d-none": "alert alert-danger"
-                    }
-                    role="alert"
-                    >
-                    {message}
-                    </div>
-                </div>
-            )}
-
-        </Container>
         <div>
             <Container>
                 <Form onSubmit={handleSubmitSID}>
@@ -370,6 +317,71 @@ export function AdminDashboard() {
                 )}
             </Container>
         </div>
+        <Container>
+            <Row>
+                <Col>
+                    <h2>Total user count: {totalUsers}</h2>
+                    <h2>Recently registered users</h2>
+                    <Table striped bordered hover>
+                        <thead>
+                            <tr>
+                                <th>SID</th>
+                                <th>Username</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {userData && (
+                            <>
+                            {userData.map((key) => (
+                                <tr key={key.sid}>
+                                    <td>{key.sid}</td>
+                                    <td>{key.username}</td>
+                                </tr>
+                            ))}
+                            </>
+                        )}
+                        </tbody>
+                    </Table>
+                </Col>
+                <Col>
+                    <h2>Total event count: {totalEvents}</h2>
+                    <h2>Recently created events</h2>
+                    <Table striped bordered hover>
+                        <thead>
+                            <tr>
+                                <th>Event ID</th>
+                                <th>Event Title</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {eventData && (
+                            <>
+                            {eventData.map((key) => (
+                                <tr key={key.eventID}>
+                                    <td>{key.eventID}</td>
+                                    <td>{key.title}</td>
+                                </tr>
+                            ))}
+                            </>
+                        )}
+                        </tbody>
+                    </Table>
+                </Col>
+            </Row>
+            {message && (
+                <div className="form-group">
+                    <div
+                    className={
+                        successful? "d-none": "alert alert-danger"
+                    }
+                    role="alert"
+                    >
+                    {message}
+                    </div>
+                </div>
+            )}
+
+        </Container>
         </div>
     );
 
