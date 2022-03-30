@@ -206,6 +206,7 @@ exports.changeUserPass = (req, res) => {
       }
 
       const salt = bcrypt.genSaltSync(10);
+      console.log(newPassword);
       targetUser.password = bcrypt.hashSync(newPassword, salt);
       
       targetUser.save((err) => {

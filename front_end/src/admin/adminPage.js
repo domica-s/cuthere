@@ -16,6 +16,7 @@ export function AdminDashboard() {
         queryEventId: 0,
         adminPasswordEvent: "",
         adminPasswordUser: "",
+        newUserPassword: "",
     });
 
     const [sidData, setSidData] = useState({
@@ -146,7 +147,25 @@ export function AdminDashboard() {
         const currentUser = AuthService.getCurrentUser();
         let sid = deleteUser.sid;
 
-        AdminService.deleteSelectedUser(currentUser, sid, adminRequest.adminPasswordUser)
+        AdminService.deleteSelectedUser(currentUser, sid, adminRequest.adminPasswordUser, adminRequest.newUserPassword)
+        .then(response => {
+            setSidData({ user: "" });
+            setAdminRequest({ querySID: "" });
+            loadRecentData();
+            setDeleteUser({ successfulDeleteUser: true, messageDeleteUser: response.data.message });
+        },
+        error => {
+            setDeleteUser({ successfulDeleteUser: false, messageDeleteUser: error.response.data.message });
+        })
+    }
+
+    const handleChangeUserPass = (e) => {
+        e.preventDefault();
+
+        const currentUser = AuthService.getCurrentUser();
+        let sid = deleteUser.sid;
+
+        AdminService.changeUserPass(currentUser, sid, adminRequest.adminPasswordUser, adminRequest.newUserPassword)
         .then(response => {
             setSidData({ user: "" });
             setAdminRequest({ querySID: "" });
@@ -169,6 +188,7 @@ export function AdminDashboard() {
 
         return [loadedUsers, loadedEvents];
     }
+
 
     [userData, eventData] = convertToArrayObject(recentUsers, recentEvents);
 
@@ -214,11 +234,11 @@ export function AdminDashboard() {
                         <p>Registered Events: <strong>{user.registeredEvents}</strong></p>
                         <p>Starred Events: <strong>{user.starredEvents}</strong></p>
                         <p>Created at: <strong>{user.createdAt}</strong></p>
-
-                        <div>
+        
+                        <div id="deleteUserForm">
                         <Form onSubmit={handleDeleteUser}>
                             <div className="form-group">
-                                <label className="form-label">Enter password to confirm deletion:</label>
+                                <label className="form-label">Enter your (ADMIN) password to confirm deletion:</label>
                                 <Form.Control 
                                     name="adminPasswordUser"
                                     type="password" 
@@ -228,6 +248,32 @@ export function AdminDashboard() {
                                 />
                             </div>
                             <Button type="submit" variant="danger" value="Delete this user">Delete this user</Button>
+                        </Form>
+                        </div>
+
+                        <div id="changeUserPassForm">
+                        <Form onSubmit={handleChangeUserPass}>
+                            <div className="form-group">
+                                <label className="form-label">Enter your (ADMIN) password to confirm change password:</label>
+                                <Form.Control 
+                                    name="adminPasswordUser"
+                                    type="password" 
+                                    value={adminRequest.adminPasswordUser || ""}
+                                    placeholder={"Type in your password"}
+                                    onChange={handleInput} 
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label">Enter new user password:</label>
+                                <Form.Control 
+                                    name="newUserPassword"
+                                    type="text" 
+                                    value={adminRequest.newUserPassword || ""}
+                                    placeholder={"Type in your password"}
+                                    onChange={handleInput} 
+                                />
+                            </div>
+                            <Button type="submit" variant="danger" value="Change this user's password">Change this user's password</Button>
                         </Form>
                         </div>
 
@@ -246,7 +292,7 @@ export function AdminDashboard() {
                     </div>
                 )}
             </Container>
-
+            <hr></hr>
             <Container>
                 <Form onSubmit={handleSubmitEventID}>
                     <div className="form-group">
@@ -316,6 +362,7 @@ export function AdminDashboard() {
                     </div>
                 )}
             </Container>
+            <hr></hr>
         </div>
         <Container>
             <Row>
