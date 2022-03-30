@@ -64,6 +64,25 @@ class AdminService {
             }
         })
     }
+
+    changeUserPass(currentUser, sid, password, newUserPass) {
+        let temp_url = "user/" + sid + "/updatepassword";
+        let adminReqSID = currentUser.sid;
+        let adminReqPassword = password;
+
+        console.log(newUserPass);
+        
+        return axios.post(ADMIN_URL + temp_url, {
+            adminReqSID,
+            adminReqPassword,
+            newUserPass
+          }, 
+          {
+            headers: {
+                "x-access-token": currentUser.accessToken
+            }
+        })
+    }
 }
 
 export default new AdminService();
