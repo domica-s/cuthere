@@ -148,7 +148,7 @@ exports.updateUserRating = (req, res) => {
                         // console.log(indexOfOldComment);
                         let newTargetHistory = targetHistory;
                         newTargetHistory[indexOfOldComment] = commentObj;
-                        targetHistory = newTargetHistory;
+                        targetUser.reviewHistory = newTargetHistory;
 
                         targetUser.save((err) => {
                             if (err) {
