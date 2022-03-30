@@ -23,12 +23,12 @@ export default class Profile extends Component {
     }
     
     const USER_STATE = {
-      username: currentUser.user.username,
-      email: currentUser.user.email,
-      about: currentUser.user.about,
-      mobileNumber: currentUser.user.mobileNumber,
-      interests: currentUser.user.interests,
-      college: currentUser.user.college,
+      username: currentUser.username,
+      email: currentUser.email,
+      about: currentUser.about,
+      mobileNumber: currentUser.mobileNumber,
+      interests: currentUser.interests,
+      college: currentUser.college,
     }
     
     return (

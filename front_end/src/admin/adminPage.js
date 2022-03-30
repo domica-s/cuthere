@@ -59,6 +59,15 @@ export function AdminDashboard() {
 
     useEffect(() => {
         
+        loadRecentData();
+
+        return () => {
+            setRecentData({});
+        };
+
+    }, []);
+
+    const loadRecentData = () => {
         const currentUser = AuthService.getCurrentUser();
 
         AdminService.loadRecentUsersAndEvents(currentUser)
@@ -68,12 +77,7 @@ export function AdminDashboard() {
         error => {
             setRecentData({ successful: false, message: error.response.data.message, totalUsers: error.response.data.userCount, totalEvents: error.response.data.eventCount,recentUsers: error.response.data.users, recentEvents: error.response.data.events });
         })
-
-        return () => {
-            setRecentData({});
-        };
-
-    }, []);
+    }
 
     const handleInput = (e) => {
         setAdminRequest({ ...adminRequest, [e.target.name]: e.target.value });
@@ -122,6 +126,7 @@ export function AdminDashboard() {
         .then(response => {
             setEventIdData({ event: "" });
             setAdminRequest({ queryEventId: "" });
+            loadRecentData();
             setDeleteEvent({ successfulDeleteEvent: true, messageDeleteEvent: response.data.message });
         },
         error => {
@@ -139,6 +144,7 @@ export function AdminDashboard() {
         .then(response => {
             setSidData({ user: "" });
             setAdminRequest({ querySID: "" });
+            loadRecentData();
             setDeleteUser({ successfulDeleteUser: true, messageDeleteUser: response.data.message });
         },
         error => {
@@ -151,7 +157,7 @@ export function AdminDashboard() {
         <Container>
             <Row>
                 <Col>
-                    <h2>Total active user count: {recentData.totalUsers}</h2>
+                    <h2>Total active user count: {totalUsers}</h2>
                     <h2>Recently registered active users</h2>
                     <Table striped bordered hover>
                         <thead>
@@ -161,16 +167,20 @@ export function AdminDashboard() {
                             </tr>
                         </thead>
                         <tbody>
-                            {Object.keys(recentUsers).map((user) => (
-                                <tr key={"userRow" + user}>
-                                    {Object.values(user).map((val) => (
-                                        <>
-                                        <td key={"user" + user}>{recentUsers[val]["sid"]}</td>
-                                        <td key={"user2" + user}>{recentUsers[val]["username"]}</td>
-                                        </>
-                                    ))}
-                                </tr>
-                            ))}
+                            {recentUsers ? (
+                                <>
+                                {Object.keys(recentUsers).map((user) => (
+                                    <tr key={"userRow" + user}>
+                                        {Object.values(user).map((val) => (
+                                            <>
+                                            <td key={"user" + user}>{recentUsers[val]["sid"]}</td>
+                                            <td key={"user2" + user}>{recentUsers[val]["username"]}</td>
+                                            </>
+                                        ))}
+                                    </tr>
+                                ))}
+                                </>
+                            ): null}
                         </tbody>
                     </Table>
                 </Col>
@@ -185,16 +195,20 @@ export function AdminDashboard() {
                             </tr>
                         </thead>
                         <tbody>
-                            {Object.keys(recentEvents).map((event) => (
-                                <tr key={"eventRow" + event}>
-                                    {Object.values(event).map((val) => (
-                                        <>
-                                        <td key={"event" + event}>{recentEvents[val]["eventID"]}</td>
-                                        <td key={"event2" + event}>{recentEvents[val]["title"]}</td>
-                                        </>
-                                    ))}
-                                </tr>
-                            ))}
+                            {recentEvents ? (
+                                <>
+                                {Object.keys(recentEvents).map((event) => (
+                                    <tr key={"userRow" + event}>
+                                        {Object.values(event).map((val) => (
+                                            <>
+                                            <td key={"event" + event}>{recentEvents[val]["eventID"]}</td>
+                                            <td key={"event2" + event}>{recentEvents[val]["title"]}</td>
+                                            </>
+                                        ))}
+                                    </tr>
+                                ))}
+                                </>
+                            ): null}
                         </tbody>
                     </Table>
                 </Col>

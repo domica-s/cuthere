@@ -17,7 +17,7 @@ const quotaInvalidMsg = "Quota is invalid, please input a positive integer";
 
 const currentUser = AuthService.getCurrentUser();
 if (currentUser) {
-    var _id = currentUser.user._id;
+    var _id = currentUser._id;
 }
 
 function Logo() {

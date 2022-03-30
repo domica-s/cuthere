@@ -122,10 +122,6 @@ exports.deleteEvent = (req, res) => {
 
 }
 
-// delete comments in event
-exports.removeEventComments = (req, res) => {
-
-}
 // admin rights on profile visit
 // ban user (delete profile)'
 // click button -> enter password (front end) from Dashboard
@@ -169,6 +165,11 @@ exports.deleteUser = (req, res) => {
     })
 
   });
+
+}
+
+// delete comments in event
+exports.removeEventComments = (req, res) => {
 
 }
 
