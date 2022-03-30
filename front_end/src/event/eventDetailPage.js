@@ -22,6 +22,11 @@ function EventDetail() {
 class OneEvent extends React.Component {
     constructor(props) {
         super(props);
+
+        this.onRegister = this.onRegister.bind(this);
+        this.onUnregister = this.onUnregister.bind(this);
+        this.onSend = this.onSend.bind(this);
+
         this.state = {
             title: "",
             status: "",
@@ -34,6 +39,49 @@ class OneEvent extends React.Component {
             chatHistory: [],
             createdAt: "",
         };
+    }
+
+    onRegister(e) {
+        let API_register = API + 'register/' + this.props.eventId;
+        let data = { _id: currentUser._id };
+        fetch(API_register, {
+            method: "POST",
+            headers: new Headers({
+                "x-access-token": currentUser.accessToken,
+                "content-type": 'application/json'
+              }),
+            body: JSON.stringify(data)     
+        })
+        .then(res => res.json())
+        .then(data => window.alert(data.message))
+    }
+
+    onUnregister(e) {
+        let API_register = API + 'register/' + this.props.eventId;
+        let data = { _id: currentUser._id };
+        fetch(API_register, {
+            method: "POST",
+            headers: new Headers({
+                "x-access-token": currentUser.accessToken,
+              }),
+            body: JSON.stringify(data)             
+        })
+        .then(res => res.json())
+        .then(data => window.alert(data.message))
+    }
+    
+    onSend(e) {
+        let API_register = API + 'register/' + this.props.eventId;
+        let data = { _id: currentUser._id };
+        fetch(API_register, {
+            method: "POST",
+            headers: new Headers({
+                "x-access-token": currentUser.accessToken,
+              }),
+            body: JSON.stringify(data)             
+        })
+        .then(res => res.json())
+        .then(data => window.alert(data.message))
     }
 
     componentDidMount() {
@@ -66,7 +114,7 @@ class OneEvent extends React.Component {
         return (
             <Container>
                 <h2>Title: {this.state.title}</h2>
-                <Button className="mb-2 mx-2" variant="outline-success" type="button">Register</Button>
+                <Button className="mb-2 mx-2" variant="outline-success" type="button" onClick={this.onRegister}>Register</Button>
                 <Button className="mb-2 mx-2" variant="outline-danger" type="button">Unregister</Button>
                 <p>Status: {this.state.status}</p>
                 <p>Start time: {this.state.start}</p>

@@ -197,16 +197,23 @@ router.get('/event/delete/:id', [authJwt.verifyToken], function(req, res) {
 
 function checkRegistered(id, participants) {
   let registered = false;
-  for (let i = 0; i < participants.length; i++) {
-    if (id === participants[i]._id.toString()){
-      registered = true}
+  if (participants === null) {
+    return registered;
   }
-  return registered
+  else {
+    for (let i = 0; i < participants.length; i++) {
+      if (id === participants[i]._id.toString()){
+        registered = true}
+    }
+    return registered
+  }
 }
 
 router.post('/event/register/:id', [authJwt.verifyToken], function(req, res) {
     var event_id = req.params.id;
+    console.log(req.body);
     var _id = req.body._id;
+    console.log(_id);
     var registered = false;
     Event.findOne({ eventID: event_id }, (err, result) => {
       if (err) {
