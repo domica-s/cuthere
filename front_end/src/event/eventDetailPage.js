@@ -3,6 +3,7 @@ import Container from "react-bootstrap/Container";
 import {useParams} from "react-router-dom";
 import Row from 'react-bootstrap/Row';
 import Col from "react-bootstrap/Col";
+import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import AuthService from "../services/auth.service";
 
@@ -65,13 +66,24 @@ class OneEvent extends React.Component {
         return (
             <Container>
                 <h2>Title: {this.state.title}</h2>
+                <Button className="mb-2 mx-2" variant="outline-success" type="button">Register</Button>
+                <Button className="mb-2 mx-2" variant="outline-danger" type="button">Unregister</Button>
                 <p>Status: {this.state.status}</p>
                 <p>Start time: {this.state.start}</p>
                 <p>End time: {this.state.end}</p>
                 <p>Number of participants: {this.state.numberOfParticipants}</p>
                 <p>Quota: {this.state.quota}</p>
                 <p>Activity Category: {this.state.activityCategory}</p>
-                <p>Chat: {this.state.chatHistory}</p>                
+                <p>Chat History: {this.state.chatHistory}</p> 
+                <Form>
+                    <Form.Group className="mb-3" controlId="chat-area">
+                        <Form.Label>Chat</Form.Label>
+                        <Form.Control as="textarea" rows={3} />
+                    </Form.Group>
+                    <Button className="mb-5" variant="outline-warning" type="submit">
+                        Send
+                    </Button>                                    
+                </Form>          
             </Container>
         )
     }
