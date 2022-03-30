@@ -1,5 +1,4 @@
 import React from "react";
-import Datetime from 'react-datetime';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
@@ -89,7 +88,7 @@ class CreateEvent extends React.Component {
                 body: JSON.stringify(data)                             
             })
             .then(res => {
-                if (res.status == 200) {
+                if (res.status === 200) {
                     window.alert("Event created successfully!");
                     document.getElementById("createEvent").reset();
                 }
