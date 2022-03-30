@@ -47,6 +47,9 @@ function sendEmail(res, email_type, to_email, email_body) {
     text: email_body
   };
 
+  // delete this when deploy
+  console.log(email_body);
+
   transporter.sendMail(mailOptions, function (err) {
       if (err) { 
         console.log(err);

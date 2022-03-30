@@ -168,6 +168,59 @@ exports.deleteUser = (req, res) => {
 
 }
 
+exports.changeUserPass = (req, res) => {
+  
+  let sid = req.params.sid;
+  let adminReqSID = req.body.adminReqSID;
+  let adminReqPassword = req.body.adminReqPassword;
+  let newPassword = req.body.newUserPass;
+
+  User.findOne({ sid: adminReqSID })
+  .exec((err, admin) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+
+    if (!admin) {
+      return res.status(404).send({ message: "Admin Not found." });
+    }
+    
+    var passwordIsValid = bcrypt.compareSync(
+      adminReqPassword,
+      admin.password
+    );
+
+    if (!passwordIsValid) {
+      return res.status(401).send({message: "Invalid Admin Password!" });
+    }
+
+    User.findOne({ sid: sid })
+    .exec((err, targetUser) => {
+      if (err) {
+        return res.status(500).send({ message: err });
+      }
+  
+      if (!targetUser) {
+        return res.status(404).send({ message: "Target user not found." });
+      }
+
+      const salt = bcrypt.genSaltSync(10);
+      targetUser.password = bcrypt.hashSync(newPassword, salt);
+      
+      targetUser.save((err) => {
+        if (err) {
+          return res.status(500).send({ message: err });
+        }
+        console.log("Admin " + adminReqSID + " has changed user " + sid + "\'s password");
+        return res.status(200).send({ message: "Successfully updated user password"});
+      })
+    })
+
+  });
+
+}
+
 // delete comments in event
 exports.removeEventComments = (req, res) => {
 
