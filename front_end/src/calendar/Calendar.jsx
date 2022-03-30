@@ -59,14 +59,17 @@ export default function () {
     }
 
 
-    // To route to a specific event detail page --> WORKING, Just need to change the route
+    // To route to a specific event detail page --> WORKING
 
     async function handleEventClick(event){
+
         const id = event.event._def.extendedProps._id
+        const response = await axios.get("http://localhost:8080/api/calendar/route-event/"+id);
 
-        await axios.get("http://localhost:8080/api/calendar/get-event/"+id);
-
-        history.push("/event/:id");
+        history.push({
+            state: response.data,
+            pathname: '/event/:id',
+        });
         history.go();
         
         

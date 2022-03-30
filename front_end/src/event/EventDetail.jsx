@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import Axios from 'axios' 
 import { Row, Col } from 'antd';
 
@@ -11,20 +12,19 @@ import EventInfo from './eventDetailsComponent/EventInfo'
 export default function (props) { 
 
     const [Event, setEvent] = useState([])
+    const location = useLocation();
+    console.log(location)
 
-    
-    // Add EventId through Params --> To make the eventId not hardcode, how to pass the :id to props.
-    console.log(props)
-    const eventId = '623e14fae7ecc307f28f300d' // This one is still hardcoded, need to make this not hardcode
+    // STATUS: HOW TO GET THE :id from the params?
+    const eventId = '623e14fae7ecc307f28f300d'
 
-    // Axios get the following event by event ID 
-    // Change use effect to normal function 
+    // STATUS: WORKING
     useEffect(() => {
-        Axios.get(`http://localhost:8080/api/calendar/get-event/${eventId}`).then(response => { 
+        Axios.get(`http://localhost:8080/api/calendar/route-event/${eventId}`).then(response => { 
             setEvent(response.data)
             
         })
-    }, [])
+    }, [location])
 
     return (
         <React.Fragment>
