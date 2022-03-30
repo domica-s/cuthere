@@ -66,7 +66,7 @@ export default function () {
 
         await axios.get("http://localhost:8080/api/calendar/get-event/"+id);
 
-        history.push("/event");
+        history.push("/event/:id");
         history.go();
         
         

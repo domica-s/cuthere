@@ -1,16 +1,16 @@
 import React, {useEffect, useState} from 'react'
-import {Button, Descriptions} from 'amtd';
+import {Button, Descriptions} from 'antd';
 
 function EventInfo(props) {
     const [Event, setEvent] = useState({})
 
     useEffect(() => {
-        setProduct(props.detail)
+        setEvent(props.detail)
     }, [props.detail])
 
     // function to join the event
     const joinEvent = () => {
-        
+        // Make this function
     }
 
   return (

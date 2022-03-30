@@ -10,13 +10,18 @@ import Profile from './user/myProfile';
 import authService from './services/auth.service';
 import React from 'react';
 import Modal from 'react-modal';
+
 // Imports from calendar
 import Calendar from "./calendar/Calendar";
+
 import {CreateEvent} from "./event/createEventPage";
 import { ConfirmEmail } from './home/confirmEmail';
 import { NavDropdown } from 'react-bootstrap';
 import {Help} from './home/helpPage';
+
 // import {EditProfile} from './user/editProfile';
+
+import EventDetail from './event/EventDetail';
 import {AccountSetting} from './user/accountSetting';
 import { Image } from 'react-bootstrap';
 import UserIcon from './images/userProfile.png';
@@ -26,6 +31,7 @@ import { PasswordReset } from './home/passwordReset';
 import { Nav, NavLink,Bars, NavMenu, NavBtn, NavBtnLink, Footer} from './NavBarStyle';
 import logo from './images/logo.jfif';
 import { AdminDashboard } from './admin/adminPage';
+
 
 Modal.setAppElement("#root");
 class App extends React.Component {
@@ -68,8 +74,8 @@ class App extends React.Component {
 
   render() {
     const { currentUser } = this.state;
-    let username =  (authService.getCurrentUser())? authService.getCurrentUser().username : "Not logged in";
-    let isAdmin = (authService.getCurrentUser() && (authService.getCurrentUser().role === "Admin"))? true: false;
+    let username =  (authService.getCurrentUser())? authService.getCurrentUser().user.username : "Not logged in";
+    let isAdmin = (authService.getCurrentUser() && (authService.getCurrentUser().user.role=== "Admin"))? true: false;
 
     return (
       <div className="App">
@@ -90,6 +96,8 @@ class App extends React.Component {
             <Route path='/api/auth/passwordreset/:sid/:token' element={<PasswordReset/>} />
             <Route path='/api/auth/confirmation/:sid/:token' element={<ConfirmEmail/>} />
             {currentUser !== undefined && <Route path='/calendar' element={<Calendar/>} />}
+            
+            {currentUser !== undefined && <Route path='/event/:id' element={<EventDetail/>} />}
             {currentUser !== undefined && <Route path='/createEvent' element={<CreateEvent/>} />}
             {currentUser !== undefined && <Route path='/editProfile' element={<ProfileState/>} />}
             {currentUser !== undefined && <Route path='/accountSetting' element={<AccountSetting/>} />}
