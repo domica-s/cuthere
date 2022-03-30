@@ -24,6 +24,7 @@ class AdminService {
     }
 
     loadRecentUsersAndEvents(currentUser) {
+        console.log("Load called");
         let temp_url = "query/recent";
         return axios.get(ADMIN_URL + temp_url,  {
             headers: {
