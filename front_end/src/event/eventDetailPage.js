@@ -89,7 +89,7 @@ class OneEvent extends React.Component {
         e.preventDefault();
         let API_register = API + 'chat/' + this.props.eventId;
         let data = { 
-            _id: currentUser._id,
+            sid: currentUser.sid,
             content: this.state.chatInput
         };
         fetch(API_register, {
