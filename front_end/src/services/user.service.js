@@ -6,12 +6,13 @@ const USER_URL = params.baseBackURL + "/user/";
 
 class UserService {
 
-    comment(currentUser, targetSID, content) {
+    comment(currentUser, targetSID, type, content) {
         let temp_url = targetSID + "/comment";
         let sourceSID =  currentUser.sid;
 
         return axios.post(USER_URL + temp_url, {
             sid: sourceSID,
+            type,
             content
         }, 
         {
@@ -21,12 +22,13 @@ class UserService {
         })
     }
 
-    updateComment(currentUser, targetSID, newContent) {
+    updateComment(currentUser, targetSID, newType, newContent) {
         let temp_url = targetSID + "/comment/update";
         let sourceSID =  currentUser.sid;
 
         return axios.post(USER_URL + temp_url, {
             sid: sourceSID,
+            newType,
             newContent
         }, 
         {

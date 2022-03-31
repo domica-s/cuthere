@@ -32,12 +32,13 @@ exports.getUserProfile = (req, res) => {
 // how to use?
 // POST to url --> http://localhost:8080/user/:sid/comment
 // params sid is target sid
-// body (JSON) --> { "sid": sid, "content": content }
+// body (JSON) --> { "sid": sid, "content": content, "type": type }
 // returns --> success, fail1 (user have previously left a comment, update instead)
 //, fail2 (source/target sid not found, no similar events or other errors)
 exports.leaveUserRating = (req, res) => {
     let sourceSID = req.body.sid;
     let targetSID = req.params.sid;
+    let type = req.body.type; // good or bad rating
     let content = req.body.content;
 
     User.findOne({ sid: targetSID })
@@ -74,7 +75,7 @@ exports.leaveUserRating = (req, res) => {
 
                     //  not yet left comment before
                     // can comment
-                    let commentObj = {"user": sourceSID, "content": content}
+                    let commentObj = {"user": sourceSID, "type": type, "content": content}
                     targetHistory.push(commentObj);
                     targetUser.reviewHistory = targetHistory;
 
@@ -103,12 +104,13 @@ exports.leaveUserRating = (req, res) => {
 // how to use?
 // POST to url --> http://localhost:8080/user/:sid/comment/update
 // params sid is target sid
-// body (JSON) --> { "sid": sid, "newContent": newContent}
+// body (JSON) --> { "sid": sid, "newType": newType, newContent": newContent}
 // returns --> success, fail1 (user have not previously left a comment, comment instead)
 //, fail2 (source/target sid not found, no similar events or other errors)
 exports.updateUserRating = (req, res) => {
     let sourceSID = req.body.sid;
     let targetSID = req.params.sid;
+    let newType = req.body.newType; // good or bad rating
     let newContent = req.body.newContent;
     
     User.findOne({ sid: targetSID })
@@ -142,7 +144,7 @@ exports.updateUserRating = (req, res) => {
                     // if they left a comment before
                     // change old comment to new one
                     if (hasLeftComment) {
-                        let commentObj = {"user": sourceSID, "content": newContent}
+                        let commentObj = {"user": sourceSID, "type": newType, "content": newContent}
                         // get old comments, find and replace object with user sourceSID
                         let indexOfOldComment = targetHistory.findIndex(x => x.user === sourceSID);
                         // console.log(indexOfOldComment);

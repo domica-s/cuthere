@@ -22,6 +22,7 @@ var userSchema = mongoose.Schema({
     active:{type:Boolean, default: false},
     reviewHistory:[{
         user: {type: Number, ref: 'User'},
+        type: {type: Boolean},
         content: {type: String},
         reviewAt: {type: Date, default:Date.now},
     }],
