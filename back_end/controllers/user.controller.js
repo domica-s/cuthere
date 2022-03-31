@@ -23,7 +23,8 @@ exports.getUserProfile = (req, res) => {
             about: user.about,
             rating: user.rating,
             friends: user.friends,
-            role: user.role
+            role: user.role,
+            reviewHistory: user.reviewHistory
         });
     });
 }
@@ -38,7 +39,7 @@ exports.getUserProfile = (req, res) => {
 exports.leaveUserRating = (req, res) => {
     let sourceSID = req.body.sid;
     let targetSID = req.params.sid;
-    let type = req.body.type; // good or bad rating
+    let type = req.body.type; // good or bad rating (true for good)
     let content = req.body.content;
 
     User.findOne({ sid: targetSID })
