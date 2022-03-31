@@ -145,6 +145,9 @@ class OneEvent extends React.Component {
                 <p>Number of participants: {this.state.numberOfParticipants}</p>
                 <p>Quota: {this.state.quota}</p>
                 <p>Activity Category: {this.state.activityCategory}</p>
+                <div className="overflow-auto bg-dark" style={{ maxHeight: "260px", textAlign: "left" }}>
+                    {this.state.chatHistory.length > 0 && this.state.chatHistory.map((chat, i) => <OneChat chat={chat} key={i}/>)}
+                </div>
                 <Form  onSubmit={this.onSend}>
                     <Form.Group className="mb-3" controlId="chat-area">
                         <Form.Label>Chat</Form.Label>
@@ -157,6 +160,27 @@ class OneEvent extends React.Component {
             </Container>
         )
     }
+}
+
+class OneChat extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        let chat = this.props.chat;
+        let content = chat.content;
+        let username = chat.user.username;
+        let chatAt = chat.chatAt;
+        return (
+            <div className="bg-dark text-warning">
+                <p>Time posted: {chatAt}</p>
+                <p>user: {username}</p>
+                <p>content: {content}</p>
+                <hr/>
+            </div>
+        );
+    }
+
 }
 
 
