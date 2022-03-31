@@ -19,6 +19,8 @@ class OneEvent extends React.Component {
     // render one event
     render() {
         let data = this.props.data[1];
+        let link_detail = "/event/" + data.eventID;
+        console.log(link_detail);
         return (
             <Container>
                 <Row className="justify-content-sm-center">
@@ -31,6 +33,7 @@ class OneEvent extends React.Component {
                     <p>No. of participants: {data.numberOfParticipants} Quota: {data.quota}</p>
                     <br/> 
                     <p>Category: {data.activityCategory}</p>
+                    <Button href={link_detail} variant="outline-primary" type="button">Click to see the details!</Button>
                 </Row>
                 <hr/>
             </Container>
@@ -67,9 +70,9 @@ class Event extends React.Component {
     render() {
         let e = this.state.events
         return(
-            <Container>
+            <Container className="my-5">
                 <h2>Here are the events</h2>
-                {e.length > 0 && e.map((data, index) => <OneEvent data={data}/>)}
+                {e.length > 0 && e.map((data, index) => <OneEvent data={data} key={index}/>)}
             </Container>
         );
     }
