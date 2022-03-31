@@ -6,6 +6,16 @@ const USER_URL = params.baseBackURL + "/user/";
 
 class UserService {
 
+    getProfile(currentUser, targetSID) {
+        let temp_url = targetSID;
+        
+        return axios.get(USER_URL + temp_url, {
+            headers: {
+                "x-access-token": currentUser.accessToken
+            }
+        }) 
+    }
+
     comment(currentUser, targetSID, type, content) {
         let temp_url = targetSID + "/comment";
         let sourceSID =  currentUser.sid;
