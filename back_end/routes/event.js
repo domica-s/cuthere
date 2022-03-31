@@ -286,20 +286,21 @@ router.post('/event/unregister/:id', [authJwt.verifyToken], function(req, res) {
 router.post("/event/chat/:id", [authJwt.verifyToken], function(req, res) {
 
     var event_id = req.params.id;
-    var _id = req.body._id;
+    var sid = req.body.sid;
     var timeNow = Date(Date.now());
     var content = req.body.content.toString();
 
     var update = {
       $push: { chatHistory: {
-        user: _id,
+        user: sid,
         content: content,
         chatAt: timeNow
       } }
     }
+
     Event.findOneAndUpdate({ eventID: event_id }, update, (err, result) => {
       if (err) {
-        res.status(400).send({ message: "error occuired: " + err});
+        res.status(400).send({ message: "error occured: " + err});
       }
       else {
         res.status(200).send({ message: "Comment added" });

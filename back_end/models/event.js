@@ -13,7 +13,7 @@ var eventSchema = mongoose.Schema({
     quota:{type: Number, required: true},
     activityCategory:{type: String, required: true, enum: ['Outdoor', 'Indoor', 'Offline', 'Online']},
     chatHistory:[{
-        user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+        user: {type: Number, ref: 'User'},
         content: {type: String},
         chatAt: {type: Date}
     }],
