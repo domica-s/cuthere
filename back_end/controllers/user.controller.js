@@ -22,7 +22,8 @@ exports.getUserProfile = (req, res) => {
             college: user.college,
             about: user.about,
             rating: user.rating,
-            friends: user.friends,
+            following: user.following,
+            followers: user.followers,
             role: user.role,
             reviewHistory: user.reviewHistory
         });
