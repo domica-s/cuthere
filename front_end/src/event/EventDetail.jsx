@@ -13,11 +13,9 @@ export default function (props) {
 
     const [Event, setEvent] = useState([])
     const location = useLocation();
-    console.log(location)
-
 
     // STATUS: HOW TO GET THE :id from the params?
-    const eventId = '623e14fae7ecc307f28f300d'
+    const eventId = location.pathname.split('/event/')[1]
 
     // STATUS: WORKING
     useEffect(() => {
@@ -56,8 +54,6 @@ export default function (props) {
                     
                 </Row>
             </div>
-
-
         </React.Fragment>
 
     )

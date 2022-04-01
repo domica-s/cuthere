@@ -73,12 +73,12 @@ export default function () {
 
     async function handleEventClick(event){
 
-        const id = event.event._def.extendedProps._id
+        const id = event.event._def.extendedProps.eventID
         const response = await axios.get("http://localhost:8080/api/calendar/route-event/"+id);
 
         history.push({
             state: response.data,
-            pathname: '/event/:id',
+            pathname: '/event/'+id,
         });
         history.go();
         
