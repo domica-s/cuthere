@@ -86,7 +86,7 @@ class Login extends React.Component {
                     error.toString();
                     this.setState({
                         loading: false,
-                        message: resMessage
+                        message: resMessage,
                     });
                 }
             }

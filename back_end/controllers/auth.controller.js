@@ -74,12 +74,15 @@ exports.signup = (req, res) => {
         mobileNumber:0,
         // profilePicture:"",
         interests:"",
-        college:"",
+        college:req.body.college,
         about:"",
         rating:"",
         friends:"",
         registeredEvents: [],
-        role: "User"
+        role: "User",
+        birthday: "",
+        name: req.body.username,
+        country: "",
     });
 
     user.save((err, user) => {
@@ -142,6 +145,9 @@ exports.signin = (req, res) => {
         rating: user.rating,
         friends: user.friends,
         role: user.role,
+        birthday: user.birthday,
+        name: user.name,
+        country: user.country,
         // user
       });
     }

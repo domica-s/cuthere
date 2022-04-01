@@ -23,7 +23,11 @@ exports.getUserProfile = (req, res) => {
             about: user.about,
             rating: user.rating,
             friends: user.friends,
-            role: user.role
+            role: user.role,
+            name: user.name,
+            country: user.country,
+            birthday: user.birthday
+            
         });
     });
 }

@@ -25,9 +25,17 @@ var userSchema = mongoose.Schema({
         content: {type: String},
         reviewAt: {type: Date, default:Date.now},
     }],
-    createdAt:{type:Date, default:Date.now}
+    createdAt:{type:Date, default:Date.now},
+    name:{type:String, default:this.username},
+    birthday:{type:Date},
+    country:{type:String},
 });
 
 var User = mongoose.model("User", userSchema);
+userSchema.pre('save', function (next) {
+    this.username = this.get('username'); // considering _id is input by client
+    next();
+});
+
 
 module.exports = User;

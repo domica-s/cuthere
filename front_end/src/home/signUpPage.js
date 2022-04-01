@@ -7,7 +7,7 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import { Container } from "react-bootstrap";
 import FloatingLabel from 'react-bootstrap/FloatingLabel'
-
+import 'bootstrap/dist/css/bootstrap.min.css';
 import AuthService from "../services/auth.service";
 
 function SignUpWithNavigate() {
@@ -23,6 +23,7 @@ class SignUp extends React.Component {
       this.handleSignIn = this.handleSignIn.bind(this);
       this.onChangeUsername = this.onChangeUsername.bind(this);
       this.onChangeSID = this.onChangeSID.bind(this);
+      this.onChangeCollege = this.onChangeCollege.bind(this);
       this.onChangePassword = this.onChangePassword.bind(this);
       this.onChangeRepassword = this.onChangeRepassword.bind(this);
 
@@ -31,6 +32,7 @@ class SignUp extends React.Component {
         sid: "",
         password: "",
         repassword: "",
+        college: "",
         successful: false,
         message: ""
       };
@@ -51,6 +53,12 @@ class SignUp extends React.Component {
   onChangePassword(e) {
     this.setState({
       password: e.target.value
+    });
+  }
+
+  onChangeCollege(e) {
+    this.setState({
+      college: e.target.value
     });
   }
 
@@ -82,7 +90,8 @@ class SignUp extends React.Component {
       this.state.username,
       this.state.sid,
       this.state.password,
-      this.state.repassword
+      this.state.repassword,
+      this.state.college,
     ).then(
       response => {
         this.setState({
@@ -115,26 +124,128 @@ class SignUp extends React.Component {
           </Col>
         </Row>
         <Row className="justify-content-center">
-          <Form className="signin-form" onSubmit={this.handleRegister}
-                                        ref={c => {
-                                        this.form = c;
-                                        }}
-                                        >
-            <h1 className="h3 mb-3 ">Sign Up</h1>
+          <Form className="signin-form" 
+            onSubmit={this.handleRegister}
+            ref={c => {this.form = c;}}
+          >
+            <h1 className="h3 mb-3">Sign Up</h1>
+            <div className="tab-content">
+              <div className="tab-pane fade active show" id="account-change-password">
+          
+            
+                <div className="card-body">
+                    <div className="form-group">
+                      <FloatingLabel className="form-label" controlId="floatingInput" label="Username">
+                      <Form.Control
+                      type="text"
+                      name="username"
+                      value={this.state.username}
+                      placeholder="Username"
+                      onChange={this.onChangeUsername} 
+                      required
+                      />
+                      </FloatingLabel>
+                    </div>
+                    <div className="form-group">
+                      <FloatingLabel className="form-label" controlId="floatingInput" label="SID">
+                      <Form.Control
+                      type="number"
+                      name="SID"
+                      value={this.state.SID}
+                      placeholder="SID"
+                      onChange={this.onChangeSID} 
+                      required
+                      />
+                      </FloatingLabel>
+                    </div>
+                    <div className="form-group">
+                      <FloatingLabel className="form-label" controlId="floatingInput" label="College">
+                      <Form.Control
+                      as="select"
+                      className="select-style"
+                      name="college"
+                      value={this.state.college}
+                      placeholder="College"
+                      onChange={this.onChangeCollege} 
+                      required
+                      >
+                        <option value="-">-</option>
+                        <option value="Lee Woo Sing">Lee Woo Sing</option>
+                        <option value="Morningside">Morningside</option>
+                        <option value="Wu Yee Sun">Wu Yee Sun</option>
+                        <option value="Chung Chi">Chung Chi</option>
+                        <option value="New Asia">New Asia</option>
+                        <option value="Shaw">Shaw</option>
+                        <option value="SH Ho">SH Ho</option>
+                        <option value="CW Chu">CW Chu</option>
+                        <option value="United College">United College</option>
+                        </Form.Control>
+                      </FloatingLabel>
+                    </div>
+                    <div className="form-group">
+                      <FloatingLabel className="form-label" controlId="floatingInput" label="Password">
+                      <Form.Control
+                      type="password"
+                      name="password"
+                      value={this.state.password}
+                      placeholder="Password"
+                      onChange={this.onChangePassword} 
+                      required
+                      />
+                      </FloatingLabel>
+                    </div>
+                    <div className="form-group">
+                      <FloatingLabel className="form-label" controlId="floatingInput" label="RePassword">
+                      <Form.Control
+                      type="password"
+                      name="repassword"
+                      value={this.state.repassword}
+                      placeholder="Re-enter password.."
+                      onChange={this.onChangeRepassword} 
+                      required
+                      />
+                      </FloatingLabel>
+                    </div>
+                    
 
-            <Col className="form-floating">
+
+                  </div>
+                </div>
+              </div>
+            {/* <Col className="form-floating">
                 <FloatingLabel controlId="floatingUsername" label="Username">
                     <Form.Control name="username" type="text" placeholder="Username" required
                     value={this.state.username}
                     onChange={this.onChangeUsername}/>
                 </FloatingLabel>                                
-            </Col>
+            </Col> */}
 
-            <Col className="form-floating">
+            {/* <Col className="form-floating">
                 <FloatingLabel controlId="floatingInput" label="SID">
                     <Form.Control name="sid" type="number" placeholder="SID" required
                     value={this.state.sid}
                     onChange={this.onChangeSID}/>
+                </FloatingLabel>                                
+            </Col> */}
+            {/* <Col className="form-floating">
+                <FloatingLabel controlId="floatingInput" label="College">
+                    <Form.Control className="select-style"
+                    as="select"
+                    name="college"
+                    placeholder="-"
+                    value={this.state.college}
+                    onChange={this.onChangeCollege}>
+                        <option value="-">-</option>
+                        <option value="Lee Woo Sing">Lee Woo Sing</option>
+                        <option value="Morningside">Morningside</option>
+                        <option value="Wu Yee Sun">Wu Yee Sun</option>
+                        <option value="Chung Chi">Chung Chi</option>
+                        <option value="New Asia">New Asia</option>
+                        <option value="Shaw">Shaw</option>
+                        <option value="SH Ho">SH Ho</option>
+                        <option value="CW Chu">CW Chu</option>
+                        <option value="United College">United College</option>
+                        </Form.Control>
                 </FloatingLabel>                                
             </Col>
 
@@ -152,7 +263,7 @@ class SignUp extends React.Component {
                     value={this.state.repassword}
                     onChange={this.onChangeRepassword}/>
                 </FloatingLabel>
-            </Col>  
+            </Col>   */}
             <Button className="mb-3 m-2" variant="outline-warning" onClick={this.handleSignIn}>
                 Already have an account? Sign in instead.
             </Button>    
