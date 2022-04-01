@@ -25,7 +25,10 @@ exports.getUserProfile = (req, res) => {
             following: user.following,
             followers: user.followers,
             role: user.role,
-            reviewHistory: user.reviewHistory
+            reviewHistory: user.reviewHistory,
+            birthday: user.birthday,
+            country: user.country,
+            name: user.name,
         });
     });
 }

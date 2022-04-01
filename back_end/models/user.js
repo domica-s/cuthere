@@ -27,7 +27,15 @@ var userSchema = mongoose.Schema({
         content: {type: String},
         reviewAt: {type: Date, default:Date.now},
     }],
-    createdAt:{type:Date, default:Date.now}
+    createdAt:{type:Date, default:Date.now},
+    birthday:{type:Date},
+    name:{type:String, default:this.username},
+    country:{type:String},
+});
+
+userSchema.pre('save', function (next) {
+    this.name = this.get('username'); // defaults name attr to username
+    next();
 });
 
 var User = mongoose.model("User", userSchema);

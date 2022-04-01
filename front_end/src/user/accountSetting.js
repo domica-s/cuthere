@@ -1,5 +1,5 @@
 import React from "react";
-import {Container, Col, Tabs, Tab, Form, Button} from "react-bootstrap";
+import {Container, Tabs, Tab, Form, Button} from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './accountSettingStyles.css'
 import {useState, useEffect} from 'react';
@@ -261,7 +261,7 @@ const BIO_STATE = {
   };
 
 function BioInformation() {
-    const [user, setUser] = useState(INITIAL_STATE);
+    const [user, setUser] = useState(BIO_STATE);
 
     useEffect(() => {
         (async () => {
