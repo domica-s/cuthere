@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState} from 'react'
 import { useLocation } from 'react-router-dom'
 import Axios from 'axios' 
 import { Row, Col } from 'antd';
@@ -14,6 +14,7 @@ export default function (props) {
     const [Event, setEvent] = useState([])
     const location = useLocation();
     console.log(location)
+
 
     // STATUS: HOW TO GET THE :id from the params?
     const eventId = '623e14fae7ecc307f28f300d'
