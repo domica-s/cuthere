@@ -108,8 +108,8 @@ class EventWidget extends React.Component{
       }
     }
     render(){
-      let events = Object.entries(this.state.events)
-      let disp_events =  Object.entries(this.state.events).slice(0,5)
+      let events = (this.state.events)? Object.entries(this.state.events): null;
+      let disp_events =  (this.state.events)? Object.entries(this.state.events).slice(0,5): null;
       
       let title = this.state.title
         return (
@@ -124,7 +124,7 @@ class EventWidget extends React.Component{
             </Card.Header>
             <Card.Body style={{ overflowY: "hidden" }}>
               <Row className="widget g-4">
-                {events.length > 0 &&
+                {events &&
                   disp_events.map((data) => (
                     <Col style={{ justifyContent: "center", display: "flex" }}>
                       <EventCard data={data} />
