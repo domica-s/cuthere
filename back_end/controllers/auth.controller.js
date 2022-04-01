@@ -145,7 +145,7 @@ exports.signin = (req, res) => {
         rating: user.rating,
         friends: user.friends,
         role: user.role,
-        // user
+        reviewHistory: user.reviewHistory
       });
     }
     else {

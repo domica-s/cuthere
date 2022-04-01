@@ -11,6 +11,8 @@ const INITIAL_STATE = {
     name: "",
     email: "",
     mobileNumber: 0,
+    successful: false,
+    message: "",
   };
 
 //handle change profile pic
@@ -30,6 +32,8 @@ function GeneralInformation() {
             email: user.email,
             mobileNumber: user.mobileNumber,
             name: user.name,
+            successful: false,
+            message: "",
             })
             console.log(user);
             // setUser(user.data);
@@ -45,17 +49,38 @@ function GeneralInformation() {
         setUser({ ...user, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = async (e) => {
+    const handleGeneral = async (e) => {
         e.preventDefault();
-        try {
-        console.log("Data for update : ", user);
-        const response = await axios.put(`https://mongoDB?/${user.id}`, user);
-        } catch (error) {
-        console.log(error);
+        // try {
+        // console.log("Data for update : ", user);
+        // const response = await axios.put(`https://mongoDB?/${user.id}`, user);
+        // } catch (error) {
+        // console.log(error);
+        // }
+        // (currentUser, mobileNumber, interests, about)
+        let currentUser = authService.getCurrentUser();
+        authService.updateProfile(currentUser, user.mobileNumber, "", "")
+        .then(response => {
+          currentUser = authService.getCurrentUser();
+          setUser({
+            username: currentUser.username,
+            email: currentUser.email,
+            mobileNumber: currentUser.mobileNumber,
+            name: currentUser.name,
+            successful: true, 
+            message: response.data.message
+          });
+          console.log("false");
+        },
+        error => {
+          setUser({successful: false, message: error.response.data.message});
+          console.log("success");
         }
+      );
+      console.log(user);
     };
     return(
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleGeneral}>
         <div className="tab-content">
             <div className="tab-pane fade active show" id="account-general">
 
@@ -119,6 +144,18 @@ function GeneralInformation() {
               </div>
             </div>
             </div>
+            {user.message && (
+                <div className="form-group">
+                    <div
+                    className={
+                        user.successful? "d-none": "alert alert-danger"
+                    }
+                    role="alert"
+                    >
+                    {user.message}
+                    </div>
+                </div>
+              )}
             <Button type="submit" variant="outline-dark" value="Update">Update Profile</Button>
             </Form>
     );
