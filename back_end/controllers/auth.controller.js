@@ -77,7 +77,9 @@ exports.signup = (req, res) => {
         college:"",
         about:"",
         rating:"",
-        friends:"",
+        following: [],
+        followers: [],
+        //friends:"",
         registeredEvents: [],
         role: "User"
     });
