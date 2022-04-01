@@ -1,5 +1,4 @@
 import React from "react";
-import Datetime from 'react-datetime';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
@@ -17,7 +16,7 @@ const quotaInvalidMsg = "Quota is invalid, please input a positive integer";
 
 const currentUser = AuthService.getCurrentUser();
 if (currentUser) {
-    var _id = currentUser.user._id;
+    var _id = currentUser._id;
 }
 
 function Logo() {
@@ -78,7 +77,8 @@ class CreateEvent extends React.Component {
                 start: this.state.start,
                 end: this.state.end,
                 quota: this.state.quota,
-                category: this.state.category
+                category: this.state.category,
+                _id: currentUser._id
             }
             fetch(API, {
                 method: "POST",
@@ -89,7 +89,7 @@ class CreateEvent extends React.Component {
                 body: JSON.stringify(data)                             
             })
             .then(res => {
-                if (res.status == 200) {
+                if (res.status === 200) {
                     window.alert("Event created successfully!");
                     document.getElementById("createEvent").reset();
                 }

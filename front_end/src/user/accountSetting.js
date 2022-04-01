@@ -11,6 +11,8 @@ const INITIAL_STATE = {
     name: "",
     email: "",
     mobileNumber: 0,
+    successful: false,
+    message: "",
   };
 
 //handle change profile pic
@@ -26,10 +28,12 @@ function GeneralInformation() {
             const user = authService.getCurrentUser();
 
             setUser({
-            username: user.user.username,
-            email: user.user.email,
-            mobileNumber: user.user.mobileNumber,
-            name: user.user.name,
+            username: user.username,
+            email: user.email,
+            mobileNumber: user.mobileNumber,
+            name: user.name,
+            successful: false,
+            message: "",
             })
             console.log(user);
             // setUser(user.data);
@@ -45,17 +49,38 @@ function GeneralInformation() {
         setUser({ ...user, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = async (e) => {
+    const handleGeneral = async (e) => {
         e.preventDefault();
-        try {
-        console.log("Data for update : ", user);
-        const response = await axios.put(`https://mongoDB?/${user.id}`, user);
-        } catch (error) {
-        console.log(error);
+        // try {
+        // console.log("Data for update : ", user);
+        // const response = await axios.put(`https://mongoDB?/${user.id}`, user);
+        // } catch (error) {
+        // console.log(error);
+        // }
+        // (currentUser, mobileNumber, interests, about)
+        let currentUser = authService.getCurrentUser();
+        authService.updateProfile(currentUser, user.mobileNumber, "", "")
+        .then(response => {
+          currentUser = authService.getCurrentUser();
+          setUser({
+            username: currentUser.username,
+            email: currentUser.email,
+            mobileNumber: currentUser.mobileNumber,
+            name: currentUser.name,
+            successful: true, 
+            message: response.data.message
+          });
+          console.log("false");
+        },
+        error => {
+          setUser({successful: false, message: error.response.data.message});
+          console.log("success");
         }
+      );
+      console.log(user);
     };
     return(
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleGeneral}>
         <div className="tab-content">
             <div className="tab-pane fade active show" id="account-general">
 
@@ -68,7 +93,7 @@ function GeneralInformation() {
                   </label> &nbsp;
                   <button type="button" className="btn btn-default md-btn-flat">Reset</button>
 
-                  <div className="text-light small mt-1">Allowed JPG, GIF or PNG. Max size of 800K</div>
+                  <div className="text-light small mt-1">Allowed JPG or PNG.</div>
                 </div>
               </div>
               <hr className="border-light m-0" />
@@ -119,6 +144,18 @@ function GeneralInformation() {
               </div>
             </div>
             </div>
+            {user.message && (
+                <div className="form-group">
+                    <div
+                    className={
+                        user.successful? "d-none": "alert alert-danger"
+                    }
+                    role="alert"
+                    >
+                    {user.message}
+                    </div>
+                </div>
+              )}
             <Button type="submit" variant="outline-dark" value="Update">Update Profile</Button>
             </Form>
     );
@@ -177,7 +214,7 @@ function ChangePassword() {
         <Form onSubmit={handleSubmit}>
         <div className="tab-content">
             <div className="tab-pane fade active show" id="account-change-password">
-            <hr className="border-light m-0" />
+        
             
               <div className="card-body">
                 <div className="form-group">
@@ -235,10 +272,10 @@ function BioInformation() {
             const user = authService.getCurrentUser();
 
             setUser({
-            about: user.user.about,
-            birthday: user.user.birthday,
-            country: user.user.country,
-            interests: user.user.interests,
+            about: user.about,
+            birthday: user.birthday,
+            country: user.country,
+            interests: user.interests,
             })
             console.log(user);
             // setUser(user.data);
@@ -268,7 +305,7 @@ function BioInformation() {
         <Form onSubmit={handleSubmit}>
         <div className="tab-content">
             <div className="tab-pane fade active show" id="account-change-password">
-            <hr className="border-light m-0" />
+          
             
               <div className="card-body">
                 <div className="form-group">

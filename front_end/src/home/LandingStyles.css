@@ -15,7 +15,7 @@
     display: flex;
     align-items: center;
     background: rgb(138,18,83);
-    background: linear-gradient(90deg, rgba(138,18,83,1) 0%, rgba(253,164,3,1) 100%);
+    background-image: url("./hong-kong-bg.webp");
     background-position: center;
     background-size: cover;
   }

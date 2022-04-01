@@ -24,6 +24,7 @@ class AdminService {
     }
 
     loadRecentUsersAndEvents(currentUser) {
+        console.log("Load called");
         let temp_url = "query/recent";
         return axios.get(ADMIN_URL + temp_url,  {
             headers: {
@@ -34,7 +35,7 @@ class AdminService {
     
     deleteSelectedEvent(currentUser, eventId, password) {
         let temp_url = "event/" + eventId + "/delete";
-        let adminReqSID = currentUser.user.sid;
+        let adminReqSID = currentUser.sid;
         let adminReqPassword = password;
 
         return axios.post(ADMIN_URL + temp_url, {
@@ -50,12 +51,31 @@ class AdminService {
 
     deleteSelectedUser(currentUser, sid, password) {
         let temp_url = "user/" + sid + "/delete";
-        let adminReqSID = currentUser.user.sid;
+        let adminReqSID = currentUser.sid;
         let adminReqPassword = password;
         
         return axios.post(ADMIN_URL + temp_url, {
             adminReqSID,
             adminReqPassword
+          }, 
+          {
+            headers: {
+                "x-access-token": currentUser.accessToken
+            }
+        })
+    }
+
+    changeUserPass(currentUser, sid, password, newUserPass) {
+        let temp_url = "user/" + sid + "/updatepassword";
+        let adminReqSID = currentUser.sid;
+        let adminReqPassword = password;
+
+        console.log(newUserPass);
+        
+        return axios.post(ADMIN_URL + temp_url, {
+            adminReqSID,
+            adminReqPassword,
+            newUserPass
           }, 
           {
             headers: {

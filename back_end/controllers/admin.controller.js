@@ -45,17 +45,17 @@ exports.getEventId = (req, res) => {
 }
 
 exports.loadRecentUsersAndEvents = (req, res) => {
-    User.find({ active: true }, {username: 1, sid: 1}).sort({createdAt:-1}).limit(10)
+    User.find({}, {username: 1, sid: 1}).sort({createdAt:-1})
     .exec((err, user) => {
         if (err) {
             return res.status(500).send({ message: err });
         }
-        Event.find({}, {title: 1, eventID: 1}).sort({createdAt:-1}).limit(10)
+        Event.find({}, {title: 1, eventID: 1}).sort({createdAt:-1})
         .exec((err, event) => {
             if (err) {
                 return res.status(500).send({ message: err });
             }
-            User.count({ active: true })
+            User.count({ })
             .exec((err, ucount) => {
                 if (err) {
                     return res.status(500).send({ message: err });
@@ -122,10 +122,6 @@ exports.deleteEvent = (req, res) => {
 
 }
 
-// delete comments in event
-exports.removeEventComments = (req, res) => {
-
-}
 // admin rights on profile visit
 // ban user (delete profile)'
 // click button -> enter password (front end) from Dashboard
@@ -172,7 +168,198 @@ exports.deleteUser = (req, res) => {
 
 }
 
-// remove reviews
-exports.removeUserRating = (req, res) => {
+exports.changeUserPass = (req, res) => {
+  
+  let sid = req.params.sid;
+  let adminReqSID = req.body.adminReqSID;
+  let adminReqPassword = req.body.adminReqPassword;
+  let newPassword = req.body.newUserPass;
 
+  User.findOne({ sid: adminReqSID })
+  .exec((err, admin) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+
+    if (!admin) {
+      return res.status(404).send({ message: "Admin Not found." });
+    }
+    
+    var passwordIsValid = bcrypt.compareSync(
+      adminReqPassword,
+      admin.password
+    );
+
+    if (!passwordIsValid) {
+      return res.status(401).send({message: "Invalid Admin Password!" });
+    }
+
+    User.findOne({ sid: sid })
+    .exec((err, targetUser) => {
+      if (err) {
+        return res.status(500).send({ message: err });
+      }
+  
+      if (!targetUser) {
+        return res.status(404).send({ message: "Target user not found." });
+      }
+
+      const salt = bcrypt.genSaltSync(10);
+      
+      targetUser.password = bcrypt.hashSync(newPassword, salt);
+      
+      targetUser.save((err) => {
+        if (err) {
+          return res.status(500).send({ message: err });
+        }
+        console.log("Admin " + adminReqSID + " has changed user " + sid + "\'s password");
+        return res.status(200).send({ message: "Successfully updated user password"});
+      })
+    })
+
+  });
+
+}
+
+// delete comments in event
+// how to use?
+// POST to url --> http://localhost:8080/admin/event/:eventid/removecomment
+// params eventid is target eventid
+// body (JSON) --> { "adminReqSID": adminReqSID, "adminReqPassword": adminReqPassword,
+// "targetCommentSID": targetCommentSID }
+// returns success/ fail
+exports.removeEventComments = (req, res) => {
+  let targetEventId = req.params.eventid;
+  let adminReqSID = req.body.adminReqSID;
+  let adminReqPassword = req.body.adminReqPassword;
+  let targetCommentSID = req.body.targetCommentSID;
+  // check if request made by admin
+  User.findOne({ sid: adminReqSID })
+  .exec((err, admin) => {
+    if (err) {
+      return res.status(500).send({ message: err });
+    }
+
+    if (!admin) {
+      return res.status(404).send({ message: "Admin Not found." });
+    }
+    
+    var passwordIsValid = bcrypt.compareSync(
+      adminReqPassword,
+      admin.password
+    );
+
+    if (!passwordIsValid) {
+      return res.status(401).send({message: "Invalid Admin Password!" });
+    }
+
+    Event.findOne({ eventID: targetEventId })
+    .exec((err, event) => {
+      if (err) {
+        return res.status(500).send({ message: err });
+      }
+  
+      if (!event) {
+        return res.status(404).send({ message: "Event not found." });
+      }
+    
+      // get all comments
+      let allComments = event.chatHistory;
+
+      let hasLeftComment = allComments.some(allComments => allComments.user === targetCommentSID)
+      // if targetCommentSID found as one of the commenter
+      if (hasLeftComment) {
+        // get index of comment
+        let indexOfOldComment = allComments.findIndex(x => x.user === targetCommentSID);
+        // console.log(indexOfOldComment);
+        let newComments = allComments;
+        newComments.splice(indexOfOldComment, 1);
+        event.chatHistory = newComments;
+
+        event.save((err) => {
+          if (err) {
+            return res.status(500).send({ message: err });
+          }
+          console.log("Admin " + adminReqSID + " has deleted " + targetCommentSID + "\'s comment in event " + targetEventId + "\'s page");
+          return res.status(200).send({ message: "Successfully removed user comment"});
+        })
+      }
+      else {
+        return res.status(404).send({ message: "That user have not left a comment on the event's page "});
+      }
+    })
+
+  })
+}
+
+// remove reviews of a user profile
+// how to use?
+// POST to url --> http://localhost:8080/admin/user/:sid/removerating
+// params sid is target sid
+// body (JSON) --> { "adminReqSID": adminReqSID, "adminReqPassword": adminReqPassword,
+// "targetCommentSID": targetCommentSID }
+// returns success/ fail
+exports.removeUserRating = (req, res) => {
+  let targetSID = req.params.sid;
+  let adminReqSID = req.body.adminReqSID;
+  let adminReqPassword = req.body.adminReqPassword;
+  let targetCommentSID = req.body.targetCommentSID;
+  // check if request made by admin
+  User.findOne({ sid: adminReqSID })
+  .exec((err, admin) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+
+    if (!admin) {
+      return res.status(404).send({ message: "Admin Not found." });
+    }
+    
+    var passwordIsValid = bcrypt.compareSync(
+      adminReqPassword,
+      admin.password
+    );
+
+    if (!passwordIsValid) {
+      return res.status(401).send({message: "Invalid Admin Password!" });
+    }
+    
+    // find if user profile exists (if the corresponding SID exists)
+    User.findOne({ sid: targetSID })
+    .exec((err, targetUser) => {
+      if (err) {
+        return res.status(500).send({ message: err });
+      }
+  
+      if (!targetUser) {
+        return res.status(404).send({ message: "Target user not found." });
+      }
+
+      // get all comments
+      let allComments = targetUser.reviewHistory;
+      let hasLeftComment = allComments.some(allComments => allComments.user === targetCommentSID)
+      // if targetCommentSID found as one of the commenter
+      if (hasLeftComment) {
+        // get index of comment
+        let indexOfOldComment = allComments.findIndex(x => x.user === targetCommentSID);
+        // console.log(indexOfOldComment);
+        let newComments = allComments;
+        newComments.splice(indexOfOldComment, 1);
+        targetUser.reviewHistory = newComments;
+
+        targetUser.save((err) => {
+          if (err) {
+            return res.status(500).send({ message: err });
+          }
+          console.log("Admin " + adminReqSID + " has deleted " + targetCommentSID + "\'s comment in " + targetSID + "\'s profile");
+          return res.status(200).send({ message: "Successfully removed user comment"});
+        })
+      }
+      else {
+        return res.status(404).send({ message: "That user have not left a comment on the targetUser's profile "});
+      }
+    })
+  });
 }

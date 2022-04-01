@@ -47,6 +47,9 @@ function sendEmail(res, email_type, to_email, email_body) {
     text: email_body
   };
 
+  // delete this when deploy
+  console.log(email_body);
+
   transporter.sendMail(mailOptions, function (err) {
       if (err) { 
         console.log(err);
@@ -129,9 +132,22 @@ exports.signin = (req, res) => {
       var token = jwt.sign({ id: user.id }, config.secret, {
         expiresIn: 86400 // 24 hours
       });
+      
       return res.status(200).send({
         accessToken: token,
-        user
+        _id: user._id,
+        sid: user.sid,
+        username: user.username,
+        email: user.email,
+        mobileNumber: user.mobileNumber,
+        profilePicture: user.profilePicture,
+        interests: user.interests,
+        college: user.college,
+        about: user.about,
+        rating: user.rating,
+        friends: user.friends,
+        role: user.role,
+        reviewHistory: user.reviewHistory
       });
     }
     else {

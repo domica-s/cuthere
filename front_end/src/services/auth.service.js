@@ -14,6 +14,7 @@ class AuthService {
       .then(response => {
         if (response.data.accessToken) {
           localStorage.setItem("user", JSON.stringify(response.data));
+          console.log(response.data);
           localStorage.setItem("isAuthenticated", "true");
         }
         return response.data;
@@ -42,7 +43,7 @@ class AuthService {
 
   changePassword(currentUser, oldPassword, newPassword, newRepassword) {
     let temp_url = "changepassword";
-    let sid = currentUser.user.sid;
+    let sid = currentUser.sid;
     // get oldPassword and newPassword from form fields, check forgotPassword for reference
     // get sid from access token
     return axios.post(API_URL + temp_url, {
@@ -69,7 +70,7 @@ class AuthService {
   }
 
   updateProfile(currentUser, mobileNumber, interests, about) {
-    let sid = currentUser.user.sid;
+    let sid = currentUser.sid;
     
     return axios.post(params.baseBackURL + "/profile/update", {
       sid,

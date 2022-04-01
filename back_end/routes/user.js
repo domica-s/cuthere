@@ -41,7 +41,8 @@ function checkFollowing(id, followers){
 router.post('/user/follow/:id', [authJwt.verifyToken], function(req, res){
     var user_id = req.params.id; //who to follow
     var _id = req.body._id; //current user
-    var followed = false; 
+    var followed = false;
+
     User.findOne({ sid: user_id}, (err, result) => {
         if(err){
             res.status(400).send({message: "error occured: " + err})
@@ -77,6 +78,51 @@ router.post('/user/follow/:id', [authJwt.verifyToken], function(req, res){
                         res.status(200).send({message: "OK"});
                     }
                 });
+            }
+        }
+    });
+})
+
+router.post('/user/unfollow/:id', [authJwt.verifyToken], function(req,res){
+    var user_id = req.params.id; //who to follow
+    var _id = req.body._id; //current user
+
+    var followed = true;
+
+    User.findOneAndUpdate({sid: user_id}, (err, result) => {
+        if (err){
+            res.status(400).send({message: "error occured: " + err})
+        }
+        else if (result === null){
+            res.status(400).send({message: "User not found"});
+        }
+        else{
+            followed = checkFollowing(_id, result.followers);
+            if(!followed) {
+              res.status(202).send({ message: "You have not followed this user" });
+            } 
+            else {
+              var updateFollower = {
+                $pull: { followers: _id },
+              };
+              var updateFollowing = {
+                $pull: { following: result },
+              };
+              User.updateOne({ sid: user_id }, updateFollower, (err, result) => {
+                  if (err) {
+                    res.status(400).send({ message: "error occured: " + err });
+                  } else {
+                    res.status(200).send({ message: "OK" });
+                  }
+                }
+              );
+              User.updateOne({ _id: _id }, updateFollowing, (err, result) => {
+                if (err) {
+                  res.status(400).send({ message: "error occured: " + err });
+                } else {
+                  res.status(200).send({ message: "OK" });
+                }
+              });
             }
         }
     });

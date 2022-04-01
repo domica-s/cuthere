@@ -44,29 +44,36 @@ export default function () {
 
 
     async function handleDatesSet(data, yourCalendar = false){
+        console.log(data, yourCalendar)
 
         // To get all the events to the calendar --> WORKING
         if (!yourCalendar){
         const response = await axios.get('http://localhost:8080/api/calendar/get-event?start='+moment(data.start).toISOString() +'&end='+moment(data.end).toISOString())
         setEvents(response.data)
+        console.log(response.data)
         }
 
         // To get only your events to the calendar --> WORKING
         else {
         const response = await axios.get("http://localhost:8080/api/calendar/my-event?start="+moment(data.start).toISOString()+'&end='+moment(data.end).toISOString())
         setEvents(response.data)
+        console.log(response.data)
         }
+        
     }
 
 
-    // To route to a specific event detail page --> WORKING, Just need to change the route
+    // To route to a specific event detail page --> WORKING
 
     async function handleEventClick(event){
+
         const id = event.event._def.extendedProps._id
+        const response = await axios.get("http://localhost:8080/api/calendar/route-event/"+id);
 
-        await axios.get("http://localhost:8080/api/calendar/get-event/"+id);
-
-        history.push("/event");
+        history.push({
+            state: response.data,
+            pathname: '/event/:id',
+        });
         history.go();
         
         

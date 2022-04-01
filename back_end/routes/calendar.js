@@ -30,7 +30,7 @@ router.post("/create-event", async(req,res)=> {
     event.numberOfParticipants = 1; 
 
     // chatHistory Initialized to Empty String 
-    event.chatHistory = '';
+    event.chatHistory = new Object();
 
     // createdAt ==> See event.js 
     var itemCreatedBy = () => {
@@ -73,9 +73,11 @@ router.get("/my-event", async(req, res) => {
 });
 
 // To route to an events detail page
-router.get("/get-event/:id", async(req,res)=> {
+router.get("/route-event/:id", async(req,res)=> {
 
     console.log(req.params.id)
+    
+
     Event.findOne({id: req.params.id}, (err, result)=> {
         if (err) {
             res.status(400).send({ message: "error occured: "+ err})
