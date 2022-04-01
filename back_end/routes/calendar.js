@@ -67,8 +67,6 @@ router.post("/my-event", async(req, res) => {
 // To route to an events detail page
 router.get("/route-event/:id", async(req,res)=> {
 
-    console.log(req.params)
-
     Event.findOne({eventID: req.params.id}, (err, result)=> {
         if (err) {
             res.status(400).send({ message: "error occured: "+ err})
