@@ -21,7 +21,7 @@ import {Help} from './home/helpPage';
 
 // import {EditProfile} from './user/editProfile';
 
-import {EventDetail} from './event/eventDetailPage';
+import EventDetail from './event/EventDetail';
 import {AccountSetting} from './user/accountSetting';
 import { Image } from 'react-bootstrap';
 import UserIcon from './images/userProfile.png';

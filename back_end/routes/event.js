@@ -1,4 +1,5 @@
 var express = require("express");
+var mongoose = require("mongoose");
 
 var Event = require("../models/event");
 var User = require("../models/user");
@@ -8,6 +9,7 @@ var router = express.Router();
 const res = require("express/lib/response");
 
 const { authJwt } = require("../middlewares");
+const { update } = require("../models/event");
 
 // List all events
 router.get("/allevents", [authJwt.verifyToken], function (req, res) {
@@ -38,6 +40,7 @@ router.get("/event/:id", [authJwt.verifyToken], function (req, res) {
         res.status(200).send(result);
     })
 });
+
 
 
 router.get("/intevents", [authJwt.verifyToken], function(req,res){
@@ -177,7 +180,9 @@ router.post("/event", [authJwt.verifyToken], function (req, res, next) {
     });    
 });
 
-router.get('/event/delete/:id', [authJwt.verifyToken], function(req, res) {
+// Function to Delete Event
+router.get('/event/delete/:id', function(req, res) {
+  // Acquire parameters
     var event_id = req.params.id;
 
     Event.findOneAndDelete({eventID: event_id}).exec((err, results) => {
@@ -195,92 +200,94 @@ router.get('/event/delete/:id', [authJwt.verifyToken], function(req, res) {
     });
 });
 
+// Check if the user is registered --> Event Details Page (Back-End) --> WORKING
 function checkRegistered(id, participants) {
-  let registered = false;
-  if (participants === null) {
-    return registered;
-  }
-  else {
-    for (let i = 0; i < participants.length; i++) {
-      if (id === participants[i]._id.toString()){
-        registered = true}
-    }
-    return registered
-  }
+
+  // Convert participants to string
+  const stringsParticipant = participants.map( x => x.toString());
+  const stringId = id._id.toString()
+
+  // Comparison
+  if (stringsParticipant.includes(stringId)) return true
+  else return false
+
 }
 
-router.post('/event/register/:id', [authJwt.verifyToken], function(req, res) {
+async function updateEvent(eventID, mode, numberOfParticipants, participants, user){
+  // updating the set
+  if (mode === 'register') {
+    numberOfParticipants += 1; 
+    participants.push(user)
+  }
+
+  else {
+    numberOfParticipants -= 1 
+    participants.remove(user)
+  }
+
+
+  Event.findOneAndUpdate(
+    {eventID: eventID}, // Filter
+    {
+      $set: {participants: participants, numberOfParticipants: numberOfParticipants} // Update
+    },
+    await function (err, result) {
+      if (err) res.send("Error in updating DB: "+ err)
+      else res.status(200).send("Ok!")
+    }
+  )
+}
+
+// Register for an event --> Event Details Page (Back-End) --> CORRECT
+router.post('/event/register/:id',[authJwt.verifyToken], function(req, res) {
+  
+  // Acquiring parameters
     var event_id = req.params.id;
-    var _id = req.body._id;
+    var _id = req.body._id; // Returns object, use req.body._id._id to get string.
     var registered = false;
-    Event.findOne({ eventID: event_id }, (err, result) => {
-      if (err) {
-        res.status(400).send({ message: "error occured: " + err })
-      }
-      else if (result === null){
-        res.status(400).send({ message: "No such event!" });
-      }
-      else {
-        registered = checkRegistered(_id, result.participants);
-        if (registered) {
-          res.status(202).send({ message: "You registered for this event already" });
+    var user_id = _id._id.toString()
+
+    // Find the event with the corresponding EventID
+    
+    Event.findOne({ eventID: event_id }).exec(function(err, result){
+        if (err) res.status(400).send({ message: "error occured: " + err });
+
+        else if (result === null) res.status(400).send({message: "No Such event!"});
+
+        else { 
+          // check if current user is registered or not 
+          registered = checkRegistered(_id, result.participants)
+          
+          if (registered) res.status(202).send({message: "You have already registered for this event"})
+
+          else if (result.numberOfParticipants >= result.quota) res.status(201).send({message: "Sorry! The event is already full"})
+
+          else updateEvent(event_id, 'register', result.numberOfParticipants, result.participants, user_id)
         }
-        else if (result.numberOfParticipants >= result.quota) {
-          res.status(201).send({ message: "Sorry, the event is full already" });
-        }
-        else {
-          var update = {
-            $inc: { numberOfParticipants: 1 },
-            $push: { participants: _id }
-          }
-          Event.updateOne({ eventID: event_id }, update, (err, results) => {
-              if (err) {
-                res.status(400).send({ message: "error occured: " + err });
-              }
-              else {
-                res.status(200).send({ message: "OK"} );
-              }
-          });
-        }
-      }
-  });
+    })
 });
 
-router.post('/event/unregister/:id', [authJwt.verifyToken], function(req, res) {
+// Un-Register for an event --> Event Details Page (Back-End) --> CORRECT
+router.post('/event/unregister/:id',[authJwt.verifyToken], function(req, res) {
+
+  // Acquiring parameters
     var event_id = req.params.id;
     var _id = req.body._id;
     var registered = true;
-    Event.findOne({ eventID: event_id }, (err, result) => {
-      if (err) {
-        res.status(400).send({ message: "error occured: " + err })
-      }
-      else if (result === null){
-        res.status(400).send({ message: "No such event!" });
-      }
+    var user_id = _id._id.toString()
+
+    // Find the event with the corresponding EventID 
+    Event.findOne({ eventID: event_id }).exec(function(err,result){
+      if (err) res.status(400).send({message: "Error occured: "+ err})
+      
+      else if (result === null) res.status(400).send({message: "No such event!"})
+
       else {
-        registered = checkRegistered(_id, result.participants);
-        if (!registered){
-          res.status(202).send({ message: "You are not registered for this event" });
-        }
-        else if (result.numberOfParticipants === 0) {
-          res.status(201).send({ message: "No one is registered in this event" });
-        }
-        else {
-          var update = {
-            $inc: { numberOfParticipants: -1 },
-            $pull: { participants: _id }
-          }
-          Event.updateOne({ eventID: event_id }, update, (err, result) => {
-            if (err){
-              res.status(400).send({ message: "error occured: " + err });
-            }
-            else {
-              res.status(200).send({ message: "OK"} );                
-            }
-          });
-        }
+        registered = checkRegistered(_id, result.participants) 
+        if(!registered) res.status(202).send({message: "You have not registered for the event!"})
+        else updateEvent(event_id,'unregister', result.numberOfParticipants, result.participants, user_id)
       }
-    });
+    })
 })
 
 router.post("/event/chat/:id", [authJwt.verifyToken], function(req, res) {

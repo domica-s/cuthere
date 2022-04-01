@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {Button, Descriptions} from 'antd';
 
 function EventInfo(props) {
+
     const [Event, setEvent] = useState({})
 
     useEffect(() => {
@@ -10,9 +11,18 @@ function EventInfo(props) {
 
     // function to join the event
     const joinEvent = () => {
-        // Make this function
+        props.joinEvent(props.detail.eventID)
     }
 
+    // function to unregisger from event
+    const unjoinEvent = () => {
+        props.unjoinEvent(props.detail.eventID)
+    }
+
+    // Function to delete the event
+    const deleteEvent = () => {
+        props.deleteEvent(props.detail.eventID)
+    }
   return (
     <React.Fragment>
         <div> 
@@ -25,7 +35,6 @@ function EventInfo(props) {
                 <Descriptions.items label= "Category"> {Event.activityCategory} </Descriptions.items>
                 <Descriptions.items label= "Start Date"> {Event.start} </Descriptions.items>
                 <Descriptions.items label= "End Date"> {Event.end} </Descriptions.items>
-                <Descriptions.items label= "Chat History"> {Event.chatHistory} </Descriptions.items>
                 <Descriptions.items label= "Host"> {Event.createdBy} </Descriptions.items>
                 <Descriptions.items label= "List of Participants"> {Event.participants} </Descriptions.items>
             </Descriptions>
@@ -38,6 +47,21 @@ function EventInfo(props) {
             }}>
                 <Button size="large" shape="round" type="danger" onClick={joinEvent}>
                     Join Event
+                </Button>
+
+                <Button size="large" shape="round" type="danger" onClick={unjoinEvent}>
+                    Unregister
+                </Button>
+            </div>
+            <br/>
+            <br/>
+            <br/>
+            <div style = {{
+                display: 'flex',
+                justifyContent: 'center'
+            }}>
+                <Button size="large" shape="round" type="danger" onClick={deleteEvent}>
+                    Delete Event
                 </Button>
             </div>
 
