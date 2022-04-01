@@ -11,6 +11,7 @@ import Row from 'react-bootstrap/Row';
 import { Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import history from "../history";
+import AuthService from "../services/auth.service";
 
 export default function () {
     const [modalOpen, setModalOpen] = useState(false)
@@ -21,17 +22,25 @@ export default function () {
     const forceUpdate = React.useCallback(()=> updateState({}), []);
 
     const calendarRef = useRef(null)
+    const currentUser = AuthService.getCurrentUser();
+
+    const config = { 
+        headers: {
+            "x-access-token": currentUser.accessToken,
+        }
+    }
 
     const onEventAdded = (event) => {
         let calendarApi = calendarRef.current.getApi() 
-        console.log(event.venue, event.quota, event.activityCategory)
+
         calendarApi.addEvent({
             start: moment(event.start).toDate(),
             end: moment(event.end).toDate(),
             venue: event.venue,
             title: event.title,
             quota: event.quota,
-            activityCategory: event.activityCategory
+            activityCategory: event.activityCategory,
+            createdBy: currentUser._id
         });
 
     }
@@ -39,11 +48,11 @@ export default function () {
     
     // To handle Event Add --> WORKING
     async function handleEventAdd(data){
-        await axios.post("http://localhost:8080/api/calendar/create-event", data.event);
+        await axios.post("http://localhost:8080/api/calendar/create-event", data.event, config);
     }
 
 
-    async function handleDatesSet(data, yourCalendar = false){
+    async function handleDatesSet(data, yourCalendar = false, sid = 0){
 
         // To get all the events to the calendar --> WORKING
         if (!yourCalendar){
@@ -53,9 +62,10 @@ export default function () {
 
         // To get only your events to the calendar --> WORKING
         else {
-        const response = await axios.get("http://localhost:8080/api/calendar/my-event?start="+moment(data.start).toISOString()+'&end='+moment(data.end).toISOString())
+        const response = await axios.post("http://localhost:8080/api/calendar/my-event?start="+moment(data.start).toISOString()+'&end='+moment(data.end).toISOString(),{createdBy: currentUser._id},config)
         setEvents(response.data)
         }
+        
     }
 
 
@@ -98,7 +108,7 @@ export default function () {
                             click: () => {
                                 setYourCalendar(true)
                                 const calendarApi = calendarRef.current.getApi()
-                                handleDatesSet(calendarApi.currentDataManager.data.dateProfile.currentRange, true)
+                                handleDatesSet(calendarApi.currentDataManager.data.dateProfile.currentRange, true, 0)
 
                             }
                         },

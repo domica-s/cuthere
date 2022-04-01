@@ -19,6 +19,8 @@ class OneEvent extends React.Component {
     // render one event
     render() {
         let data = this.props.data[1];
+        let link_detail = "/event/" + data.eventID;
+        console.log(link_detail);
         return (
             <Container>
                 <Row className="justify-content-sm-center">
@@ -31,6 +33,7 @@ class OneEvent extends React.Component {
                     <p>No. of participants: {data.numberOfParticipants} Quota: {data.quota}</p>
                     <br/> 
                     <p>Category: {data.activityCategory}</p>
+                    <Button href={link_detail} variant="outline-primary" type="button">Click to see the details!</Button>
                 </Row>
                 <hr/>
             </Container>
@@ -67,9 +70,9 @@ class Event extends React.Component {
     render() {
         let e = this.state.events
         return(
-            <Container>
+            <Container className="my-5">
                 <h2>Here are the events</h2>
-                {e.length > 0 && e.map((data, index) => <OneEvent data={data}/>)}
+                {e.length > 0 && e.map((data, index) => <OneEvent data={data} key={index}/>)}
             </Container>
         );
     }
@@ -105,8 +108,8 @@ class EventWidget extends React.Component{
       }
     }
     render(){
-      let events = Object.entries(this.state.events)
-      let disp_events =  Object.entries(this.state.events).slice(0,5)
+      let events = (this.state.events)? Object.entries(this.state.events): null;
+      let disp_events =  (this.state.events)? Object.entries(this.state.events).slice(0,5): null;
       
       let title = this.state.title
         return (
@@ -121,7 +124,7 @@ class EventWidget extends React.Component{
             </Card.Header>
             <Card.Body style={{ overflowY: "hidden" }}>
               <Row className="widget g-4">
-                {events.length > 0 &&
+                {events &&
                   disp_events.map((data) => (
                     <Col style={{ justifyContent: "center", display: "flex" }}>
                       <EventCard data={data} />

@@ -64,6 +64,57 @@ class AdminService {
             }
         })
     }
+
+    changeUserPass(currentUser, sid, password, newUserPass) {
+        let temp_url = "user/" + sid + "/updatepassword";
+        let adminReqSID = currentUser.sid;
+        let adminReqPassword = password;
+        
+        return axios.post(ADMIN_URL + temp_url, {
+            adminReqSID,
+            adminReqPassword,
+            newUserPass
+          }, 
+          {
+            headers: {
+                "x-access-token": currentUser.accessToken
+            }
+        })
+    }
+
+    deleteRating(currentUser, targetSID, password, commenterSID) {
+        let temp_url = "user/" + targetSID + "/removerating";
+        let adminReqSID = currentUser.sid;
+        let adminReqPassword = password;
+
+        return axios.post(ADMIN_URL + temp_url, {
+            adminReqSID,
+            adminReqPassword,
+            commenterSID
+          }, 
+          {
+            headers: {
+                "x-access-token": currentUser.accessToken
+            }
+        })
+    }
+
+    deleteEventComment(currentUser, targetEventId, password, commentId) {
+        let temp_url = "event/" + targetEventId + "/removecomment";
+        let adminReqSID = currentUser.sid;
+        let adminReqPassword = password;
+
+        return axios.post(ADMIN_URL + temp_url, {
+            adminReqSID,
+            adminReqPassword,
+            commentId
+          }, 
+          {
+            headers: {
+                "x-access-token": currentUser.accessToken
+            }
+        })
+    }
 }
 
 export default new AdminService();

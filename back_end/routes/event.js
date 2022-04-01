@@ -30,7 +30,7 @@ router.get("/allevents", [authJwt.verifyToken], function (req, res) {
 router.get("/event/:id", [authJwt.verifyToken], function (req, res) {
 
     var event_id = req.params.id;
-    Event.findOne({ eventID: event_id }).populate('chatHistory.user').populate('participants').populate('createdBy')
+    Event.findOne({ eventID: event_id }).populate('chatHistory.userDetails').populate('participants').populate('createdBy')
     .exec(function(err, result){
         if (err) {
           res.status(400).send({ message: "error occured: " + err })
@@ -197,11 +197,16 @@ router.get('/event/delete/:id', [authJwt.verifyToken], function(req, res) {
 
 function checkRegistered(id, participants) {
   let registered = false;
-  for (let i = 0; i < participants.length; i++) {
-    if (id === participants[i]._id.toString()){
-      registered = true}
+  if (participants === null) {
+    return registered;
   }
-  return registered
+  else {
+    for (let i = 0; i < participants.length; i++) {
+      if (id === participants[i]._id.toString()){
+        registered = true}
+    }
+    return registered
+  }
 }
 
 router.post('/event/register/:id', [authJwt.verifyToken], function(req, res) {
@@ -281,20 +286,23 @@ router.post('/event/unregister/:id', [authJwt.verifyToken], function(req, res) {
 router.post("/event/chat/:id", [authJwt.verifyToken], function(req, res) {
 
     var event_id = req.params.id;
+    var sid = req.body.sid;
     var _id = req.body._id;
     var timeNow = Date(Date.now());
     var content = req.body.content.toString();
 
     var update = {
       $push: { chatHistory: {
-        user: _id,
+        user: sid,
         content: content,
-        chatAt: timeNow
+        chatAt: timeNow,
+        userDetails: _id
       } }
     }
+
     Event.findOneAndUpdate({ eventID: event_id }, update, (err, result) => {
       if (err) {
-        res.status(400).send({ message: "error occuired: " + err});
+        res.status(400).send({ message: "error occured: " + err});
       }
       else {
         res.status(200).send({ message: "Comment added" });

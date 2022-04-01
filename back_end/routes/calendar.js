@@ -3,47 +3,39 @@ const Event = require("../models/event")
 const moment = require("moment")
 const { authJwt } = require("../middlewares");
 
-router.post("/create-event", async(req,res)=> {
+router.post("/create-event",[authJwt.verifyToken], (req,res)=> {
+
     const event = Event(req.body);
 
-    // EventID --> 
-    const eID = Event.find().sort({ eventID: -1}).limit(1).then(function(err, eventID) {
-        if (err) res.send("Error Occured: "+ err)
-        else { 
-            if (eventID.length>0) {
-                event.eventID = eventID[0].eventID + 1 
+    var theID = Event.find().sort({ eventID: -1 }).limit(1)
+    
+    // Prevent start and end at same date
+    if (req.body.start === req.body.end){
+        res.status(400).send({message: "error: start date and end date is equal"});
+      }
+
+      theID.exec(function (err, eventID) {
+        if (err) res.send("Error occured: " + err)
+        else {
+            var eID = 1
+            if (eventID.length > 0){
+                eID = eventID[0].eventID + 1
             }
         }
-    })
-    
-    // Set Event venue, activityCategory, quota
-    event.venue = req.body.extendedProps.venue
-
-    event.activityCategory = req.body.extendedProps.activityCategory
-
-    event.quota = req.body.extendedProps.quota
-
-    // Status Initialize to 'Open'
-    event.status = 'Open'; 
-    
-    // numberOfParticipants ==> +1 when someone joins. Init to 1
-    event.numberOfParticipants = 1; 
-
-    // chatHistory Initialized to Empty String 
-    event.chatHistory = '';
-
-    // createdAt ==> See event.js 
-    var itemCreatedBy = () => {
-        if (req.user._id == undefined) ;
-        else {
-            event.createdBy = req.user._id;
-        }
-    }
-    
-    console.log(req.body)
-    console.log(event)
-
-    await event.save()
+        event.venue = req.body.extendedProps.venue
+        event.eventID = eID
+        event.status = 'Open'
+        event.activityCategory = req.body.extendedProps.activityCategory
+        event.quota = req.body.extendedProps.quota
+        event.numberOfParticipants = 1
+        event.chatHistory = new Object()
+        event.createdBy = req.body.extendedProps.createdBy
+        event.participants = [req.body.extendedProps.createdBy]
+        
+        console.log(event)
+        event.save()
+        res.status(200).send({message: "event created successfully"})
+    }); 
     
 })
 
@@ -58,10 +50,10 @@ router.get("/get-event", async(req,res)=> {
 });
 
 // Filter Function - My events 
-router.get("/my-event", async(req, res) => { 
-    
+router.post("/my-event", async(req, res) => { 
+
     const events = await Event.find({
-        createdBy: req.body._sid, 
+        createdBy: req.body.createdBy, 
         start: {$gte: moment(req.query.start).toDate()},
         end: {$lte: moment(req.query.end).toDate()}
     })
@@ -75,7 +67,7 @@ router.get("/my-event", async(req, res) => {
 // To route to an events detail page
 router.get("/route-event/:id", async(req,res)=> {
 
-    console.log(req.params.id)
+
     
 
     Event.findOne({id: req.params.id}, (err, result)=> {
@@ -83,7 +75,7 @@ router.get("/route-event/:id", async(req,res)=> {
             res.status(400).send({ message: "error occured: "+ err})
         }
         else {
-            console.log(result)
+
             res.status(200).send(result)
         }
     })

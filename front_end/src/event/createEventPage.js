@@ -6,6 +6,7 @@ import Row from 'react-bootstrap/Row';
 import { Container } from "react-bootstrap";
 import AuthService from "../services/auth.service";
 import logo from '../images/logo.jfif';
+import moment from 'moment';
 
 
 var params = require("../params/params");
@@ -77,7 +78,9 @@ class CreateEvent extends React.Component {
                 start: this.state.start,
                 end: this.state.end,
                 quota: this.state.quota,
-                category: this.state.category
+                category: this.state.category,
+                _id: currentUser._id,
+                sid: currentUser.sid
             }
             fetch(API, {
                 method: "POST",
@@ -131,13 +134,13 @@ class CreateEvent extends React.Component {
 
     onChangeStart(e) {
         this.setState({
-            start: e.target.value
+            start: moment(e.target.value).toDate()
         });
     }
 
     onChangeEnd(e) {
         this.setState({
-            end: e.target.value
+            end: moment(e.target.value).toDate()
         });
     }
 

@@ -47,6 +47,9 @@ function sendEmail(res, email_type, to_email, email_body) {
     text: email_body
   };
 
+  // delete this when deploy
+  console.log(email_body);
+
   transporter.sendMail(mailOptions, function (err) {
       if (err) { 
         console.log(err);
@@ -77,7 +80,9 @@ exports.signup = (req, res) => {
         college:req.body.college,
         about:"",
         rating:"",
-        friends:"",
+        following: [],
+        followers: [],
+        //friends:"",
         registeredEvents: [],
         role: "User",
         birthday: "",
@@ -149,6 +154,9 @@ exports.signin = (req, res) => {
         name: user.name,
         country: user.country,
         // user
+
+        reviewHistory: user.reviewHistory
+
       });
     }
     else {
