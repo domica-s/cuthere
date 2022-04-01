@@ -17,6 +17,8 @@ export function AdminDashboard() {
         adminPasswordEvent: "",
         adminPasswordUser: "",
         newUserPassword: "",
+        deleteRating: "",
+        deleteComment: "",
     });
 
     const [sidData, setSidData] = useState({
@@ -52,6 +54,12 @@ export function AdminDashboard() {
         sid: sidData.user? sidData.user.sid: "",
         successfulDeleteUser: false,
         messageDeleteUser: "",
+    })
+    
+    const [deleteRating, setDeleteRating] = useState({
+        sid: sidData.user? sidData.user.sid: "",
+        successfulDeleteRating: false,
+        messageDeleteRating: "",
     })
 
     const { successfulSID, messageSID, user } = sidData;
@@ -140,6 +148,25 @@ export function AdminDashboard() {
             setDeleteEvent({ successfulDeleteEvent: false, messageDeleteEvent: error.response.data.message });
         })
     }
+
+    // handle delete event comments
+    const handleDeleteComment = (e) => {
+        e.preventDefault();
+
+        const currentUser = AuthService.getCurrentUser();
+        let eid = deleteEvent.eid;
+
+        AdminService.deleteEventComment(currentUser, eid, adminRequest.adminPasswordEvent, adminRequest.deleteComment)
+        .then(response => {
+            setEventIdData({ event: "" });
+            setAdminRequest({ queryEventId: eid });
+            loadRecentData();
+            setDeleteEvent({ successfulDeleteEvent: true, messageDeleteEvent: response.data.message });
+        },
+        error => {
+            setDeleteEvent({ successfulDeleteEvent: false, messageDeleteEvent: error.response.data.message });
+        })
+    }
     
     const handleDeleteUser = (e) => {
         e.preventDefault();
@@ -168,9 +195,28 @@ export function AdminDashboard() {
         AdminService.changeUserPass(currentUser, sid, adminRequest.adminPasswordUser, adminRequest.newUserPassword)
         .then(response => {
             setSidData({ user: "" });
-            setAdminRequest({ querySID: "" });
-            loadRecentData();
+            setAdminRequest({ querySID: sid });
             setDeleteUser({ successfulDeleteUser: true, messageDeleteUser: response.data.message });
+            loadRecentData();
+        },
+        error => {
+            setDeleteUser({ successfulDeleteUser: false, messageDeleteUser: error.response.data.message });
+        })
+    }
+
+    // delete user rating
+    const handleDeleteRating = (e) => {
+        e.preventDefault();
+
+        const currentUser = AuthService.getCurrentUser();
+        let sid = deleteUser.sid;
+
+        AdminService.deleteRating(currentUser, sid, adminRequest.adminPasswordUser, adminRequest.deleteRating)
+        .then(response => {
+            setSidData({ user: "" });
+            setAdminRequest({ querySID: sid });
+            setDeleteUser({ successfulDeleteUser: true, messageDeleteUser: response.data.message });
+            loadRecentData();
         },
         error => {
             setDeleteUser({ successfulDeleteUser: false, messageDeleteUser: error.response.data.message });
@@ -205,6 +251,7 @@ export function AdminDashboard() {
                             value={adminRequest.querySID || ""}
                             placeholder={"Type in an SID"}
                             onChange={handleInput} 
+                            required
                         />
                     </div>
                     <Button type="submit" variant="outline-dark" value="Query SID">Query SID</Button>
@@ -231,54 +278,96 @@ export function AdminDashboard() {
                         <p>Interests: <strong>{user.interests}</strong></p>
                         <p>College: <strong>{user.college}</strong></p>
                         <p>About: <strong>{user.about}</strong></p>
+                        <p>Rating: <strong>{user.rating}</strong></p>
+                        <p>Following: <strong>{user.following}</strong></p>
+                        <p>Followers: <strong>{user.followers}</strong></p>
                         <p>Registered Events: <strong>{user.registeredEvents}</strong></p>
                         <p>Starred Events: <strong>{user.starredEvents}</strong></p>
+                        <p>Role: <strong>{user.role}</strong></p>
+                        <p>Active: <strong>{user.active}</strong></p>
+                        <pre>Review History: <strong>{JSON.stringify(user.reviewHistory, null, 2)}</strong></pre>
                         <p>Created at: <strong>{user.createdAt}</strong></p>
-        
-                        <div id="deleteUserForm">
-                        <Form onSubmit={handleDeleteUser}>
-                            <div className="form-group">
-                                <label className="form-label">Enter your (ADMIN) password to confirm deletion:</label>
-                                <Form.Control 
-                                    name="adminPasswordUser"
-                                    type="password" 
-                                    value={adminRequest.adminPasswordUser || ""}
-                                    placeholder={"Type in your password"}
-                                    onChange={handleInput} 
-                                />
-                            </div>
-                            <Button type="submit" variant="danger" value="Delete this user">Delete this user</Button>
-                        </Form>
-                        </div>
-
-                        <div id="changeUserPassForm">
-                        <Form onSubmit={handleChangeUserPass}>
-                            <div className="form-group">
-                                <label className="form-label">Enter your (ADMIN) password to confirm change password:</label>
-                                <Form.Control 
-                                    name="adminPasswordUser"
-                                    type="password" 
-                                    value={adminRequest.adminPasswordUser || ""}
-                                    placeholder={"Type in your password"}
-                                    onChange={handleInput} 
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label className="form-label">Enter new user password:</label>
-                                <Form.Control 
-                                    name="newUserPassword"
-                                    type="text" 
-                                    value={adminRequest.newUserPassword || ""}
-                                    placeholder={"Type in your password"}
-                                    onChange={handleInput} 
-                                />
-                            </div>
-                            <Button type="submit" variant="danger" value="Change this user's password">Change this user's password</Button>
-                        </Form>
-                        </div>
-
+                        <Row>
+                            <Col>
+                                <div id="deleteUserForm">
+                                <Form onSubmit={handleDeleteUser}>
+                                    <div className="form-group">
+                                        <label className="form-label">Enter your (ADMIN) password to confirm user deletion:</label>
+                                        <Form.Control 
+                                            name="adminPasswordUser"
+                                            type="password" 
+                                            value={adminRequest.adminPasswordUser || ""}
+                                            placeholder={"Type in your password"}
+                                            onChange={handleInput} 
+                                            required
+                                        />
+                                    </div>
+                                    <Button type="submit" variant="danger" value="Delete this user">Delete this user</Button>
+                                </Form>
+                                </div>
+                            </Col>
+                            <Col>
+                                <div id="changeUserPassForm">
+                                <Form onSubmit={handleChangeUserPass}>
+                                    <div className="form-group">
+                                        <label className="form-label">Enter your (ADMIN) password to confirm change password:</label>
+                                        <Form.Control 
+                                            name="adminPasswordUser"
+                                            type="password" 
+                                            value={adminRequest.adminPasswordUser || ""}
+                                            placeholder={"Type in your password"}
+                                            onChange={handleInput} 
+                                            required
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="form-label">Enter new user password:</label>
+                                        <Form.Control 
+                                            name="newUserPassword"
+                                            type="text" 
+                                            value={adminRequest.newUserPassword || ""}
+                                            placeholder={"Type in new user password"}
+                                            onChange={handleInput} 
+                                            required
+                                        />
+                                    </div>
+                                    <Button type="submit" variant="danger" value="Change this user's password">Change this user's password</Button>
+                                </Form>
+                                </div>
+                            </Col>
+                            <Col>
+                                <div id="deleteUserRating">
+                                <Form onSubmit={handleDeleteRating}>
+                                    <div className="form-group">
+                                        <label className="form-label">Enter your (ADMIN) password to confirm deletion:</label>
+                                        <Form.Control 
+                                            name="adminPasswordUser"
+                                            type="password" 
+                                            value={adminRequest.adminPasswordUser || ""}
+                                            placeholder={"Type in your password"}
+                                            onChange={handleInput} 
+                                            required
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="form-label">Enter rater's SID:</label>
+                                        <Form.Control 
+                                            name="deleteRating"
+                                            type="number" 
+                                            value={adminRequest.deleteRating || ""}
+                                            placeholder={"Type in rater's sid"}
+                                            onChange={handleInput} 
+                                            required
+                                        />
+                                    </div>
+                                    <Button type="submit" variant="danger" value="Delete this user">Delete this user's rating</Button>
+                                </Form>
+                                </div>
+                            </Col>
+                        </Row>
                     </div>
                 )}
+
                 {deleteUser.messageDeleteUser && (
                     <div className="form-group">
                         <div
@@ -291,6 +380,7 @@ export function AdminDashboard() {
                         </div>
                     </div>
                 )}
+
             </Container>
             <hr></hr>
             <Container>
@@ -303,6 +393,7 @@ export function AdminDashboard() {
                             value={adminRequest.queryEventId || ""}
                             placeholder={"Type in an Event ID"}
                             onChange={handleInput} 
+                            required
                         />
                     </div>
                     <Button type="submit" variant="outline-dark" value="Query Event ID">Query Event ID</Button>
@@ -328,25 +419,61 @@ export function AdminDashboard() {
                         <p>Start: <strong>{event.start}</strong></p>
                         <p>End: <strong>{event.end}</strong></p>
                         <p>Activity Category: <strong>{event.activityCategory}</strong></p>
+                        <p>Quota: <strong>{event.quota}</strong></p>
                         <p>Number of Participants: <strong>{event.numberOfParticipants}</strong></p>
                         <p>Participants: <strong>{event.participants}</strong></p>
+                        <pre>Chat History: {JSON.stringify(event.chatHistory, null, 4)}</pre>
+                        <p>Created by: <strong>{String(event.createdBy)}</strong></p>
                         <p>Created At: <strong>{event.createdAt}</strong></p>
                         
-                        <div>
-                            <Form onSubmit={handleDeleteEvent}>
-                                <div className="form-group">
-                                    <label className="form-label">Enter password to confirm deletion:</label>
-                                    <Form.Control 
-                                        name="adminPasswordEvent"
-                                        type="password" 
-                                        value={adminRequest.adminPasswordEvent || ""}
-                                        placeholder={"Type in your password"}
-                                        onChange={handleInput} 
-                                    />
+                        <Row>
+                            <Col>
+                                <div>
+                                <Form onSubmit={handleDeleteEvent}>
+                                    <div className="form-group">
+                                        <label className="form-label">Enter password to confirm deletion:</label>
+                                        <Form.Control 
+                                            name="adminPasswordEvent"
+                                            type="password" 
+                                            value={adminRequest.adminPasswordEvent || ""}
+                                            placeholder={"Type in your password"}
+                                            onChange={handleInput} 
+                                        />
+                                    </div>
+                                    <Button type="submit" variant="danger" value="Delete this event">Delete this event</Button>
+                                </Form>
                                 </div>
-                                <Button type="submit" variant="danger" value="Delete this event">Delete this event</Button>
-                            </Form>
-                        </div>
+                            </Col>
+
+                            <Col>
+                                <div>
+                                <Form onSubmit={handleDeleteComment}>
+                                    <div className="form-group">
+                                        <label className="form-label">Enter password to confirm deletion:</label>
+                                        <Form.Control 
+                                            name="adminPasswordEvent"
+                                            type="password" 
+                                            value={adminRequest.adminPasswordEvent || ""}
+                                            placeholder={"Type in your password"}
+                                            onChange={handleInput} 
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="form-label">Enter comment._id to delete:</label>
+                                        <Form.Control 
+                                            name="deleteComment"
+                                            type="text" 
+                                            value={adminRequest.deleteComment || ""}
+                                            placeholder={"Type in your target comment._id"}
+                                            onChange={handleInput} 
+                                        />
+                                    </div>
+                                    <Button type="submit" variant="danger" value="Delete this comment">Delete this comment</Button>
+                                </Form>
+                                </div>
+                            </Col>
+                        </Row>
+                        
                     </div>
                 )}
                 {deleteEvent.messageDeleteEvent && (

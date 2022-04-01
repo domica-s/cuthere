@@ -227,13 +227,14 @@ exports.changeUserPass = (req, res) => {
 // POST to url --> http://localhost:8080/admin/event/:eventid/removecomment
 // params eventid is target eventid
 // body (JSON) --> { "adminReqSID": adminReqSID, "adminReqPassword": adminReqPassword,
-// "targetCommentSID": targetCommentSID }
+// "targetCommentSID": targetCommentSID, "commentId": commentId  }
 // returns success/ fail
 exports.removeEventComments = (req, res) => {
   let targetEventId = req.params.eventid;
   let adminReqSID = req.body.adminReqSID;
   let adminReqPassword = req.body.adminReqPassword;
-  let targetCommentSID = req.body.targetCommentSID;
+  let commentId = req.body.commentId;
+  
   // check if request made by admin
   User.findOne({ sid: adminReqSID })
   .exec((err, admin) => {
@@ -267,11 +268,11 @@ exports.removeEventComments = (req, res) => {
       // get all comments
       let allComments = event.chatHistory;
 
-      let hasLeftComment = allComments.some(allComments => allComments.user === targetCommentSID)
+      let commentExists = allComments.some(allComments => String(allComments._id) === commentId)
       // if targetCommentSID found as one of the commenter
-      if (hasLeftComment) {
+      if (commentExists) {
         // get index of comment
-        let indexOfOldComment = allComments.findIndex(x => x.user === targetCommentSID);
+        let indexOfOldComment = allComments.findIndex(x => String(x._id) === commentId);
         // console.log(indexOfOldComment);
         let newComments = allComments;
         newComments.splice(indexOfOldComment, 1);
@@ -281,12 +282,12 @@ exports.removeEventComments = (req, res) => {
           if (err) {
             return res.status(500).send({ message: err });
           }
-          console.log("Admin " + adminReqSID + " has deleted " + targetCommentSID + "\'s comment in event " + targetEventId + "\'s page");
+          console.log("Admin " + adminReqSID + " has deleted comment with id " + commentId + " in event " + targetEventId + "\'s page");
           return res.status(200).send({ message: "Successfully removed user comment"});
         })
       }
       else {
-        return res.status(404).send({ message: "That user have not left a comment on the event's page "});
+        return res.status(404).send({ message: "No comment with that comment._id on the event's page "});
       }
     })
 
@@ -298,13 +299,14 @@ exports.removeEventComments = (req, res) => {
 // POST to url --> http://localhost:8080/admin/user/:sid/removerating
 // params sid is target sid
 // body (JSON) --> { "adminReqSID": adminReqSID, "adminReqPassword": adminReqPassword,
-// "targetCommentSID": targetCommentSID }
+// "commenterSID": commenterSID}
 // returns success/ fail
 exports.removeUserRating = (req, res) => {
   let targetSID = req.params.sid;
   let adminReqSID = req.body.adminReqSID;
   let adminReqPassword = req.body.adminReqPassword;
-  let targetCommentSID = req.body.targetCommentSID;
+  let commenterSID = req.body.commenterSID;
+
   // check if request made by admin
   User.findOne({ sid: adminReqSID })
   .exec((err, admin) => {
@@ -325,25 +327,25 @@ exports.removeUserRating = (req, res) => {
     if (!passwordIsValid) {
       return res.status(401).send({message: "Invalid Admin Password!" });
     }
-    
+
     // find if user profile exists (if the corresponding SID exists)
     User.findOne({ sid: targetSID })
     .exec((err, targetUser) => {
       if (err) {
         return res.status(500).send({ message: err });
       }
-  
+
       if (!targetUser) {
         return res.status(404).send({ message: "Target user not found." });
       }
 
       // get all comments
       let allComments = targetUser.reviewHistory;
-      let hasLeftComment = allComments.some(allComments => allComments.user === targetCommentSID)
+      let hasLeftComment = allComments.some(allComments => allComments.user == commenterSID)
       // if targetCommentSID found as one of the commenter
       if (hasLeftComment) {
         // get index of comment
-        let indexOfOldComment = allComments.findIndex(x => x.user === targetCommentSID);
+        let indexOfOldComment = allComments.findIndex(x => x.user == commenterSID);
         // console.log(indexOfOldComment);
         let newComments = allComments;
         newComments.splice(indexOfOldComment, 1);
@@ -353,7 +355,7 @@ exports.removeUserRating = (req, res) => {
           if (err) {
             return res.status(500).send({ message: err });
           }
-          console.log("Admin " + adminReqSID + " has deleted " + targetCommentSID + "\'s comment in " + targetSID + "\'s profile");
+          console.log("Admin " + adminReqSID + " has deleted " + commenterSID + "\'s comment in " + targetSID + "\'s profile");
           return res.status(200).send({ message: "Successfully removed user comment"});
         })
       }
