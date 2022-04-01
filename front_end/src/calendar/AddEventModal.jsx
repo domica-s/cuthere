@@ -79,9 +79,12 @@ export default function ({isOpen, onClose, onEventAdded}) {
                     <Col className="mb-3 form-floating">
                         <Form.Group className="mb-3">
                             <Form.Label>Category of your event</Form.Label>
-                            <Form.Control name="activityCategory" type="text" placeholder="Activity Category" required
-                            value={activityCategory}
-                            onChange={e => setCategory(e.target.value)}/>
+                            <Form.Select name="activityCategory" type="text" value = {activityCategory} onChange={e => setCategory(e.target.value)}>
+                            <option value="Outdoor">Outdoor</option>
+                            <option value="Indoor">Indoor</option>
+                            <option value="Offline">Offline</option>
+                            <option value="Online">Online</option>
+                            </Form.Select>
                         </Form.Group>
                     </Col>  
 
