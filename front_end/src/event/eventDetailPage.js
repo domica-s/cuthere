@@ -90,6 +90,7 @@ class OneEvent extends React.Component {
         let API_register = API + 'chat/' + this.props.eventId;
         let data = { 
             sid: currentUser.sid,
+            _id: currentUser._id,
             content: this.state.chatInput
         };
         fetch(API_register, {
@@ -169,7 +170,7 @@ class OneChat extends React.Component {
     render() {
         let chat = this.props.chat;
         let content = chat.content;
-        let username = chat.user.username;
+        let username = chat.userDetails.username;
         let chatAt = chat.chatAt;
         return (
             <div className="bg-dark text-warning">

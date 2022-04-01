@@ -78,7 +78,8 @@ class CreateEvent extends React.Component {
                 end: this.state.end,
                 quota: this.state.quota,
                 category: this.state.category,
-                _id: currentUser._id
+                _id: currentUser._id,
+                sid: currentUser.sid
             }
             fetch(API, {
                 method: "POST",
