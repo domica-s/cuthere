@@ -30,7 +30,7 @@ router.post("/create-event", async(req,res)=> {
     event.numberOfParticipants = 1; 
 
     // chatHistory Initialized to Empty String 
-    event.chatHistory = '';
+    event.chatHistory = new Object();
 
     // createdAt ==> See event.js 
     var itemCreatedBy = () => {
