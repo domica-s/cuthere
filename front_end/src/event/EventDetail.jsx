@@ -61,7 +61,7 @@ export default function (props) {
 
     // Delete Event Front-End --> WORKING
     async function deleteEvent(eventID){
-        const request = await Axios.get(`http://localhost:8080/event/delete/${eventID}`,{id: userID},
+        const request = await Axios.post(`http://localhost:8080/event/delete/${eventID}`,{id: userID},
         {
             headers: {
                 "x-access-token": currentUser.accessToken
