@@ -82,8 +82,8 @@ class Event extends React.Component {
         return(
           <Container className="my-5">
             {/* add search bar */}
-            <div className="search">
-              <input type="text" placeholder="Search" 
+            <div className="search form-outline">
+              <input type="search" placeholder="Type query" className="form-control" aria-label="Search"
                 value={this.state.searchTerm} onChange={this.onChangeSearch}
               />
             </div>
