@@ -43,12 +43,32 @@ app.get('/file/:filename', async (req, res) => {
                 gridfsBucket.openDownloadStreamByName(req.params.filename).pipe(res);
             }
             else {
-                res.status(401).json({message: "Not an image"});
+                res.status(401).send({message: "Not an image"});
             }
         })
     }catch(err){
         console.log(err);
-        res.send('not found');
+        res.status(404).send('not found');
+    }
+})
+
+app.get('/file/delete/:filename', async (req, res) => {
+    try {
+        gridfsBucket.find({filename: req.params.filename}).toArray((err, files) => {
+            if (!files[0] || files.length === 0){
+                return res.status(400).send("No such file");
+            }
+            gridfsBucket.delete(files[0]._id)
+            .then((err, data) => {
+                if (err) {
+                    return res.status(400).send({message: err});
+                }
+                res.status(200).send({messaeg: "File: " + req.params.filename + " is deleted"});
+            })       
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(404).send('not found')
     }
 })
 
