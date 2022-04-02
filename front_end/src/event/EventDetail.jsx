@@ -19,11 +19,13 @@ export default function (props) {
     // --> To do: Fix UI
     const [Event, setEvent] = useState([])
     const location = useLocation();
+    const [chatHistory, setChatHistory] = useState([]);
 
     // Defining Configuration and Parameters
     const currentUser = AuthService.getCurrentUser();
     const eventId = location.pathname.split('/event/')[1]
     const userID = currentUser._id
+    const sid = currentUser.sid
 
     // STATUS: WORKING
     useEffect(() => {
@@ -34,7 +36,7 @@ export default function (props) {
             }
         }).then(response => {    
         setEvent(response.data);
-
+        setChatHistory([response.data.chatHistory])
         })
     }, [location])
 
@@ -81,15 +83,22 @@ export default function (props) {
         else console.log(request.message)
     }
     
-    // Add comments Front-End --> TESTING
+    // Add comments Front-End --> WORKING
     async function addComment(eventID, comment){
-        const request = await Axios.post(`http://localhost:8080/event/addcomment/${eventID}`,{id: userID, comment: comment},
+        const updatedComment = { 
+            user: sid,
+            content: comment,
+            chatAt: Date.now(),
+            userDetails: userID
+        }
+        const request = await Axios.post(`http://localhost:8080/event/addcomment/${eventID}`,{comment: updatedComment},
         {
             headers: {
                 "x-access-token": currentUser.accessToken
             }
         })
-        console.log(request)
+        // store chatHistory
+        setChatHistory(request.data.response.chatHistory)
     }
 
     // Update Event Front-end --> TESTING
@@ -136,10 +145,7 @@ export default function (props) {
                         addComment = {addComment}
                         detail = {Event}/>
                     </Col>
-                {/* {Event.chatHistory.map((data, index)=> 
-                        <OneChat chat={data} key={index}/>
-                    )} */}
-                    <CommentForm/>
+                    <CommentForm detail={Event} addComment={addComment} chatHistory={chatHistory}/>
                 </Row>
             </div>
         </React.Fragment>
