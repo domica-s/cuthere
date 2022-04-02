@@ -108,8 +108,7 @@ router.post('/event/update/:eventID', [authJwt.verifyToken], function(req,res){
 
 
 // Delete Events --> WORKING
-router.get('/event/delete/:eventID', function(req,res){
-
+router.post('/event/delete/:eventID',[authJwt.verifyToken], function(req,res){
     // Acquire Parameters
     const eventID = req.params.eventID
     const userID = req.body.id
