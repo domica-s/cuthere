@@ -1,32 +1,91 @@
-import React, {useState} from "react";
-import {Button, Descriptions} from 'antd';
+import React, { useState} from 'react'
+import Button from 'react-bootstrap/Button';
 
+let commentCounter = 1;
+class CommentForm extends React.Component{
+    constructor() {
+        super();
 
-const CommentForm = ({
-    handleSubmit, 
-    initialText= "",
-}) => {
-    const {text, setText} = useState(initialText)
-    const onSubmit = (event) => { 
-        event.preventDefault(); 
-        handleSubmit(text);
-        setText("");
+        this.state = { 
+            commentValue: '',
+            commentLine: [{commentId:"", text:"",}],
+        };
+    }
+
+    handleCommentValue = (e) => {
+
+        this.setState({
+            commentValue: e.target.value,
+        });
+    };
+
+    setCommentLine = () => {
+        this.setState({
+            commentLine: [
+                ...this.state.commentLine,
+                {commentId: commentCounter++, text: this.state.commentValue}
+            ],
+
+            commentValue:""
+        })
+    }
+
+    submitCommentLine = (e) => {
+        e.preventDefault();
+        this.setCommentLine();
+    };
+
+    enterCommentLine = (e) => {
+        if (e.charCode === 13){
+            this.setCommentLine();
+        }
+    };
+
+    render() {
+        return(
+            <>
+            
+            <CommentBox 
+                commentValue = {this.state.commentValue}
+                handleCommentValue = {this.handleCommentValue}
+                enterCommentLine = {this.enterCommentLine}
+                submitCommentLine = {this.submitCommentLine} />
+
+            
+            
+            </>
+        )
     }
 
 
+}
+class CommentBox extends React.Component { 
+    render() {
+        const {commentValue, handleCommentValue, enterCommentLine, submitCommentLine} = this.props; 
+        const enableCommentButton = () => { return (commentValue ? false : true)}; 
+        const changeCommentButtonStyle = () => {return (commentValue? "comments-button-enabled" : "comments-button-disabled")}; 
 
-    return ( 
-        <React.Fragment>
-            <form onSubmit = {onSubmit}>
-                <textarea className ="comment-form textarea" value ={text} onChange={e => setText(e.target.value)} /> 
-                <Button className ="button" >
-                    Submit
-                </Button>
-            </form>
-            
-        </React.Fragment>
-    )
+        return (
+            <React.Fragment>
+                <div className="comments-box">
+                    <input onKeyPress = {enterCommentLine} value ={commentValue} id="comments-input" onChange={handleCommentValue} type="text" placeholder="Add a comment..." />
+                    <Button onClick={submitCommentLine} type="submit" className="comments-button" id={changeCommentButtonStyle()} disabled ={enableCommentButton()}> Post </Button>
+                </div>
+            </React.Fragment>
+        )
+    }
 }
 
+class Comment extends React.Component {
+    render () {
+        const {commentLine} = this.props 
 
-export default CommentForm;
+        return(
+            <ul className ="comments-list">
+                {commentLine.map((data)=> {return <li className="each-comment" key={data.commentId}>{data.text}</li>})}
+            </ul>
+        )
+    }
+}
+
+export default CommentForm

@@ -13,7 +13,7 @@ const { update } = require("../models/event");
 
 // STATUS --> WORKING
 function checkRegistered(user_id, participants){
-    const stringParticipants = participants.map( x => x.toString())
+    const stringParticipants = participants.map( x => x.toString()) 
 
     if (stringParticipants.includes(user_id)) return true
     else return false
@@ -84,7 +84,7 @@ router.post('/event/unregister/:eventID', [authJwt.verifyToken], function (req, 
     })
 
 })
-// Update the event 
+// Update the event --> TESTING
 router.post('/event/update/:eventID', [authJwt.verifyToken], function(req,res){
     
     //Acquire Parameters
@@ -101,10 +101,6 @@ router.post('/event/update/:eventID', [authJwt.verifyToken], function(req,res){
         }
     })
 })
-
-
-
-
 
 
 // Delete Events --> WORKING
@@ -126,7 +122,7 @@ router.post('/event/delete/:eventID',[authJwt.verifyToken], function(req,res){
     })
 })
 
-// Add comments to Events
+// Add comments to Events --> TESTING
 router.post('/event/addcomment/:eventID', [authJwt.verifyToken], function (req,res){
     const eventID = req.params.eventID 
     const userID = req.body.id 
@@ -136,8 +132,10 @@ router.post('/event/addcomment/:eventID', [authJwt.verifyToken], function (req,r
         if(err) res.status(200).send({message: "Error occured: "+ err})
 
         else {
-
-            Event.findOneAndUpdate({eventID: eventID}, {$set: {chatHistory: comment}})
+            Event.findOneAndUpdate({eventID: eventID}, {$set: {chatHistory: comment}}, function(err, doc){
+                if(err) res.status(400).send({message:"Error Occured: "+ err})
+                else res.status(200).send({message: "Added the comment for you Nigga!"}) // Please change this
+            })
         }
     })
 })
