@@ -21,7 +21,7 @@ function checkRegistered(user_id, participants){
 }
 
 // Register Events --> WORKING
-router.post('/event/register/:eventID', function (req, res){
+router.post('/event/register/:eventID', [authJwt.verifyToken], function (req, res){
 
     // Acquire parameters
     const eventID = req.params.eventID
@@ -56,7 +56,7 @@ router.post('/event/register/:eventID', function (req, res){
 })
 
 // Unregister Events --> WORKING
-router.post('/event/unregister/:eventID', function (req, res){
+router.post('/event/unregister/:eventID', [authJwt.verifyToken], function (req, res){
 
     // Acquire parameters
     const eventID = req.params.eventID
@@ -85,7 +85,7 @@ router.post('/event/unregister/:eventID', function (req, res){
 
 })
 // Update the event 
-router.post('/event/update/:eventID', function(req,res){
+router.post('/event/update/:eventID', [authJwt.verifyToken], function(req,res){
     
     //Acquire Parameters
     const eventID = req.params.eventID 
@@ -120,15 +120,15 @@ router.get('/event/delete/:eventID', function(req,res){
         else if (result.createdBy != userID) res.status(200).send({message: "You have no authority to delete this event!"})
 
         else Event.findOneAndDelete({eventID:eventID}).exec(function (err, result){
-            if(err) res.status(400).send({message: "Error Occured: "+ err})
-            else if (result === null) res.status(200).send({message:"There are no such events"})
-            else {res.status(200).send({message:"Event is deleted!", status: 'SUCCESS'})} 
+            if(err) return res.status(400).send({message: "Error Occured: "+ err})
+            else if (result === null) return res.status(200).send({message:"There are no such events"})
+            else {return res.status(200).send({message:"Event is deleted!", status: 'SUCCESS'})} 
         })
     })
 })
 
 // Add comments to Events
-router.post('/event/addcomment/:eventID', function (req,res){
+router.post('/event/addcomment/:eventID', [authJwt.verifyToken], function (req,res){
     const eventID = req.params.eventID 
     const userID = req.body.id 
     const comment = req.body.comment
