@@ -185,4 +185,4 @@ class OneChat extends React.Component {
 }
 
 
-export {EventDetail}
+export {EventDetail, OneChat}

@@ -4,11 +4,12 @@ import Axios from 'axios'
 import { Row, Col } from 'antd';
 import AuthService from "../services/auth.service";
 import history from "../history";
+import { OneChat } from './eventDetailPage';
 
 // import smaller components related to the events 
 import EventImage from './eventDetailsComponent/EventImage'
 import EventInfo from './eventDetailsComponent/EventInfo'
-
+import CommentForm from './eventDetailsComponent/CommentForm';
 
 export default function (props) { 
 
@@ -32,8 +33,8 @@ export default function (props) {
                 "x-access-token": currentUser.accessToken
             }
         }).then(response => {    
-        setEvent(response.data)
-            
+        setEvent(response.data);
+
         })
     }, [location])
 
@@ -102,7 +103,8 @@ export default function (props) {
         })
         console.log(request)
     }
-
+    
+    console.log(Event)
     return (
         <React.Fragment>
             <div className="postPage" style={{
@@ -134,7 +136,10 @@ export default function (props) {
                         addComment = {addComment}
                         detail = {Event}/>
                     </Col>
-                    
+                {/* {Event.chatHistory.map((data, index)=> 
+                        <OneChat chat={data} key={index}/>
+                    )} */}
+                    <CommentForm/>
                 </Row>
             </div>
         </React.Fragment>
