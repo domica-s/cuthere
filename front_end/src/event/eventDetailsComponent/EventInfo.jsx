@@ -4,6 +4,7 @@ import {Button, Descriptions} from 'antd';
 function EventInfo(props) { 
 
     const [Event, setEvent] = useState({})
+    const [comment,setComment] = useState('')
     const [modalOpen, setModalOpen] = useState(false)
 
     useEffect(() => {
@@ -25,9 +26,9 @@ function EventInfo(props) {
         props.deleteEvent(props.detail.eventID)
     }
     
-    // Function to update event 
-    const updateEvent = (update) => {
-        props.updateEvent(props.detail.eventID,update)
+    // Function to add comment
+    const addComment = () => {
+        props.addComment(props.detail.eventID, comment)
     }
   return (
     <React.Fragment>
