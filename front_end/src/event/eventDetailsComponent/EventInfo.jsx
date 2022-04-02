@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import {Button, Descriptions} from 'antd';
 import AuthService from '../../services/auth.service';
+import UpdateForm from './UpdateBox';
 
 function EventInfo(props) { 
 
@@ -37,28 +38,60 @@ function EventInfo(props) {
   return (
     <React.Fragment>
         <div> 
-            <Descriptions title="Event Information"> 
-                
-                <Descriptions.items label= "Status"> {Event.status} </Descriptions.items>
+            {isHost?
+            // View for Host
+            
+            <React.Fragment>
+                 <Descriptions title="Event Information"> 
+                    
+                    <Descriptions.items label= "Status"> {Event.status} </Descriptions.items>
 
-                <Descriptions.items label= "Event ID"> {Event.eventID} </Descriptions.items>
+                    <Descriptions.items label= "Event ID"> {Event.eventID} </Descriptions.items>
 
-                <Descriptions.items label= "Number of Participants"> {Event.numberOfParticipants} </Descriptions.items>
+                    <Descriptions.items label= "Number of Participants"> {Event.numberOfParticipants} </Descriptions.items>
 
-                <Descriptions.items label= "Venue"> {Event.venue} </Descriptions.items>
+                    <Descriptions.items label= "Venue"> {Event.venue} </Descriptions.items>
 
-                <Descriptions.items label= "Quota"> {Event.quota} </Descriptions.items>
+                    <Descriptions.items label= "Quota"> {Event.quota} </Descriptions.items>
 
-                <Descriptions.items label= "Category"> {Event.activityCategory} </Descriptions.items>
+                    <Descriptions.items label= "Category"> {Event.activityCategory} </Descriptions.items>
 
-                <Descriptions.items label= "Start Date"> {Event.start} </Descriptions.items>
+                    <Descriptions.items label= "Start Date"> {Event.start} </Descriptions.items>
 
-                <Descriptions.items label= "End Date"> {Event.end} </Descriptions.items>
+                    <Descriptions.items label= "End Date"> {Event.end} </Descriptions.items>
 
-                <Descriptions.items label= "Host"> {Event.createdBy} </Descriptions.items>
+                    <Descriptions.items label= "Host"> {Event.createdBy} </Descriptions.items>
 
-                <Descriptions.items label= "List of Participants"> {Event.participants} </Descriptions.items>
-            </Descriptions>
+                    <Descriptions.items label= "List of Participants"> {Event.participants} </Descriptions.items>
+                </Descriptions>
+            </React.Fragment>
+            :
+            // For other users 
+            <React.Fragment>
+                <Descriptions title="Event Information"> 
+                    
+                    <Descriptions.items label= "Status"> {Event.status} </Descriptions.items>
+
+                    <Descriptions.items label= "Event ID"> {Event.eventID} </Descriptions.items>
+
+                    <Descriptions.items label= "Number of Participants"> {Event.numberOfParticipants} </Descriptions.items>
+
+                    <Descriptions.items label= "Venue"> {Event.venue} </Descriptions.items>
+
+                    <Descriptions.items label= "Quota"> {Event.quota} </Descriptions.items>
+
+                    <Descriptions.items label= "Category"> {Event.activityCategory} </Descriptions.items>
+
+                    <Descriptions.items label= "Start Date"> {Event.start} </Descriptions.items>
+
+                    <Descriptions.items label= "End Date"> {Event.end} </Descriptions.items>
+
+                    <Descriptions.items label= "Host"> {Event.createdBy} </Descriptions.items>
+
+                    <Descriptions.items label= "List of Participants"> {Event.participants} </Descriptions.items>
+                </Descriptions>
+            </React.Fragment>
+            }
             <br/>
             <br/>
             <br/>
