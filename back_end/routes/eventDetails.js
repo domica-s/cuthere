@@ -122,20 +122,29 @@ router.post('/event/delete/:eventID',[authJwt.verifyToken], function(req,res){
     })
 })
 
-// Add comments to Events --> TESTING
+// Add comments to Events --> WORKING
 router.post('/event/addcomment/:eventID', [authJwt.verifyToken], function (req,res){
     const eventID = req.params.eventID 
-    const userID = req.body.id 
     const comment = req.body.comment
 
     Event.findOne({eventID: eventID}).exec(function(err,result){
         if(err) res.status(200).send({message: "Error occured: "+ err})
 
         else {
-            Event.findOneAndUpdate({eventID: eventID}, {$set: {chatHistory: comment}}, function(err, doc){
+            const chatHistory = [...result.chatHistory,comment]
+            // Update the dB
+            Event.findOneAndUpdate({eventID: eventID}, {$set: {chatHistory: chatHistory}}).exec(function(err, result){
                 if(err) res.status(400).send({message:"Error Occured: "+ err})
-                else res.status(200).send({message: "Added the comment for you Nigga!"}) // Please change this
             })
+            
+            // send the updated dB to the caller 
+            Event.findOne({eventID: eventID}).exec(function (err,result){
+                if (err) res.status(400).send("Error occured: "+ err)
+                else{
+                    res.status(200).send({message:"Comment Added!", response: result})
+                }
+            })
+            
         }
     })
 })

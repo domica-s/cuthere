@@ -1,6 +1,7 @@
 import React, { useState} from 'react'
 import Button from 'react-bootstrap/Button';
 
+
 let commentCounter = 1;
 class CommentForm extends React.Component{
     constructor() {
@@ -33,6 +34,9 @@ class CommentForm extends React.Component{
     submitCommentLine = (e) => {
         e.preventDefault();
         this.setCommentLine();
+        // Send to the EventDetails Page
+        console.log(this.props)
+        this.props.addComment(this.props.detail.eventID, this.state.commentValue)
     };
 
     enterCommentLine = (e) => {
@@ -50,6 +54,8 @@ class CommentForm extends React.Component{
                 handleCommentValue = {this.handleCommentValue}
                 enterCommentLine = {this.enterCommentLine}
                 submitCommentLine = {this.submitCommentLine} />
+
+            <Comment chatHistory = {this.props.chatHistory}/>
 
             
             
@@ -78,11 +84,14 @@ class CommentBox extends React.Component {
 
 class Comment extends React.Component {
     render () {
-        const {commentLine} = this.props 
+        const {chatHistory} = this.props 
+        console.log(chatHistory)
 
         return(
             <ul className ="comments-list">
-                {commentLine.map((data)=> {return <li className="each-comment" key={data.commentId}>{data.text}</li>})}
+                {chatHistory.map((data)=> {
+                    return <li className="each-comment">{data.content}</li>
+                    })}
             </ul>
         )
     }
