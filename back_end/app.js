@@ -8,7 +8,10 @@ var session = require("express-session");
 var flash = require("connect-flash");
 var params = require("./params/params");
 var cors = require("cors");
-
+var crypto = require("crypto");
+// temp
+const multer = require('multer')
+// temp
 
 var setuppassport = require("./setuppassport");
 const e = require("connect-flash");
@@ -50,8 +53,42 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(flash());
-//----------------------------------------- END OF MIDDLEWARE---------------------------------------------------
 
+// temp
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, 'images/')
+    },
+    filename: (req, file, cb) => {
+        var fileName = crypto.randomBytes(10).toString('hex');
+        file.filename = fileName;
+        cb(null, fileName + '.jpg');
+    },
+})
+
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 1024*1024*2 }
+});
+// end tmep
+
+//----------------------------------------- END OF MIDDLEWARE---------------------------------------------------
+// temp
+app.post('/image', upload.single('file'), function (req, res) {
+    if (!req.file) {
+        console.log("No file received");
+        return res.status(404).send({
+            success: false
+    });
+
+    } else {
+        console.log('file received');
+        return res.status(200).send({
+            success: true
+        })
+    }
+});
+// end temp
 require('./routes/auth.routes')(app);
 require('./routes/admin.routes')(app);
 app.use("/", require("./routes"));
