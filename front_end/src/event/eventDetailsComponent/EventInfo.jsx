@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react'
 import {Button, Descriptions} from 'antd';
 
-function EventInfo(props) {
+function EventInfo(props) { 
 
     const [Event, setEvent] = useState({})
+    const [modalOpen, setModalOpen] = useState(false)
 
     useEffect(() => {
         setEvent(props.detail)
@@ -22,6 +23,11 @@ function EventInfo(props) {
     // Function to delete the event
     const deleteEvent = () => {
         props.deleteEvent(props.detail.eventID)
+    }
+    
+    // Function to update event 
+    const updateEvent = (update) => {
+        props.updateEvent(props.detail.eventID,update)
     }
   return (
     <React.Fragment>
@@ -63,9 +69,12 @@ function EventInfo(props) {
                 <Button size="large" shape="round" type="danger" onClick={deleteEvent}>
                     Delete Event
                 </Button>
+
+                <Button size="large" shape="round" type="danger" onClick={() => setModalOpen(true)}>Update Event</Button>
             </div>
 
         </div>
+
 
     </React.Fragment>
   )

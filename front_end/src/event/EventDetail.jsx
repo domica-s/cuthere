@@ -19,60 +19,56 @@ export default function (props) {
     const [Event, setEvent] = useState([])
     const location = useLocation();
 
+    // Defining Configuration and Parameters
     const currentUser = AuthService.getCurrentUser();
-    
-    const config = { // Figure out how to address the TypeError: Can't read properties of undefined / not allowed to access function with VerifyJWT
-        headers: new Headers({
-            "x-access-token": currentUser.accessToken,
-            "content-type": 'application/json'
-        })
-    }
-
-    // STATUS: HOW TO GET THE :id from the params?
     const eventId = location.pathname.split('/event/')[1]
+    const userID = currentUser._id
 
     // STATUS: WORKING
     useEffect(() => {
-        Axios.get(`http://localhost:8080/api/calendar/route-event/${eventId}`).then(response => { 
-        console.log(response.data)    
+        Axios.get(`http://localhost:8080/api/calendar/route-event/${eventId}`).then(response => {    
         setEvent(response.data)
             
         })
     }, [location])
 
-
+    // Register Event Front-end --> WORKING
     async function joinTheEvent(eventID){
-        let body = {
-            _id: currentUser
-
-        }
-        const request = await Axios.post(`http://localhost:8080/event/register/${eventID}`,body, config.headers)
-        // Finish this --> Return the payload
+        const request = await Axios.post(`http://localhost:8080/event/register/${eventID}`,{id: userID}, {"x-access-token": currentUser.accessToken, "content-type": 'application/json'})
         console.log(request)
     }
 
+    // Unregister Event Front-End --> WORKING
     async function unregister(eventID){
-        let body = { 
-            _id: currentUser
-        }
-        const request = await Axios.post(`http://localhost:8080/event/delete/${eventID}`, body, config.headers)
-        // Finish this --> Return request? 
+        const request = await Axios.post(`http://localhost:8080/event/unregister/${eventID}`, {id: userID}, {"x-access-token": currentUser.accessToken, "content-type": 'application/json'})
         console.log(request)
     }
 
+    // Delete Event Front-End --> WORKING
     async function deleteEvent(eventID){
-        let body = { 
-            _id: currentUser
+        const request = await Axios.get(`http://localhost:8080/event/delete/${eventID}`,{id: userID}, {"x-access-token": currentUser.accessToken, "content-type": 'application/json'})
+        // Re-routing to all events page
+        if (request.status = 'SUCCESS'){
+            history.push({
+                state: request,
+                pathname: '/event',
+            });
+            history.go();
         }
-        const request = await Axios.get(`http://localhost:8080/event/delete/${eventID}`, body, config.headers)
-        
-        // Reroute to main page
-        
-        history.push({
-            state: request,
-            pathname: '/event',
-        });
-        history.go();
+        else console.log(request.message)
+    }
+    
+    // Add comments Front-End --> TESTING
+    async function addComment(eventID, comment){
+        const request = await Axios.post(`http://localhost:8080/event/addcomment/${eventID}`,{id: userID, comment: comment},{"x-access-token": currentUser.accessToken, "content-type": 'application/json'})
+        console.log(request)
+    }
+
+    // Update Event Front-end --> TESTING
+    async function updateEvent(eventID){
+        const content = "Hello World!" // Change this to updated content
+        const request = await Axios.post(`http://localhost:8080/event/update/${eventID}`,{id:userID, update:content}, {"x-access-token": currentUser.accessToken, "content-type": 'application/json'})
+        console.log(request)
     }
 
     return (
@@ -102,6 +98,8 @@ export default function (props) {
                         unjoinEvent = {unregister}
                         joinEvent = {joinTheEvent}
                         deleteEvent = {deleteEvent}
+                        updateEvent = {updateEvent}
+                        addComment = {addComment}
                         detail = {Event}/>
                     </Col>
                     
