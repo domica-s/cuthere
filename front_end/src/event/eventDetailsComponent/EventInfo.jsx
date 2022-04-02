@@ -1,15 +1,19 @@
 import React, {useEffect, useState} from 'react'
 import {Button, Descriptions} from 'antd';
+import AuthService from '../../services/auth.service';
 
 function EventInfo(props) { 
 
     const [Event, setEvent] = useState({})
     const [comment,setComment] = useState('')
     const [modalOpen, setModalOpen] = useState(false)
+    const currentUser = AuthService.getCurrentUser();
+    const isHost = Event.createdBy === currentUser._id
 
     useEffect(() => {
         setEvent(props.detail)
     }, [props.detail])
+
 
     // function to join the event
     const joinEvent = () => {
@@ -25,24 +29,34 @@ function EventInfo(props) {
     const deleteEvent = () => {
         props.deleteEvent(props.detail.eventID)
     }
-    
-    // Function to add comment
-    const addComment = () => {
-        props.addComment(props.detail.eventID, comment)
+
+    const updateEvent = (content) => {
+        const updatedContent = content // To fix this
+        props.updateEvent(props.detail.eventID, updatedContent)
     }
   return (
     <React.Fragment>
         <div> 
             <Descriptions title="Event Information"> 
+                
                 <Descriptions.items label= "Status"> {Event.status} </Descriptions.items>
+
                 <Descriptions.items label= "Event ID"> {Event.eventID} </Descriptions.items>
+
                 <Descriptions.items label= "Number of Participants"> {Event.numberOfParticipants} </Descriptions.items>
+
                 <Descriptions.items label= "Venue"> {Event.venue} </Descriptions.items>
+
                 <Descriptions.items label= "Quota"> {Event.quota} </Descriptions.items>
+
                 <Descriptions.items label= "Category"> {Event.activityCategory} </Descriptions.items>
+
                 <Descriptions.items label= "Start Date"> {Event.start} </Descriptions.items>
+
                 <Descriptions.items label= "End Date"> {Event.end} </Descriptions.items>
+
                 <Descriptions.items label= "Host"> {Event.createdBy} </Descriptions.items>
+
                 <Descriptions.items label= "List of Participants"> {Event.participants} </Descriptions.items>
             </Descriptions>
             <br/>
@@ -67,11 +81,9 @@ function EventInfo(props) {
                 display: 'flex',
                 justifyContent: 'center'
             }}>
-                <Button size="large" shape="round" type="danger" onClick={deleteEvent}>
+                {isHost? <Button size="large" shape="round" type="danger" onClick={deleteEvent} isHost>
                     Delete Event
-                </Button>
-
-                <Button size="large" shape="round" type="danger" onClick={() => setModalOpen(true)}>Update Event</Button>
+                </Button>:(null)}
             </div>
 
         </div>
