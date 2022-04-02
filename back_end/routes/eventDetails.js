@@ -90,6 +90,7 @@ router.post('/event/update/:eventID', [authJwt.verifyToken], function(req,res){
     //Acquire Parameters
     const eventID = req.params.eventID 
     const userID = req.body.id
+    const updateParam = req.body.updateParam // This parameter should give something like {status:"Closed"}
 
     Event.findOne({eventID: eventID}).exec(function(err, result){
         if(err) res.status(400).send({message:"Error Occured: " + err})
@@ -97,7 +98,10 @@ router.post('/event/update/:eventID', [authJwt.verifyToken], function(req,res){
         else if (result.createdBy != userID ) res.status(200).send({message: "You have no authority to update this event"})
         
         else { 
-            // update events
+            Event.findOneAndUpdate({eventID:eventID}, $set(updateParam)).exec(function(err, result){
+                if(err) res.status(400).send({message:"Error occured: "+ err})
+                else res.status(200).send({message:"The database is updated nigga! "}) // Please change this
+            })
         }
     })
 })
