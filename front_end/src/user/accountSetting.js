@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './accountSettingStyles.css'
 import {useState, useEffect} from 'react';
 import authService from "../services/auth.service";
+import userService from "../services/user.service";
 import axios from "axios";
 
 const INITIAL_STATE = {
@@ -13,6 +14,9 @@ const INITIAL_STATE = {
     mobileNumber: 0,
     successful: false,
     message: "",
+    about: "",
+    country: "",
+    interests: "",
   };
 
 //handle change profile pic
@@ -22,20 +26,40 @@ function GeneralInformation() {
     useEffect(() => {
         (async () => {
         try {
-            // const user = await axios.get(
-            //   "https://jsonplaceholder.typicode.com/users/1"
-            // );
             const user = authService.getCurrentUser();
+            let userFromDB;
+            userService.getProfile(user, user.sid)
+            .then(successResponse => {
+              
+              userFromDB = successResponse.data;
+              setUser({
+                username: userFromDB.username,
+                email: userFromDB.email,
+                mobileNumber: userFromDB.mobileNumber,
+                name: userFromDB.name,
+                about: userFromDB.about,
+                country: userFromDB.country,
+                interests: userFromDB.interests,
+                successful: true, 
+                message: successResponse.data.message
+              });
 
-            setUser({
-            username: user.username,
-            email: user.email,
-            mobileNumber: user.mobileNumber,
-            name: user.name,
-            successful: false,
-            message: "",
+    
+            },
+            error => {
+             
+              setUser({
+                username: user.username,
+                email: user.email,
+                mobileNumber: user.mobileNumber,
+                name: user.name,
+                about: user.about,
+                country: user.country,
+                interests: user.interests,
+                successful: false, 
+                message: error.data.message
+              });
             })
-            console.log(user);
             // setUser(user.data);
             
         } catch (error) {
@@ -51,33 +75,49 @@ function GeneralInformation() {
 
     const handleGeneral = async (e) => {
         e.preventDefault();
-        // try {
-        // console.log("Data for update : ", user);
-        // const response = await axios.put(`https://mongoDB?/${user.id}`, user);
-        // } catch (error) {
-        // console.log(error);
-        // }
-        // (currentUser, mobileNumber, interests, about)
         let currentUser = authService.getCurrentUser();
-        authService.updateProfile(currentUser, user.mobileNumber, "", "")
+        authService.updateProfile(currentUser, user.mobileNumber, user.interests, user.about, user.name, user.country)
         .then(response => {
           currentUser = authService.getCurrentUser();
-          setUser({
-            username: currentUser.username,
-            email: currentUser.email,
-            mobileNumber: currentUser.mobileNumber,
-            name: currentUser.name,
-            successful: true, 
-            message: response.data.message
-          });
-          console.log("false");
+          let updatedUser;
+          userService.getProfile(currentUser, currentUser.sid)
+          .then(successResponse => {
+            
+            updatedUser = successResponse.data;
+            // console.log(updatedUser.username);
+            setUser({
+              username: updatedUser.username,
+              email: updatedUser.email,
+              mobileNumber: updatedUser.mobileNumber,
+              name: updatedUser.name,
+              about: updatedUser.about,
+              country: updatedUser.country,
+              interests: updatedUser.interests,
+              successful: true, 
+              message: response.data.message
+            });
+  
+          },
+          error => {
+            updatedUser = currentUser;
+            setUser({
+              username: updatedUser.username,
+              email: updatedUser.email,
+              mobileNumber: updatedUser.mobileNumber,
+              name: updatedUser.name,
+              about: updatedUser.about,
+              country: updatedUser.country,
+              interests: updatedUser.interests,
+              successful: false, 
+              message: response.data.message
+            });
+          })
         },
         error => {
           setUser({successful: false, message: error.response.data.message});
-          console.log("success");
+          console.log("fail");
         }
       );
-      console.log(user);
     };
     return(
         <Form onSubmit={handleGeneral}>
@@ -141,173 +181,6 @@ function GeneralInformation() {
                   placeholder={"Add in your mobile number"}
                   onChange={handleInput} />
                 </div>
-              </div>
-            </div>
-            </div>
-            {user.message && (
-                <div className="form-group">
-                    <div
-                    className={
-                        user.successful? "d-none": "alert alert-danger"
-                    }
-                    role="alert"
-                    >
-                    {user.message}
-                    </div>
-                </div>
-              )}
-            <Button type="submit" variant="outline-dark" value="Update">Update Profile</Button>
-            </Form>
-    );
-    
-}
-
-let tempUser = authService.getCurrentUser();
-
-const CHANGEPW_STATE ={
-    oldPassword: "",
-    newPassword: "",
-    reEnterPassword: ""
-}
-
-function ChangePassword() {
-    const [user, setUser] = useState(CHANGEPW_STATE);
-
-    useEffect(() => {
-        (async () => {
-        try {
-            // const user = await axios.get(
-            //   "https://jsonplaceholder.typicode.com/users/1"
-            // );
-            const user = authService.getCurrentUser();
-
-            setUser({
-            oldPassword: "",
-            newPassword: "",
-            reEnterPassword: ""
-
-            })
-            console.log(user);
-            // setUser(user.data);
-            
-        } catch (error) {
-            console.log(error);
-        }
-        })();
-    }, []);
-
-    const handleInput = (e) => {
-        console.log(e.target.name, " : ", e.target.value);
-        setUser({ ...user, [e.target.name]: e.target.value });
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-        console.log("Data for update : ", user);
-        const response = await axios.put(`https://mongoDB?/${user.id}`, user);
-        } catch (error) {
-        console.log(error);
-        }
-    };
-    return(
-        <Form onSubmit={handleSubmit}>
-        <div className="tab-content">
-            <div className="tab-pane fade active show" id="account-change-password">
-        
-            
-              <div className="card-body">
-                <div className="form-group">
-                  <label className="form-label">Current Password</label>
-                  <Form.Control 
-                  name="oldPassword"
-                  type="password" 
-                  value={user.oldPassword || ""}
-                  placeholder={"Type in your current password"}
-                  onChange={handleInput} />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">New Password</label>
-                  <Form.Control 
-                  name="newPassword"
-                  type="password" 
-                  value={user.newPassword || ""}
-                  placeholder={"Type in your new password"}
-                  onChange={handleInput} />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Confirm New Password</label>
-                  <Form.Control 
-                  name="reEnterPassword"
-                  type="password" 
-                  value={user.reEnterPassword || ""}
-                  placeholder={"Re-enter your new password"}
-                  onChange={handleInput} />            
-                </div>
-              </div>
-            </div>
-            </div>
-            <Button type="submit" variant="outline-dark" value="Update">Change Password</Button>
-            </Form>
-    );    
-
-}
-
-const BIO_STATE = {
-    about: "",
-    birthday: "",
-    country: "",
-    interests: "",
-  };
-
-function BioInformation() {
-    const [user, setUser] = useState(BIO_STATE);
-
-    useEffect(() => {
-        (async () => {
-        try {
-            // const user = await axios.get(
-            //   "https://jsonplaceholder.typicode.com/users/1"
-            // );
-            const user = authService.getCurrentUser();
-
-            setUser({
-            about: user.about,
-            birthday: user.birthday,
-            country: user.country,
-            interests: user.interests,
-            })
-            console.log(user);
-            // setUser(user.data);
-            
-        } catch (error) {
-            console.log(error);
-        }
-        })();
-    }, []);
-
-    const handleInput = (e) => {
-        console.log(e.target.name, " : ", e.target.value);
-        setUser({ ...user, [e.target.name]: e.target.value });
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-        console.log("Data for update : ", user);
-        const response = await axios.put(`https://mongoDB?/${user.id}`, user);
-        } catch (error) {
-        console.log(error);
-        }
-    };
-
-    return (
-        <Form onSubmit={handleSubmit}>
-        <div className="tab-content">
-            <div className="tab-pane fade active show" id="account-change-password">
-          
-            
-              <div className="card-body">
                 <div className="form-group">
                   <label className="form-label">About</label>
                   <textarea
@@ -319,18 +192,9 @@ function BioInformation() {
                   onChange={handleInput} />
                 </div>
                 <div className="form-group">
-                  <label className="form-label">Birthday</label>
-                  <Form.Control
-                  type="date"
-                  name="birthday"
-                  value={user.birthday || ""}
-                  placeholder={"Select your birth date"}
-                  onChange={handleInput} />
-                </div>
-                <div className="form-group">
                   <label className="form-label">Country</label>
                   <Form.Control 
-                    className="select-style"
+                    className="select-style selectpicker countrypicker"
                     as="select"
                     name="country"
                     value={user.country || ""}
@@ -583,7 +447,7 @@ function BioInformation() {
                         <option value="Zimbabwe">Zimbabwe</option>
                     </Form.Control>
                 </div>
-                <div className="form-group">
+                <div className="form-group mb-3">
                   <label className="form-label">Interests</label>
                   <Form.Control
                   type="text"
@@ -592,13 +456,109 @@ function BioInformation() {
                   placeholder={"Write something regarding your interests.."}
                   onChange={handleInput} />
                 </div>
-               </div>
+                <Button type="submit" variant="outline-dark" value="Update" style={{marginBottom:"3%"}}>Update Profile</Button>
+              </div>
             </div>
-        </div>
-        <Button type="submit" variant="outline-dark" value="Update">Update Bio</Button>
-        </Form>
+            </div>
+            </Form>
     );
+    
 }
+
+let tempUser = authService.getCurrentUser();
+
+const CHANGEPW_STATE ={
+    oldPassword: "",
+    newPassword: "",
+    reEnterPassword: ""
+}
+
+function ChangePassword() {
+    const [user, setUser] = useState(CHANGEPW_STATE);
+
+    useEffect(() => {
+        (async () => {
+        try {
+            // const user = await axios.get(
+            //   "https://jsonplaceholder.typicode.com/users/1"
+            // );
+            const user = authService.getCurrentUser();
+
+            setUser({
+            oldPassword: "",
+            newPassword: "",
+            reEnterPassword: ""
+
+            })
+            console.log(user);
+            // setUser(user.data);
+            
+        } catch (error) {
+            console.log(error);
+        }
+        })();
+    }, []);
+
+    const handleInput = (e) => {
+        console.log(e.target.name, " : ", e.target.value);
+        setUser({ ...user, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+        console.log("Data for update : ", user);
+        const response = await axios.put(`https://mongoDB?/${user.id}`, user);
+        } catch (error) {
+        console.log(error);
+        }
+    };
+    return(
+        <Form onSubmit={handleSubmit}>
+        <div className="tab-content">
+            <div className="tab-pane fade active show" id="account-change-password">
+        
+            
+              <div className="card-body">
+                <div className="form-group">
+                  <label className="form-label">Current Password</label>
+                  <Form.Control 
+                  name="oldPassword"
+                  type="password" 
+                  value={user.oldPassword || ""}
+                  placeholder={"Type in your current password"}
+                  onChange={handleInput} />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">New Password</label>
+                  <Form.Control 
+                  name="newPassword"
+                  type="password" 
+                  value={user.newPassword || ""}
+                  placeholder={"Type in your new password"}
+                  onChange={handleInput} />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Confirm New Password</label>
+                  <Form.Control 
+                  name="reEnterPassword"
+                  type="password" 
+                  value={user.reEnterPassword || ""}
+                  placeholder={"Re-enter your new password"}
+                  onChange={handleInput} />            
+                </div>
+              </div>
+            </div>
+            </div>
+            <Button type="submit" variant="outline-dark" value="Update">Change Password</Button>
+            </Form>
+    );    
+
+}
+
+const BIO_STATE = {
+    
+  };
 
 function DropdownMenu() {
     const [key, setKey] = useState('general');
@@ -617,9 +577,6 @@ function DropdownMenu() {
         </Tab>
         <Tab eventKey="change-password" title="Change Password">
         <ChangePassword />
-        </Tab>
-        <Tab eventKey="info" title="Bio information">
-        <BioInformation />
         </Tab>
       </Tabs>
     );
