@@ -40,8 +40,6 @@ function GeneralInformation() {
                 about: userFromDB.about,
                 country: userFromDB.country,
                 interests: userFromDB.interests,
-                successful: true, 
-                message: successResponse.data.message
               });
 
     
@@ -56,8 +54,6 @@ function GeneralInformation() {
                 about: user.about,
                 country: user.country,
                 interests: user.interests,
-                successful: false, 
-                message: error.data.message
               });
             })
             // setUser(user.data);
@@ -457,10 +453,25 @@ function GeneralInformation() {
                   onChange={handleInput} />
                 </div>
                 <Button type="submit" variant="outline-dark" value="Update" style={{marginBottom:"3%"}}>Update Profile</Button>
+                <div style={{marginBottom:"5%"}}>
+                  {user.message && (
+                      <div className="form-group">
+                          <div
+                          className={
+                              user.successful? "alert alert-success": "alert alert-danger"
+                          }
+                          role="alert"
+                          >
+                          {user.message}
+                          </div>
+                      </div>
+                  )}
+                </div>
               </div>
             </div>
             </div>
             </Form>
+            
     );
     
 }
