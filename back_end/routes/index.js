@@ -12,6 +12,7 @@ router.use(function(req,res, next){
 
 
 router.use("/", require("./event"));
+router.use("/", require("./eventDetails"))
 router.use("/api/calendar", require("./calendar"));
 router.use("/user/", require("./user.routes"));
 
