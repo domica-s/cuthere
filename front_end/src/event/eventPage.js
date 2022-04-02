@@ -9,7 +9,6 @@ import Badge from 'react-bootstrap/Badge';
 import AuthService from "../services/auth.service";
 import { auto } from "@popperjs/core";
 
-
 var params = require("../params/params");
 
 // const API = 'http://localhost:8080/allevents'
@@ -20,7 +19,7 @@ class OneEvent extends React.Component {
     render() {
         let data = this.props.data[1];
         let link_detail = "/event/" + data.eventID;
-        console.log(link_detail);
+        // console.log(link_detail);
         return (
             <Container>
                 <Row className="justify-content-sm-center">
@@ -47,8 +46,11 @@ class Event extends React.Component {
         super(props);
         this.state = {
             events: {},
-            currentUser: AuthService.getCurrentUser()
+            currentUser: AuthService.getCurrentUser(),
+            searchTerm: ""
         };
+
+        this.onChangeSearch = this.onChangeSearch.bind(this);
     }
 
     componentDidMount() {
@@ -67,13 +69,47 @@ class Event extends React.Component {
               this.setState( {events: Object.entries(data)} )
           });}
     }
+
+    onChangeSearch(e) {
+      this.setState({
+        searchTerm: e.target.value
+      });
+    }
+
     render() {
-        let e = this.state.events
+        let e = this.state.events;
+        
         return(
-            <Container className="my-5">
-                <h2>Here are the events</h2>
-                {e.length > 0 && e.map((data, index) => <OneEvent data={data} key={index}/>)}
-            </Container>
+          <Container className="my-5">
+            {/* add search bar */}
+            <div className="search form-outline">
+              <input type="search" placeholder="Type query" className="form-control" aria-label="Search"
+                value={this.state.searchTerm} onChange={this.onChangeSearch}
+              />
+            </div>
+            <h2>Here are the events</h2>
+            <hr></hr>
+            {e.length > 0 && 
+              (e.filter((val) => {
+                
+                if (this.state.searchTerm == "") {
+                  return val
+                }
+                else {
+                  if (val[1].title.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
+                    return val
+                  }
+                  if (val[1].activityCategory.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
+                    return val
+                  }
+                  if (val[1].venue.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
+                    return val
+                  }
+                }
+              })).map((data, index) => 
+              <OneEvent data={data} key={index}/>
+            )}
+          </Container>
         );
     }
 }

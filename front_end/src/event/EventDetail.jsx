@@ -26,7 +26,12 @@ export default function (props) {
 
     // STATUS: WORKING
     useEffect(() => {
-        Axios.get(`http://localhost:8080/api/calendar/route-event/${eventId}`).then(response => {    
+        Axios.get(`http://localhost:8080/api/calendar/route-event/${eventId}`,         
+        {
+            headers: {
+                "x-access-token": currentUser.accessToken
+            }
+        }).then(response => {    
         setEvent(response.data)
             
         })
@@ -34,21 +39,38 @@ export default function (props) {
 
     // Register Event Front-end --> WORKING
     async function joinTheEvent(eventID){
-        const request = await Axios.post(`http://localhost:8080/event/register/${eventID}`,{id: userID}, {"x-access-token": currentUser.accessToken, "content-type": 'application/json'})
+        const request = await Axios.post(`http://localhost:8080/event/register/${eventID}`,{id: userID},         
+        {
+            headers: {
+                "x-access-token": currentUser.accessToken
+            }
+        })
         console.log(request)
     }
 
     // Unregister Event Front-End --> WORKING
     async function unregister(eventID){
-        const request = await Axios.post(`http://localhost:8080/event/unregister/${eventID}`, {id: userID}, {"x-access-token": currentUser.accessToken, "content-type": 'application/json'})
+        const request = await Axios.post(`http://localhost:8080/event/unregister/${eventID}`, {id: userID},         
+        {
+            headers: {
+                "x-access-token": currentUser.accessToken
+            }
+        })
         console.log(request)
     }
 
     // Delete Event Front-End --> WORKING
     async function deleteEvent(eventID){
-        const request = await Axios.get(`http://localhost:8080/event/delete/${eventID}`,{id: userID}, {"x-access-token": currentUser.accessToken, "content-type": 'application/json'})
+        const request = await Axios.get(`http://localhost:8080/event/delete/${eventID}`,{id: userID},
+        {
+            headers: {
+                "x-access-token": currentUser.accessToken
+            }
+        })
         // Re-routing to all events page
+        console.log(request);
         if (request.status = 'SUCCESS'){
+            console.log(request);
             history.push({
                 state: request,
                 pathname: '/event',
@@ -60,14 +82,24 @@ export default function (props) {
     
     // Add comments Front-End --> TESTING
     async function addComment(eventID, comment){
-        const request = await Axios.post(`http://localhost:8080/event/addcomment/${eventID}`,{id: userID, comment: comment},{"x-access-token": currentUser.accessToken, "content-type": 'application/json'})
+        const request = await Axios.post(`http://localhost:8080/event/addcomment/${eventID}`,{id: userID, comment: comment},
+        {
+            headers: {
+                "x-access-token": currentUser.accessToken
+            }
+        })
         console.log(request)
     }
 
     // Update Event Front-end --> TESTING
     async function updateEvent(eventID){
         const content = "Hello World!" // Change this to updated content
-        const request = await Axios.post(`http://localhost:8080/event/update/${eventID}`,{id:userID, update:content}, {"x-access-token": currentUser.accessToken, "content-type": 'application/json'})
+        const request = await Axios.post(`http://localhost:8080/event/update/${eventID}`,{id:userID, update:content}, 
+        {
+            headers: {
+                "x-access-token": currentUser.accessToken
+            }
+        })
         console.log(request)
     }
 
