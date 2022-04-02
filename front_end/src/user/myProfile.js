@@ -36,7 +36,6 @@ export default class Profile extends Component {
       mobileNumber: currentUser.mobileNumber,
       interests: currentUser.interests,
       college: currentUser.college,
-      birthday: currentUser.birthday,
       country: currentUser.country,
       friends: currentUser.friends,
       rating: currentUser.rating,
@@ -51,7 +50,7 @@ export default class Profile extends Component {
 
 
 				<div className="col-lg-4">
-					<div className="card">
+					<div className="card mt-3">
 						<div className="card-body">
 							<div className="d-flex flex-column align-items-center text-center">
 								<img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="Admin" className="rounded-circle p-1 bg-primary" width="110" />
@@ -169,14 +168,14 @@ export default class Profile extends Component {
 
 
 				<div className="col-lg-8">
-					<div className="card">
+					<div className="card mt-3">
 						<div className="card-body">
 							<div className="row mb-3">
 								<div className="col-sm-3">
 									<h6 className="mb-0">Full Name</h6>
 								</div>
 								<div className="col-sm-9 text-secondary">
-									<input type="text" className="form-control" value={USER_STATE.username || ""} disabled
+									<input type="text" className="form-control" value={USER_STATE.name || ""} disabled
                   readOnly />
 								</div>
 							</div>
@@ -198,16 +197,6 @@ export default class Profile extends Component {
                   readOnly />
 								</div>
 							</div>
-							<div className="row mb-3">
-								<div className="col-sm-3">
-									<h6 className="mb-0">Birthday</h6>
-								</div>
-								<div className="col-sm-9 text-secondary">
-									<input type="text" className="form-control" value={USER_STATE.birthday || ""} disabled
-                  readOnly />
-								</div>
-							</div>
-              
               <div className="row">
 						    <div className="col-sm-12">
 							    <div className="card">

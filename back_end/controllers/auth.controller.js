@@ -397,6 +397,8 @@ exports.updateProfile =  (req, res) => {
     user.mobileNumber = req.body.mobileNumber;
     user.interests = req.body.interests;
     user.about = req.body.about;
+    user.name = req.body.name;
+    user.country = req.body.country;
     user.save(function (err) {
       // error occur
       if(err) {
