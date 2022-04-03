@@ -41,6 +41,7 @@ exports.getUserProfile = (req, res) => {
 // returns --> success, fail1 (user have previously left a comment, update instead)
 //, fail2 (source/target sid not found, no similar events or other errors)
 exports.leaveUserRating = (req, res) => {
+
     let sourceSID = req.body.sid;
     let targetSID = req.params.sid;
     let type = req.body.type; // good or bad rating (true for good)
@@ -51,7 +52,7 @@ exports.leaveUserRating = (req, res) => {
         if (err) {
             return res.status(500).send({ message: err });
         }
-
+        
         if (!targetUser) {
             return res.status(404).send({ message: "Target user not found "});
         }
@@ -98,7 +99,7 @@ exports.leaveUserRating = (req, res) => {
                 }
             }
             else {
-                return res.status(404).send({ message: "You do not share any similar events with the target user"});
+                return res.status(404).send({ message: "Source/ target user does not have any events registered"});
             }
         })
     })
