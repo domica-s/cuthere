@@ -30,6 +30,7 @@ import { PasswordReset } from './home/passwordReset';
 import { Nav, NavLink,Bars, NavMenu, NavBtn, NavBtnLink, Footer} from './NavBarStyle';
 import logo from './images/logo.jfif';
 import { AdminDashboard } from './admin/adminPage';
+import {UploadImage} from './event/uploadImg';
 
 
 Modal.setAppElement("#root");
@@ -100,6 +101,7 @@ class App extends React.Component {
             {currentUser !== undefined && <Route path='/createEvent' element={<CreateEvent/>} />}
             {currentUser !== undefined && <Route path='/accountSetting' element={<AccountSetting/>} />}
             {isAdmin && <Route path='/admin' element={<AdminDashboard/>} />}
+            <Route path='/upload' element={<UploadImage/>} />
             <Route path='/help' element={<Help/>} />
             <Route path='/*' element={<NoMatch/>} />
           </Routes>
