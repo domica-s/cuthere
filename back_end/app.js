@@ -8,7 +8,7 @@ var session = require("express-session");
 var flash = require("connect-flash");
 var params = require("./params/params");
 var cors = require("cors");
-
+const upload = require("./routes/upload");
 
 var setuppassport = require("./setuppassport");
 const e = require("connect-flash");
@@ -18,6 +18,7 @@ mongoose.connect(params.DATABASECONNECTION,{
     useUnifiedTopology: true, 
     useNewUrlParser: true
 },() => console.log("Connected to MongoDB"));
+
 
 setuppassport();
 
@@ -55,6 +56,7 @@ app.use(flash());
 require('./routes/auth.routes')(app);
 require('./routes/admin.routes')(app);
 app.use("/", require("./routes"));
+app.use("/file", upload);
 
 //----------------------------------------- END OF ROUTES---------------------------------------------------
 //Start Server

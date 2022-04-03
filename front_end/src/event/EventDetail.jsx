@@ -4,11 +4,12 @@ import Axios from 'axios'
 import { Row, Col } from 'antd';
 import AuthService from "../services/auth.service";
 import history from "../history";
+import { OneChat } from './eventDetailPage';
 
 // import smaller components related to the events 
 import EventImage from './eventDetailsComponent/EventImage'
 import EventInfo from './eventDetailsComponent/EventInfo'
-
+import CommentForm from './eventDetailsComponent/CommentForm';
 
 export default function (props) { 
 
@@ -18,11 +19,13 @@ export default function (props) {
     // --> To do: Fix UI
     const [Event, setEvent] = useState([])
     const location = useLocation();
+    const [chatHistory, setChatHistory] = useState([]);
 
     // Defining Configuration and Parameters
     const currentUser = AuthService.getCurrentUser();
     const eventId = location.pathname.split('/event/')[1]
     const userID = currentUser._id
+    const sid = currentUser.sid
 
     // STATUS: WORKING
     useEffect(() => {
@@ -32,8 +35,8 @@ export default function (props) {
                 "x-access-token": currentUser.accessToken
             }
         }).then(response => {    
-        setEvent(response.data)
-            
+        setEvent(response.data);
+        setChatHistory([response.data.chatHistory])
         })
     }, [location])
 
@@ -80,21 +83,27 @@ export default function (props) {
         else console.log(request.message)
     }
     
-    // Add comments Front-End --> TESTING
+    // Add comments Front-End --> WORKING
     async function addComment(eventID, comment){
-        const request = await Axios.post(`http://localhost:8080/event/addcomment/${eventID}`,{id: userID, comment: comment},
+        const updatedComment = { 
+            user: sid,
+            content: comment,
+            chatAt: Date.now(),
+            userDetails: currentUser
+        }
+        const request = await Axios.post(`http://localhost:8080/event/addcomment/${eventID}`,{comment: updatedComment},
         {
             headers: {
                 "x-access-token": currentUser.accessToken
             }
         })
-        console.log(request)
+        // store chatHistory
+        setChatHistory(request.data.response.chatHistory)
     }
 
     // Update Event Front-end --> TESTING
-    async function updateEvent(eventID){
-        const content = "Hello World!" // Change this to updated content
-        const request = await Axios.post(`http://localhost:8080/event/update/${eventID}`,{id:userID, update:content}, 
+    async function updateEvent(eventID, updatedContent){
+        const request = await Axios.post(`http://localhost:8080/event/update/${eventID}`,{id:userID, update: updatedContent}, 
         {
             headers: {
                 "x-access-token": currentUser.accessToken
@@ -102,7 +111,8 @@ export default function (props) {
         })
         console.log(request)
     }
-
+    
+    console.log(Event)
     return (
         <React.Fragment>
             <div className="postPage" style={{
@@ -134,7 +144,7 @@ export default function (props) {
                         addComment = {addComment}
                         detail = {Event}/>
                     </Col>
-                    
+                    <CommentForm detail={Event} addComment={addComment} chatHistory={chatHistory}/>
                 </Row>
             </div>
         </React.Fragment>

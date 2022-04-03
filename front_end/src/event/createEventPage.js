@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
@@ -54,6 +54,7 @@ class CreateEvent extends React.Component {
         this.onChangeEnd = this.onChangeEnd.bind(this);
         this.onChangeQuota = this.onChangeQuota.bind(this);
         this.onChangeCategory = this.onChangeCategory.bind(this);
+        this.onChangeFile = this.onChangeFile.bind(this);
 
         this.state = {
             title: "",
@@ -62,7 +63,8 @@ class CreateEvent extends React.Component {
             end: "",
             quota: 1,
             category: "Outdoor",
-            quotaValidate: true
+            quotaValidate: true,
+            file: ""
         }
     }
 
@@ -80,7 +82,8 @@ class CreateEvent extends React.Component {
                 quota: this.state.quota,
                 category: this.state.category,
                 _id: currentUser._id,
-                sid: currentUser.sid
+                sid: currentUser.sid,
+                file: this.state.file
             }
             fetch(API, {
                 method: "POST",
@@ -98,6 +101,7 @@ class CreateEvent extends React.Component {
             })
         }
     }
+    
 
     onChangeQuota(e) {
         let quotaInput = e.target.value;
@@ -142,6 +146,16 @@ class CreateEvent extends React.Component {
         this.setState({
             end: moment(e.target.value).toDate()
         });
+    }
+
+    onChangeFile(e) {
+        let reader = new FileReader()
+        reader.readAsArrayBuffer(e.target.files[0])
+        reader.onload = () => {
+            this.setState({
+                file: reader.result
+            })
+        }
     }
 
     render() {
@@ -189,7 +203,8 @@ class CreateEvent extends React.Component {
     
                     <Form.Group controlId="formFile" className="mb-3">
                         <Form.Label>Upload a photo for your event?</Form.Label>
-                        <Form.Control type="file" />
+                        <Form.Control type="file" onChange={this.onChangeFile}/>
+                        <Button type="button" onClick={this.testUpload}>Upload</Button>
                     </Form.Group>
     
                     <Form.Group className="mb3">

@@ -1,14 +1,24 @@
 import React, {useEffect, useState} from 'react'
 import {Button, Descriptions} from 'antd';
+import AuthService from '../../services/auth.service';
+import UpdateForm from './UpdateBox';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import { Container } from "react-bootstrap";
+
 
 function EventInfo(props) { 
 
     const [Event, setEvent] = useState({})
+    const [comment,setComment] = useState('')
     const [modalOpen, setModalOpen] = useState(false)
+    const currentUser = AuthService.getCurrentUser();
+    const isHost = Event.createdBy === currentUser._id
 
     useEffect(() => {
         setEvent(props.detail)
     }, [props.detail])
+
 
     // function to join the event
     const joinEvent = () => {
@@ -24,26 +34,93 @@ function EventInfo(props) {
     const deleteEvent = () => {
         props.deleteEvent(props.detail.eventID)
     }
-    
-    // Function to update event 
-    const updateEvent = (update) => {
-        props.updateEvent(props.detail.eventID,update)
+
+    const updateEvent = (content) => {
+        const updatedContent = JSON.parse(content)
+        // Add moment to dates
+
+        // Send to backend
+        props.updateEvent(props.detail.eventID, updatedContent)
     }
   return (
     <React.Fragment>
         <div> 
-            <Descriptions title="Event Information"> 
-                <Descriptions.items label= "Status"> {Event.status} </Descriptions.items>
-                <Descriptions.items label= "Event ID"> {Event.eventID} </Descriptions.items>
-                <Descriptions.items label= "Number of Participants"> {Event.numberOfParticipants} </Descriptions.items>
-                <Descriptions.items label= "Venue"> {Event.venue} </Descriptions.items>
-                <Descriptions.items label= "Quota"> {Event.quota} </Descriptions.items>
-                <Descriptions.items label= "Category"> {Event.activityCategory} </Descriptions.items>
-                <Descriptions.items label= "Start Date"> {Event.start} </Descriptions.items>
-                <Descriptions.items label= "End Date"> {Event.end} </Descriptions.items>
-                <Descriptions.items label= "Host"> {Event.createdBy} </Descriptions.items>
-                <Descriptions.items label= "List of Participants"> {Event.participants} </Descriptions.items>
-            </Descriptions>
+            {isHost?
+            // View for Host
+            <React.Fragment>
+             <Container> 
+                    <Row> <Col><p>Event Status: {Event.status}</p></Col></Row>
+                    <Row> <Col><p>Event ID: {Event.eventID}</p></Col></Row>
+                    <Row><Col><p># of Participants: {Event.numberOfParticipants}</p></Col></Row>
+                    <Row>
+                        <Col>
+                            <p>Location: {Event.venue}</p>
+                        </Col>
+
+                        <Col>
+                            <UpdateForm type={"text"} label={"venue"} value={Event.venue} updateEvent={updateEvent}/>
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col>
+                            <p>Max Participants for this event: {Event.quota}</p>
+                        </Col>
+                        <Col>
+                            <UpdateForm type={"number"} label={"quota"} value={Event.quota} updateEvent={updateEvent}/>
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col>
+                            <p>Event Category: {Event.activityCategory}</p>
+                        </Col>
+
+                        <Col>
+                            <UpdateForm type={"text"} label={"activityCategory"} value={Event.activityCategory} updateEvent={updateEvent}/>
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col>
+                            <p>Starting Date: {Event.start}</p>
+                        </Col>
+                        <Col>
+                            <UpdateForm type={"date"} label={"start"} value={Event.start} updateEvent={updateEvent}/>    
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col>
+                            <p>Ending Date: {Event.end}</p>
+                        </Col>
+
+                        <Col>
+                            <UpdateForm type={"date"} label={"end"} value={Event.end} updateEvent={updateEvent}/>
+                        </Col>
+                    </Row>
+
+                    <Row><Col><p>The host of this event is: {Event.createdBy}</p></Col></Row>
+                    <Row><Col><p>The list of participants for this event is: {Event.participants}</p></Col></Row>
+                </Container>
+            </React.Fragment>
+            :
+            // For other users 
+            <React.Fragment>
+            <Container> 
+                   <Row> <Col><p>Event Status: {Event.status}</p></Col></Row>
+                   <Row> <Col><p>Event ID: {Event.eventID}</p></Col></Row>
+                   <Row><Col><p># of Participants: {Event.numberOfParticipants}</p></Col></Row>
+                   <Row> <Col> <p>Location: {Event.venue}</p> </Col></Row>
+                   <Row><Col><p>Max Participants for this event: {Event.quota}</p></Col></Row>
+                   <Row><Col><p>Event Category: {Event.activityCategory}</p></Col></Row>
+                   <Row><Col><p>Starting Date: {Event.start}</p></Col></Row>
+                   <Row><Col><p>Ending Date: {Event.end}</p></Col></Row>
+                   <Row><Col><p>The host of this event is: {Event.createdBy}</p></Col></Row>
+                   <Row><Col><p>The list of participants for this event is: {Event.participants}</p></Col></Row>
+               </Container>
+           </React.Fragment>
+            }
             <br/>
             <br/>
             <br/>
@@ -66,11 +143,9 @@ function EventInfo(props) {
                 display: 'flex',
                 justifyContent: 'center'
             }}>
-                <Button size="large" shape="round" type="danger" onClick={deleteEvent}>
+                {isHost? <Button size="large" shape="round" type="danger" onClick={deleteEvent} isHost>
                     Delete Event
-                </Button>
-
-                <Button size="large" shape="round" type="danger" onClick={() => setModalOpen(true)}>Update Event</Button>
+                </Button>:(null)}
             </div>
 
         </div>

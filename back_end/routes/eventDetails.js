@@ -13,7 +13,7 @@ const { update } = require("../models/event");
 
 // STATUS --> WORKING
 function checkRegistered(user_id, participants){
-    const stringParticipants = participants.map( x => x.toString())
+    const stringParticipants = participants.map( x => x.toString()) 
 
     if (stringParticipants.includes(user_id)) return true
     else return false
@@ -26,7 +26,6 @@ router.post('/event/register/:eventID', [authJwt.verifyToken], function (req, re
     // Acquire parameters
     const eventID = req.params.eventID
     const userID = req.body.id // This is an ObjectID
-    console.log(req.body)
 
     // Find event with the corresponding Event Id 
     Event.findOne({eventID: eventID}).exec(function(err, result){
@@ -84,12 +83,13 @@ router.post('/event/unregister/:eventID', [authJwt.verifyToken], function (req, 
     })
 
 })
-// Update the event 
+// Update the event --> TESTING
 router.post('/event/update/:eventID', [authJwt.verifyToken], function(req,res){
     
     //Acquire Parameters
     const eventID = req.params.eventID 
     const userID = req.body.id
+    const updateParam = req.body.update // This parameter should give something like {status:"Closed"}
 
     Event.findOne({eventID: eventID}).exec(function(err, result){
         if(err) res.status(400).send({message:"Error Occured: " + err})
@@ -97,14 +97,13 @@ router.post('/event/update/:eventID', [authJwt.verifyToken], function(req,res){
         else if (result.createdBy != userID ) res.status(200).send({message: "You have no authority to update this event"})
         
         else { 
-            // update events
+            Event.findOneAndUpdate({eventID:eventID}, {$set:updateParam}).exec(function(err, result){
+                if(err) res.status(400).send({message:"Error occured: "+ err})
+                else res.status(200).send({message:"The database is updated nigga! ", data: result}) // Please change this
+            })
         }
     })
 })
-
-
-
-
 
 
 // Delete Events --> WORKING
@@ -126,18 +125,29 @@ router.post('/event/delete/:eventID',[authJwt.verifyToken], function(req,res){
     })
 })
 
-// Add comments to Events
+// Add comments to Events --> WORKING
 router.post('/event/addcomment/:eventID', [authJwt.verifyToken], function (req,res){
     const eventID = req.params.eventID 
-    const userID = req.body.id 
     const comment = req.body.comment
 
     Event.findOne({eventID: eventID}).exec(function(err,result){
         if(err) res.status(200).send({message: "Error occured: "+ err})
 
         else {
-
-            Event.findOneAndUpdate({eventID: eventID}, {$set: {chatHistory: comment}})
+            const chatHistory = [...result.chatHistory,comment]
+            // Update the dB
+            Event.findOneAndUpdate({eventID: eventID}, {$set: {chatHistory: chatHistory}}).exec(function(err, result){
+                if(err) res.status(400).send({message:"Error Occured: "+ err})
+            })
+            
+            // send the updated dB to the caller 
+            Event.findOne({eventID: eventID}).exec(function (err,result){
+                if (err) res.status(400).send("Error occured: "+ err)
+                else{
+                    res.status(200).send({message:"Comment Added!", response: result})
+                }
+            })
+            
         }
     })
 })

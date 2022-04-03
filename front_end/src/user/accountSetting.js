@@ -6,6 +6,13 @@ import {useState, useEffect} from 'react';
 import authService from "../services/auth.service";
 import userService from "../services/user.service";
 import axios from "axios";
+var params = require("../params/params");
+
+const currentUser = authService.getCurrentUser();
+const API = params.baseBackURL + "/file/upload";
+const API_DELETE = params.baseBackURL + "/file/delete";
+const API_Query = params.baseBackURL + "/file/";
+
 
 const INITIAL_STATE = {
     username: "",
@@ -17,6 +24,7 @@ const INITIAL_STATE = {
     about: "",
     country: "",
     interests: "",
+    uploadImg: "",
   };
 
 //handle change profile pic
@@ -115,20 +123,64 @@ function GeneralInformation() {
         }
       );
     };
+
+    const onChangeFile = async(e) => {
+      console.log(currentUser.sid);
+      try {
+        setUser({
+          uploadImg: e.target.files[0]
+        });        
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    const onUploadFile = async(e) => {
+      e.preventDefault();
+      let data = new FormData();
+      data.append("file", user.uploadImg, "user-" + currentUser.sid);
+      const uploadResult = await fetch(API, {
+        method: "POST",
+        headers: new Headers({
+          "x-access-token": currentUser.accessToken,
+          }),
+        body: data          
+      });
+
+      const resultJson = await uploadResult.json();
+      await window.alert(resultJson.message);
+    }
+
+    const onLoadPic = async(e) => {
+      const img = document.querySelector("#profile-pic");
+
+      let api = API_Query + "user-" + currentUser.sid;
+      const loadResult = await fetch(api, {
+          method: "GET",
+          headers: new Headers({
+            "x-access-token": currentUser.accessToken,
+          }),
+      })
+
+      const resultBlob = await loadResult.blob();
+      img.crossOrigin = 'anonymous';
+      img.src = await URL.createObjectURL(resultBlob);
+    }
+
     return(
         <Form onSubmit={handleGeneral}>
         <div className="tab-content">
             <div className="tab-pane fade active show" id="account-general">
 
               <div className="card-body media align-items-center">
-                <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="" className="d-block ui-w-80" />
+                <img id="profile-pic" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="" className="d-block ui-w-80" onLoad={onLoadPic}/>
                 <div className="media-body ml-4">
                   <label className="btn btn-outline-primary">
-                    Upload new photo
-                    <input type="file" className="account-settings-fileinput" />
+                    Select new photo
+                    <input type="file" className="account-settings-fileinput" onChange={onChangeFile}/>
                   </label> &nbsp;
-                  <button type="button" className="btn btn-default md-btn-flat">Reset</button>
-
+                  {user.uploadImg && <button type="button" className="btn btn-default md-btn-flat" onClick={onUploadFile}>Upload</button>}
+                  {user.uploadImg && <p>{user.uploadImg.name}</p>}
                   <div className="text-light small mt-1">Allowed JPG or PNG.</div>
                 </div>
               </div>
@@ -481,7 +533,9 @@ let tempUser = authService.getCurrentUser();
 const CHANGEPW_STATE ={
     oldPassword: "",
     newPassword: "",
-    reEnterPassword: ""
+    reEnterPassword: "",
+    successful: false,
+    message: "",
 }
 
 function ChangePassword() {
@@ -518,9 +572,20 @@ function ChangePassword() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-        console.log("Data for update : ", user);
-        const response = await axios.put(`https://mongoDB?/${user.id}`, user);
-        } catch (error) {
+        let currentUser = authService.getCurrentUser();
+        authService.changePassword(currentUser, user.oldPassword, user.newPassword, user.reEnterPassword)
+        .then(successResponse => {
+          setUser({
+            successful: true,
+            message:successResponse.data.message,
+          })
+        },error =>{
+          setUser({
+            successful: false,
+            message:error.response.data.message,
+          })
+        })
+        }catch (error) {
         console.log(error);
         }
     };
@@ -562,6 +627,20 @@ function ChangePassword() {
             </div>
             </div>
             <Button type="submit" variant="outline-dark" value="Update">Change Password</Button>
+            <div style={{marginTop:"2%"}}>
+                  {user.message && (
+                      <div className="form-group">
+                          <div
+                          className={
+                              user.successful? "alert alert-success": "alert alert-danger"
+                          }
+                          role="alert"
+                          >
+                          {user.message}
+                          </div>
+                      </div>
+                  )}
+                </div>
             </Form>
     );    
 

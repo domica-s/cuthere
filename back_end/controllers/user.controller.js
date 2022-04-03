@@ -183,3 +183,108 @@ exports.updateUserRating = (req, res) => {
         })
     })
 }
+
+exports.followUser = (req,res) => {
+    let followerID = req.body.sid;
+    let followingID = req.params.sid;
+
+    User.findOne({sid: followingID}).exec((err, userToFollow) => {
+        if (err) {
+          res.status(400).send({ message: "error occured: " + err });
+        } else if (userToFollow === null) {
+          res.status(404).send({ message: "User not found" });
+        }
+        User.findOne({sid: followerID}).exec((err, sourceUser) =>{
+            if (err) {
+              res.status(400).send({ message: "error occured: " + err });
+            } else if (sourceUser === null) {
+              res.status(404).send({ message: "User not found" });
+            }
+            let followed = false;
+            //User to follow's followers list
+            let followerList = userToFollow.followers;
+            for (let i = 0; i < followerList.length; i++) {
+                let follower_id = followerList[i];
+                //console.log(sourceUser._id.toString(), follower_id.toString());
+                //compare string representation of objectId
+                if (sourceUser._id.toString() == follower_id.toString()) {
+                  followed = true;
+                }
+            }
+            if(followed){
+                res.status(202).send({message: "You have followed this user"});
+            }
+            else{
+                //Source user's followings list
+                let followingList = sourceUser.following;
+                followerList.push(sourceUser);
+                followingList.push(userToFollow);
+
+                userToFollow.save((err)=>{
+                    if (err) {
+                      return res.status(500).send({ message: err });
+                    }
+                })
+                sourceUser.save((err)=>{
+                    if (err) {
+                      return res.status(500).send({ message: err });
+                    }
+                })
+                res.status(200).send({message: "Success!"});
+            }
+
+        })
+
+    })
+}
+
+exports.unfollowUser = (req, res) => {
+  let followerID = req.body.sid;
+  let followingID = req.params.sid;
+
+  User.findOne({ sid: followingID }).exec((err, userToUnfollow) => {
+    if (err) {
+      res.status(400).send({ message: "error occured: " + err });
+    } else if (userToUnfollow === null) {
+      res.status(404).send({ message: "User not found" });
+    }
+    User.findOne({ sid: followerID }).exec((err, sourceUser) => {
+      if (err) {
+        res.status(400).send({ message: "error occured: " + err });
+      } else if (sourceUser === null) {
+        res.status(404).send({ message: "User not found" });
+      }
+      let followed = false;
+      //User to follow's followers list
+      let followerList = userToUnfollow.followers;
+      for (let i = 0; i < followerList.length; i++) {
+        let follower_id = followerList[i];
+        //console.log(sourceUser._id.toString(), follower_id.toString());
+        //compare string representation of objectId
+        if (sourceUser._id.toString() == follower_id.toString()) {
+          followed = true;
+        }
+      }
+      if (!followed) {
+        res.status(202).send({ message: "You have not followed this user" });
+      } else {
+        //Source user's followings list
+        let followingList = sourceUser.following;
+        followerList.pull(sourceUser);
+        followingList.pull(userToUnfollow);
+
+        userToUnfollow.save((err) => {
+          if (err) {
+            return res.status(500).send({ message: err });
+          }
+        });
+        sourceUser.save((err) => {
+          if (err) {
+            return res.status(500).send({ message: err });
+          }
+        });
+        res.status(200).send({ message: "Success!" });
+      }
+    });
+  });
+};
