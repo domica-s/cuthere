@@ -39,7 +39,8 @@ class UploadImage extends React.Component {
     onSubmitFile(e) {
         e.preventDefault();
         let data = new FormData();
-        data.append("file", this.state.file);
+        let file = this.state.file;
+        data.append("file", file, "event" + currentUser.sid + ".jpg");
         fetch(API, {
             method: "POST",
             headers: new Headers({
@@ -91,7 +92,7 @@ class UploadImage extends React.Component {
                 "x-access-token": currentUser.accessToken,
               }),            
         }).then((res) => res.json())
-        .then(data => window.alert(data))
+        .then(data => window.alert(data.message))
     }
 
 
