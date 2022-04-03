@@ -262,9 +262,9 @@ exports.resetPassword = (req, res) => {
 exports.changePassword = (req, res) => {
 
   let password = req.body.newPassword;
-  // console.log(password);
+  console.log(password);
   let repassword = req.body.newRepassword;
-  // console.log(repassword);
+  console.log(repassword);
 
   let oldPassword = req.body.oldPassword;
 
