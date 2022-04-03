@@ -91,7 +91,7 @@ class UploadImage extends React.Component {
                 "x-access-token": currentUser.accessToken,
               }),            
         }).then((res) => res.json())
-        .then(data => window.alert(data))
+        .then(data => window.alert(data.message))
     }
 
 
