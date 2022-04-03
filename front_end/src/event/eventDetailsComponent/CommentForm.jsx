@@ -1,4 +1,4 @@
-import React, { useState} from 'react'
+import React, { useEffect, useState} from 'react'
 import Button from 'react-bootstrap/Button';
 
 
@@ -46,18 +46,17 @@ class CommentForm extends React.Component{
     };
 
     render() {
+        console.log(this.props.chatHistory)
         return(
             <>
-            
-            <CommentBox 
-                commentValue = {this.state.commentValue}
-                handleCommentValue = {this.handleCommentValue}
-                enterCommentLine = {this.enterCommentLine}
-                submitCommentLine = {this.submitCommentLine} />
-
-            <Comment chatHistory = {this.props.chatHistory}/>
-
-            
+            <React.Fragment>
+                <CommentBox 
+                    commentValue = {this.state.commentValue}
+                    handleCommentValue = {this.handleCommentValue}
+                    enterCommentLine = {this.enterCommentLine}
+                    submitCommentLine = {this.submitCommentLine} 
+                    chatHistory = {this.props.chatHistory}/>
+            </React.Fragment>
             
             </>
         )
@@ -67,9 +66,10 @@ class CommentForm extends React.Component{
 }
 class CommentBox extends React.Component { 
     render() {
-        const {commentValue, handleCommentValue, enterCommentLine, submitCommentLine} = this.props; 
+        const {commentValue, handleCommentValue, enterCommentLine, submitCommentLine, chatHistory} = this.props; 
         const enableCommentButton = () => { return (commentValue ? false : true)}; 
         const changeCommentButtonStyle = () => {return (commentValue? "comments-button-enabled" : "comments-button-disabled")}; 
+        console.log(chatHistory)
 
         return (
             <React.Fragment>
@@ -77,12 +77,19 @@ class CommentBox extends React.Component {
                     <input onKeyPress = {enterCommentLine} value ={commentValue} id="comments-input" onChange={handleCommentValue} type="text" placeholder="Add a comment..." />
                     <Button onClick={submitCommentLine} type="submit" className="comments-button" id={changeCommentButtonStyle()} disabled ={enableCommentButton()}> Post </Button>
                 </div>
+                <ul className="comments-list">{chatHistory.map((data) => {
+                    return <OneChat chat={data}/>
+                })}
+                </ul>
+                <br/>
+                <br/>
+                <br/>
             </React.Fragment>
         )
     }
 }
 
-class Comment extends React.Component {
+class Comment extends React.Component { // This is useless if we want to use OneChat
 
     render () {
         const {chatHistory} = this.props 
@@ -91,11 +98,32 @@ class Comment extends React.Component {
         return(
             <ul className ="comments-list">
                 {chatHistory.map((data)=> {
-                    return <li className="each-comment">{data.content}</li>
+                    return <li className="each-comment"><strong>{data.user}</strong> commented: "{data.content}" on <i>{data.chatAt}</i></li>
                     })}
             </ul>
         )
     }
+}
+
+class OneChat extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        let chat = this.props.chat;
+        let content = chat.content;
+        let username = chat.userDetails;
+        let chatAt = chat.chatAt;
+        return (
+            <div className="bg-dark text-warning">
+                <p>Time posted: {chatAt}</p>
+                <p>user: {username}</p>
+                <p>content: {content}</p>
+                <hr/>
+            </div>
+        );
+    }
+
 }
 
 export default CommentForm

@@ -13,6 +13,7 @@ var params = require("../params/params");
 
 // const API = 'http://localhost:8080/allevents'
 const APIallEvents = params.baseBackURL + "/allevents";
+const APIgetFile = params.baseBackURL + "/file/";
 
 class OneEvent extends React.Component {
     // render one event
@@ -174,65 +175,107 @@ class EventWidget extends React.Component{
 }
 
 class EventCard extends React.Component {
-    render(){
-        let data = this.props.data[1];
-        let date = new Date(data.date).toDateString()
-        let time = new Date(data.date).toString().slice(16,21)
-        let avail = data.numberOfParticipants + "/" + data.quota
-        let quota;
-        if(data.quota-data.numberOfParticipants>3){
-          quota = <Badge pill bg="success">{avail}</Badge>;
-        }
-        else{
-          quota = <Badge pill bg="warning">{avail}</Badge>;
-        }
-        return (
-          <Card style={{ width: "12rem", height: "17.25rem" }}>
-            <Card.Img
-              variant="top"
-              style={{ maxHeight: "200px" }}
-              src={require("../images/basket.jpeg")}
-            />
-            <Card.Body>
-              <Card.Title
-                style={{
-                  whiteSpace: "nowrap",
-                  textAlign: "left",
-                  width: "10rem",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}>
-                {data.title}
-              </Card.Title>
-              <div style={{ height: "2.75rem" }}>
-                <p className="text">
-                  {date}
-                  <span style={{ float: "right" }}>
-                    <Badge bg="dark">{time}</Badge>
-                  </span>
-                </p>
-                <p className="text">{data.venue}</p>
-              </div>
-              <Container style={{ paddingLeft: "0px", paddingRight: "0px" }}>
-                <Row>
-                  <Col xs={8}>
-                    <h6 style={{ height: "1.2rem", textAlign: "left" }}>
-                      {" "}
-                      <Badge bg="secondary">{data.activityCategory}</Badge>
-                    </h6>
-                    <p className="text">Quota: {quota}</p>
-                  </Col>
-                  <Col style={{ paddingLeft: "0" }} xs={4}>
-                    <Button variant="primary" className="mt-2">
-                      Join
-                    </Button>
-                  </Col>
-                </Row>
-              </Container>
-            </Card.Body>
-          </Card>
-        );  
+  /*
+  constructor(props) {
+    super(props);
+    this.state = {
+      fileUrl: ""
+    };
+  }
+  componentDidMount() {
+    let currentUser = AuthService.getCurrentUser();
+    if (currentUser === null) {
     }
+    {
+      currentUser !== null &&
+        fetch(APIgetFile + data.filename, {
+          method: "GET",
+          headers: new Headers({
+            "x-access-token": currentUser.accessToken,
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            this.setState({
+              fileUrl: data.fileUrl,
+            });
+          });
+    }
+  }*/
+  render() {
+    let data = this.props.data[1];
+    let date = new Date(data.start).toDateString();
+    let time = new Date(data.date).toString().slice(16, 21);
+    let avail = data.numberOfParticipants + "/" + data.quota;
+    let link_detail = "/event/" + data.eventID;
+    let quota;
+    if (data.quota - data.numberOfParticipants > 3) {
+      quota = (
+        <Badge pill bg="success">
+          {avail}
+        </Badge>
+      );
+    } else {
+      quota = (
+        <Badge pill bg="warning">
+          {avail}
+        </Badge>
+      );
+    }
+    return (
+      <Card class="link" style={{ width: "12rem", height: "17.25rem" }}>
+        <a href={link_detail}>
+          <Card.Img
+            variant="top"
+            style={{ maxHeight: "200px" }}
+            src={require("../images/basket.jpeg")}
+          />
+        </a>
+        <Card.Body>
+          <a href={link_detail}>
+            <Card.Title
+              style={{
+                color: "black",
+                whiteSpace: "nowrap",
+                textAlign: "left",
+                width: "10rem",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                fontSize: "125%",
+              }}
+            >
+              <b>{data.title}</b>
+            </Card.Title>
+            <div style={{ color: "black", height: "2.75rem" }}>
+              <p className="text">
+                {date}
+                <span style={{ float: "right" }}>
+                  <Badge bg="dark">{time}</Badge>
+                </span>
+              </p>
+              <p className="text">{data.venue}</p>
+            </div>
+          </a>
+          <Container style={{ paddingLeft: "0px", paddingRight: "0px" }}>
+            <Row>
+              <Col xs={8}>
+                <h6 style={{ height: "1.2rem", textAlign: "left" }}>
+                  {" "}
+                  <Badge bg="secondary">{data.activityCategory}</Badge>
+                </h6>
+                <p className="text">Quota: {quota}</p>
+              </Col>
+              <Col style={{ paddingLeft: "0" }} xs={4}>
+                <Button variant="primary" className="mt-2">
+                  Join
+                </Button>
+              </Col>
+            </Row>
+          </Container>
+        </Card.Body>
+      </Card>
+    );
+  }
 }
 
 export {Event, EventWidget, EventCard}
