@@ -89,7 +89,7 @@ export default function (props) {
             user: sid,
             content: comment,
             chatAt: Date.now(),
-            userDetails: userID
+            userDetails: currentUser
         }
         const request = await Axios.post(`http://localhost:8080/event/addcomment/${eventID}`,{comment: updatedComment},
         {
