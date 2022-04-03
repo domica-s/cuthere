@@ -20,8 +20,6 @@ mongoose.connect(params.DATABASECONNECTION,{
 },() => console.log("Connected to MongoDB"));
 
 
-app.use("/file", upload);
-
 setuppassport();
 
 app.use(bodyParser.json());
@@ -58,6 +56,7 @@ app.use(flash());
 require('./routes/auth.routes')(app);
 require('./routes/admin.routes')(app);
 app.use("/", require("./routes"));
+app.use("/file", upload);
 
 //----------------------------------------- END OF ROUTES---------------------------------------------------
 //Start Server

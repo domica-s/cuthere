@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const Grid = require('gridfs-stream');
 var mongoose = require("mongoose");
+const { authJwt } = require("../middlewares");
 
 let gfs, gridfsBucket;
 const conn = mongoose.connection;
@@ -17,7 +18,7 @@ conn.once('open', () => {
 
 
 // upload using POST http://{server}/file/upload
-router.post("/upload", upload.single("file"), (req, res) => {
+router.post("/upload", [authJwt.verifyToken], upload.single("file"), (req, res) => {
     if (req.file === undefined) {
         return res.status(400).send({message: "There is no file uploaded"});
     }
@@ -26,7 +27,7 @@ router.post("/upload", upload.single("file"), (req, res) => {
 })
 
 // view file using GET http://{server}/file/:filename
-router.get('/:filename', async (req, res) => {
+router.get('/:filename', [authJwt.verifyToken], async (req, res) => {
     try{
         gridfsBucket.find({filename: req.params.filename}).toArray((err, files) => {
             if (!files[0] || files.length === 0){
@@ -45,7 +46,7 @@ router.get('/:filename', async (req, res) => {
     }
 })
 
-router.get('/delete/:filename', async (req, res) => {
+router.get('/delete/:filename', [authJwt.verifyToken], async (req, res) => {
     try {
         gridfsBucket.find({filename: req.params.filename}).toArray((err, files) => {
             if (!files[0] || files.length === 0){
