@@ -481,7 +481,9 @@ let tempUser = authService.getCurrentUser();
 const CHANGEPW_STATE ={
     oldPassword: "",
     newPassword: "",
-    reEnterPassword: ""
+    reEnterPassword: "",
+    successful: false,
+    message: "",
 }
 
 function ChangePassword() {
@@ -518,9 +520,20 @@ function ChangePassword() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-        console.log("Data for update : ", user);
-        const response = await axios.put(`https://mongoDB?/${user.id}`, user);
-        } catch (error) {
+        let currentUser = authService.getCurrentUser();
+        authService.changePassword(currentUser, user.oldPassword, user.newPassword, user.reEnterPassword)
+        .then(successResponse => {
+          setUser({
+            successful: true,
+            message:successResponse.data.message,
+          })
+        },error =>{
+          setUser({
+            successful: false,
+            message:error.response.data.message,
+          })
+        })
+        }catch (error) {
         console.log(error);
         }
     };
@@ -562,6 +575,20 @@ function ChangePassword() {
             </div>
             </div>
             <Button type="submit" variant="outline-dark" value="Update">Change Password</Button>
+            <div style={{marginTop:"2%"}}>
+                  {user.message && (
+                      <div className="form-group">
+                          <div
+                          className={
+                              user.successful? "alert alert-success": "alert alert-danger"
+                          }
+                          role="alert"
+                          >
+                          {user.message}
+                          </div>
+                      </div>
+                  )}
+                </div>
             </Form>
     );    
 
