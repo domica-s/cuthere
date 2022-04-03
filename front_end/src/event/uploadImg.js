@@ -9,6 +9,7 @@ var params = require("../params/params");
 
 const API = params.baseBackURL + "/file/upload";
 const API_Query = params.baseBackURL + "/file/";
+const API_DELETE = params.baseBackURL + "/file/delete/";
 const currentUser = AuthService.getCurrentUser();
 
 class UploadImage extends React.Component {
@@ -18,11 +19,14 @@ class UploadImage extends React.Component {
         this.onSubmitFile = this.onSubmitFile.bind(this);
         this.onChangeQuery = this.onChangeQuery.bind(this);
         this.onSubmitQuery = this.onSubmitQuery.bind(this);
+        this.onChangeDelete = this.onChangeDelete.bind(this);
+        this.onSubmitDelete = this.onSubmitDelete.bind(this);
     
         this.state = {
             file: "",
             queryImg: "",
-            showImg: false
+            showImg: false,
+            deleteImg: ""
         }
     }
     
@@ -39,12 +43,11 @@ class UploadImage extends React.Component {
         fetch(API, {
             method: "POST",
             headers: new Headers({
-                "content-type": this.state.file.type,
-                'Access-Control-Allow-Origin': '*'
+                "x-access-token": currentUser.accessToken,
             }),
-            mode: 'no-cors',
             body: data
-        }).then((res) => window.alert("OK"))
+        }).then((res) => res.json())
+        .then(data => window.alert(data.message))
     }
 
     onChangeQuery(e) {
@@ -54,9 +57,41 @@ class UploadImage extends React.Component {
     }
 
     onSubmitQuery(e) {
+        let api = API_Query + this.state.queryImg;
+        fetch(api, {
+            method: "GET",
+            headers: new Headers({
+                "x-access-token": currentUser.accessToken,
+            }),
+        }).then((res) => res.blob())
+        .then(blob => {
+            const img = new Image;
+            img.crossOrigin = 'anonymous';
+            img.src = URL.createObjectURL(blob);
+            document.body.appendChild(img);
+        })
         this.setState({
             showImg: true
         })
+    }
+
+    onChangeDelete(e) {
+        this.setState({
+            deleteImg: e.target.value
+        })
+    }
+
+    onSubmitDelete(e) {
+        e.preventDefault();
+
+        let api = API_DELETE + this.state.deleteImg;
+        fetch(api, {
+            method: "GET",
+            headers: new Headers({
+                "x-access-token": currentUser.accessToken,
+              }),            
+        }).then((res) => res.json())
+        .then(data => window.alert(data))
     }
 
 
@@ -76,6 +111,12 @@ class UploadImage extends React.Component {
                         <Button type="button" onClick={this.onSubmitQuery}>Show</Button>
                 </Form.Group>                             
                 {this.state.queryImg && <img className="w-30 h-30" src={API_Query + this.state.queryImg} alt="image1" />}
+
+                <Form.Group controlId="formFile" className="mb-3">
+                        <Form.Label>Delete image</Form.Label>
+                        <Form.Control type="text" onChange={this.onChangeDelete}/>
+                        <Button type="button" onClick={this.onSubmitDelete}>Delete</Button>
+                </Form.Group>     
             </Container>
         )
     }
