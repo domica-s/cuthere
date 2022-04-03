@@ -1,5 +1,8 @@
-import React, { useState} from 'react'
+import React, {useState} from 'react'
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import Datetime from 'react-datetime';
+import moment from 'moment';
 
 
 let updateCounter = 1;
@@ -8,8 +11,9 @@ class UpdateForm extends React.Component{
         super();
 
         this.state = { 
-            updateValue: ''
-        };
+            updateValue: '',
+            updateDate: new Date()
+        }; // May need to increase this part
     }
 
     handleUpdateValue = (e) => {
@@ -18,22 +22,32 @@ class UpdateForm extends React.Component{
             updateValue: e.target.value,
         });
     };
+    
+    handleUpdateDate = (date) => {
+        this.setState({
+            updateDate: date
+        })
+    }
 
-    setUpdateLabel = () => {
-        this.setState({updateValue:""})
+    setUpdateLabel = (format) => {
+        (format==="date")? this.setState({updateDate:new Date()}): this.setState({updateValue:""})
     }
 
     submitUpdateLine = (e) => {
         e.preventDefault();
         this.setUpdateLabel();
 
-        // Send to the EventDetails Page
-        console.log(this.props)
+        const contentJSON= `{
+            "${this.props.label}":"${(this.props.type==="date")?this.state.updateDate:this.state.updateValue}"
+        }`
+        this.props.updateEvent(contentJSON) 
+        
+
     };
 
-    enterUpdateLine = (e) => {
+    enterUpdateLine = (e, format) => {
         if (e.charCode === 13){
-            this.setUpdateLabel();
+            this.setUpdateLabel(format);
         }
     };
 
@@ -42,10 +56,16 @@ class UpdateForm extends React.Component{
             <>
             <UpdateBox 
                 updateValue = {this.state.updateValue}
+                updateDate = {this.state.updateDate}
                 handleUpdateValue = {this.handleUpdateValue}
+                handleUpdateDate= {this.handleUpdateDate}
                 enterUpdateLine = {this.enterUpdateLine}
                 submitUpdateLine = {this.submitUpdateLine} 
-                contentType= {this.props.type}/>
+                type= {this.props.type}
+                label={this.props.label}
+                value={this.props.value}
+                />
+                
             </>
         )
     }
@@ -54,15 +74,33 @@ class UpdateForm extends React.Component{
 }
 class UpdateBox extends React.Component { 
     render() {
-        const {updateValue, handleUpdateValue, enterUpdateLine, submitUpdateLine} = this.props; 
-        const enableUpdateButton = () => { return (updateValue ? false : true)}; 
-        const changeUpdateButtonStyle = () => {return (updateValue? "update-button-enabled" : "update-button-disabled")}; 
+        const {updateValue, updateDate, handleUpdateValue, handleUpdateDate, enterUpdateLine, submitUpdateLine, type, label, value} = this.props; 
+        const enableUpdateButton = () => { return (type=="date")?(updateDate?false:true):(updateValue ? false : true)}; 
+        const changeUpdateButtonStyle = () => {return (type==="date")?(updateDate?"update-botton-enabled":"update-button-disabled"):(updateValue? "update-button-enabled" : "update-button-disabled")}; 
 
         return (
             <React.Fragment>
                 <div className="update-box">
-                    <input onKeyPress = {enterUpdateLine} value ={updateValue} id="update-input" onChange={handleUpdateValue} type="text" placeholder="Add updates here" />
-                    <Button onClick={submitUpdateLine} type="submit" className="update-button" id={changeUpdateButtonStyle()} disabled ={enableUpdateButton()}> Update </Button>
+                    <Form className="signin-form" onSubmit={submitUpdateLine} method="post" encType="application/x-www-form-urlencoded; charset=UTF-8;application/json">
+                    {
+                        (type=="text") ? 
+                            (label=="venue")? 
+                            <Form.Control name="Event Venue" format={type} placeholder="Update Location Here" value={updateValue} onChange={e => handleUpdateValue(e)}/> // Venue --> WORKING
+                                : 
+                                <Form.Select name="activityCategory" format={type} placeholder="Update category here" value = {updateValue} onChange={e => handleUpdateValue(e)}> 
+                                    <option value="Outdoor">Outdoor</option>
+                                    <option value="Indoor">Indoor</option>
+                                    <option value="Offline">Offline</option>
+                                    <option value="Online">Online</option>
+                                </Form.Select> // Category --> WORKING
+                            : 
+                        (type=="number")? 
+                        <Form.Control name="quota" format={type} placeholder="Update quota here" value={updateValue} onChange={e => handleUpdateValue(e)}/> // Quota --> WORKING
+                            : 
+                            <Datetime format={type} value ={updateValue} onChange ={date => handleUpdateDate(date)} /> // Date --> NOT WORKING
+                    }
+                        <Button onClick={submitUpdateLine} type="submit" className="update-button" id={changeUpdateButtonStyle()} disabled ={enableUpdateButton()} format={type}> Update </Button>
+                    </Form>
                 </div>
             </React.Fragment>
         )

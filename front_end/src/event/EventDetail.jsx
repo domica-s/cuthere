@@ -102,9 +102,8 @@ export default function (props) {
     }
 
     // Update Event Front-end --> TESTING
-    async function updateEvent(eventID){
-        const content = "Hello World!" // Change this to updated content
-        const request = await Axios.post(`http://localhost:8080/event/update/${eventID}`,{id:userID, update:content}, 
+    async function updateEvent(eventID, updatedContent){
+        const request = await Axios.post(`http://localhost:8080/event/update/${eventID}`,{id:userID, update: updatedContent}, 
         {
             headers: {
                 "x-access-token": currentUser.accessToken

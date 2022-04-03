@@ -83,6 +83,7 @@ class CommentBox extends React.Component {
 }
 
 class Comment extends React.Component {
+
     render () {
         const {chatHistory} = this.props 
         console.log(chatHistory)

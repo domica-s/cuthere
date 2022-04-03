@@ -2,6 +2,10 @@ import React, {useEffect, useState} from 'react'
 import {Button, Descriptions} from 'antd';
 import AuthService from '../../services/auth.service';
 import UpdateForm from './UpdateBox';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import { Container } from "react-bootstrap";
+
 
 function EventInfo(props) { 
 
@@ -32,7 +36,10 @@ function EventInfo(props) {
     }
 
     const updateEvent = (content) => {
-        const updatedContent = content // To fix this
+        const updatedContent = JSON.parse(content)
+        // Add moment to dates
+
+        // Send to backend
         props.updateEvent(props.detail.eventID, updatedContent)
     }
   return (
@@ -40,57 +47,79 @@ function EventInfo(props) {
         <div> 
             {isHost?
             // View for Host
-            
             <React.Fragment>
-                 <Descriptions title="Event Information"> 
-                    
-                    <Descriptions.items label= "Status"> {Event.status} </Descriptions.items>
+             <Container> 
+                    <Row> <Col><p>Event Status: {Event.status}</p></Col></Row>
+                    <Row> <Col><p>Event ID: {Event.eventID}</p></Col></Row>
+                    <Row><Col><p># of Participants: {Event.numberOfParticipants}</p></Col></Row>
+                    <Row>
+                        <Col>
+                            <p>Location: {Event.venue}</p>
+                        </Col>
 
-                    <Descriptions.items label= "Event ID"> {Event.eventID} </Descriptions.items>
+                        <Col>
+                            <UpdateForm type={"text"} label={"venue"} value={Event.venue} updateEvent={updateEvent}/>
+                        </Col>
+                    </Row>
 
-                    <Descriptions.items label= "Number of Participants"> {Event.numberOfParticipants} </Descriptions.items>
+                    <Row>
+                        <Col>
+                            <p>Max Participants for this event: {Event.quota}</p>
+                        </Col>
+                        <Col>
+                            <UpdateForm type={"number"} label={"quota"} value={Event.quota} updateEvent={updateEvent}/>
+                        </Col>
+                    </Row>
 
-                    <Descriptions.items label= "Venue"> {Event.venue} </Descriptions.items>
+                    <Row>
+                        <Col>
+                            <p>Event Category: {Event.activityCategory}</p>
+                        </Col>
 
-                    <Descriptions.items label= "Quota"> {Event.quota} </Descriptions.items>
+                        <Col>
+                            <UpdateForm type={"text"} label={"activityCategory"} value={Event.activityCategory} updateEvent={updateEvent}/>
+                        </Col>
+                    </Row>
 
-                    <Descriptions.items label= "Category"> {Event.activityCategory} </Descriptions.items>
+                    <Row>
+                        <Col>
+                            <p>Starting Date: {Event.start}</p>
+                        </Col>
+                        <Col>
+                            <UpdateForm type={"date"} label={"start"} value={Event.start} updateEvent={updateEvent}/>    
+                        </Col>
+                    </Row>
 
-                    <Descriptions.items label= "Start Date"> {Event.start} </Descriptions.items>
+                    <Row>
+                        <Col>
+                            <p>Ending Date: {Event.end}</p>
+                        </Col>
 
-                    <Descriptions.items label= "End Date"> {Event.end} </Descriptions.items>
+                        <Col>
+                            <UpdateForm type={"date"} label={"end"} value={Event.end} updateEvent={updateEvent}/>
+                        </Col>
+                    </Row>
 
-                    <Descriptions.items label= "Host"> {Event.createdBy} </Descriptions.items>
-
-                    <Descriptions.items label= "List of Participants"> {Event.participants} </Descriptions.items>
-                </Descriptions>
+                    <Row><Col><p>The host of this event is: {Event.createdBy}</p></Col></Row>
+                    <Row><Col><p>The list of participants for this event is: {Event.participants}</p></Col></Row>
+                </Container>
             </React.Fragment>
             :
             // For other users 
             <React.Fragment>
-                <Descriptions title="Event Information"> 
-                    
-                    <Descriptions.items label= "Status"> {Event.status} </Descriptions.items>
-
-                    <Descriptions.items label= "Event ID"> {Event.eventID} </Descriptions.items>
-
-                    <Descriptions.items label= "Number of Participants"> {Event.numberOfParticipants} </Descriptions.items>
-
-                    <Descriptions.items label= "Venue"> {Event.venue} </Descriptions.items>
-
-                    <Descriptions.items label= "Quota"> {Event.quota} </Descriptions.items>
-
-                    <Descriptions.items label= "Category"> {Event.activityCategory} </Descriptions.items>
-
-                    <Descriptions.items label= "Start Date"> {Event.start} </Descriptions.items>
-
-                    <Descriptions.items label= "End Date"> {Event.end} </Descriptions.items>
-
-                    <Descriptions.items label= "Host"> {Event.createdBy} </Descriptions.items>
-
-                    <Descriptions.items label= "List of Participants"> {Event.participants} </Descriptions.items>
-                </Descriptions>
-            </React.Fragment>
+            <Container> 
+                   <Row> <Col><p>Event Status: {Event.status}</p></Col></Row>
+                   <Row> <Col><p>Event ID: {Event.eventID}</p></Col></Row>
+                   <Row><Col><p># of Participants: {Event.numberOfParticipants}</p></Col></Row>
+                   <Row> <Col> <p>Location: {Event.venue}</p> </Col></Row>
+                   <Row><Col><p>Max Participants for this event: {Event.quota}</p></Col></Row>
+                   <Row><Col><p>Event Category: {Event.activityCategory}</p></Col></Row>
+                   <Row><Col><p>Starting Date: {Event.start}</p></Col></Row>
+                   <Row><Col><p>Ending Date: {Event.end}</p></Col></Row>
+                   <Row><Col><p>The host of this event is: {Event.createdBy}</p></Col></Row>
+                   <Row><Col><p>The list of participants for this event is: {Event.participants}</p></Col></Row>
+               </Container>
+           </React.Fragment>
             }
             <br/>
             <br/>
