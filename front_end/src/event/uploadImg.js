@@ -34,6 +34,17 @@ class UploadImage extends React.Component {
     
     onSubmitFile(e) {
         e.preventDefault();
+        let data = new FormData();
+        data.append("file", this.state.file);
+        fetch(API, {
+            method: "POST",
+            headers: new Headers({
+                "content-type": this.state.file.type,
+                'Access-Control-Allow-Origin': '*'
+            }),
+            mode: 'no-cors',
+            body: data
+        }).then((res) => window.alert("OK"))
     }
 
     onChangeQuery(e) {
