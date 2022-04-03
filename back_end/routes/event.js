@@ -139,11 +139,6 @@ router.post("/myevents", [authJwt.verifyToken], function(req, res){
     })
 });
 
-router.post("/event/photo", [authJwt.verifyToken], function(req, res){
-  var file = req.body.yo;
-  console.log(file);
-  res.send("OK");
-});
 
 // To create the event
 router.post("/event", [authJwt.verifyToken], function (req, res, next) {

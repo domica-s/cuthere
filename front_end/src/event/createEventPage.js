@@ -12,7 +12,6 @@ import moment from 'moment';
 var params = require("../params/params");
 
 const API = params.baseBackURL + "/event";
-const img_API = params.baseBackURL + '/event/photo';
 
 const quotaInvalidMsg = "Quota is invalid, please input a positive integer";
 
@@ -56,8 +55,6 @@ class CreateEvent extends React.Component {
         this.onChangeQuota = this.onChangeQuota.bind(this);
         this.onChangeCategory = this.onChangeCategory.bind(this);
         this.onChangeFile = this.onChangeFile.bind(this);
-
-        this.testUpload = this.testUpload.bind(this);
 
         this.state = {
             title: "",
@@ -105,27 +102,6 @@ class CreateEvent extends React.Component {
         }
     }
     
-    testUpload(e) {
-        e.preventDefault();
-        let data = {
-            file: this.state.file,
-            yo: "hello"
-        }
-        fetch(img_API, {
-            method: "POST",
-            headers: new Headers({
-                "x-access-token": currentUser.accessToken,
-                "content-type": 'application/json'
-              }),
-            body: JSON.stringify(data)                                     
-        })
-        .then(res => {
-            if (res.status === 200) {
-                window.alert("Event created successfully!");
-                document.getElementById("createEvent").reset();
-            }
-        })
-    }
 
     onChangeQuota(e) {
         let quotaInput = e.target.value;
