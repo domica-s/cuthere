@@ -11,3 +11,7 @@
     white-space: nowrap;
     overflow: hidden;
 }
+
+a:link{
+  text-decoration: black;
+}
