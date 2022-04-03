@@ -26,7 +26,6 @@ router.post('/event/register/:eventID', [authJwt.verifyToken], function (req, re
     // Acquire parameters
     const eventID = req.params.eventID
     const userID = req.body.id // This is an ObjectID
-    console.log(req.body)
 
     // Find event with the corresponding Event Id 
     Event.findOne({eventID: eventID}).exec(function(err, result){
@@ -90,7 +89,7 @@ router.post('/event/update/:eventID', [authJwt.verifyToken], function(req,res){
     //Acquire Parameters
     const eventID = req.params.eventID 
     const userID = req.body.id
-    const updateParam = req.body.updateParam // This parameter should give something like {status:"Closed"}
+    const updateParam = req.body.update // This parameter should give something like {status:"Closed"}
 
     Event.findOne({eventID: eventID}).exec(function(err, result){
         if(err) res.status(400).send({message:"Error Occured: " + err})
@@ -98,9 +97,9 @@ router.post('/event/update/:eventID', [authJwt.verifyToken], function(req,res){
         else if (result.createdBy != userID ) res.status(200).send({message: "You have no authority to update this event"})
         
         else { 
-            Event.findOneAndUpdate({eventID:eventID}, $set(updateParam)).exec(function(err, result){
+            Event.findOneAndUpdate({eventID:eventID}, {$set:updateParam}).exec(function(err, result){
                 if(err) res.status(400).send({message:"Error occured: "+ err})
-                else res.status(200).send({message:"The database is updated nigga! "}) // Please change this
+                else res.status(200).send({message:"The database is updated nigga! ", data: result}) // Please change this
             })
         }
     })
