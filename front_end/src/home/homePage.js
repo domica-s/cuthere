@@ -15,7 +15,7 @@ class Home extends React.Component {
             APIintEvents: params.baseBackURL + "/intevents",
             APIdiscEvents: params.baseBackURL + "/discoverevents",
             APInewEvents: params.baseBackURL + "/featured/new",
-            APIsortEvents: params.baseBackURL + "/eventssortdate",
+            APIsortEvents: params.baseBackURL + "/featured/upcoming",
         }
     }
     render() {
@@ -27,9 +27,9 @@ class Home extends React.Component {
                   <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
                     <EventWidget api={this.state.APInewEvents} />
                   </div>
-                  {/* <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
-                    <EventWidget api={this.state.APInewEvents} />
-                  </div>
+                  <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
+                    <EventWidget api={this.state.APIsortEvents} />
+                  </div>{/*
                   <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
                     <EventWidget api={this.state.APInewEvents} />
                   </div>
