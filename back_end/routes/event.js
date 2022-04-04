@@ -10,6 +10,7 @@ const res = require("express/lib/response");
 
 const { authJwt } = require("../middlewares");
 const { update } = require("../models/event");
+const { DATABASECONNECTION } = require("../params/params");
 
 // List all events
 router.get("/allevents", [authJwt.verifyToken], function (req, res) {
@@ -43,7 +44,7 @@ router.get("/event/:id", [authJwt.verifyToken], function (req, res) {
 
 
 
-router.get("/intevents", [authJwt.verifyToken], function(req,res){
+router.get("/featured/interest", [authJwt.verifyToken], function(req,res){
     var event_dic = {}
     let int = req.body.interests
 
@@ -63,7 +64,7 @@ router.get("/intevents", [authJwt.verifyToken], function(req,res){
     });
 })
 
-router.get("/discoverevents", [authJwt.verifyToken], function (req, res) {
+router.get("/featured/discover", [authJwt.verifyToken], function (req, res) {
   var event_dic = {};
   let int = req.body.interests;
   Event.find({
@@ -94,6 +95,7 @@ router.get("/featured/new", [authJwt.verifyToken], function (req, res) {
       }
       var int_events = {
         title: "Newest Events",
+        type: "/new",
         event_dic,
       };
       res.send(int_events);
@@ -101,23 +103,29 @@ router.get("/featured/new", [authJwt.verifyToken], function (req, res) {
   });
 });
 
-router.get("/eventsortdate", [authJwt.verifyToken], function (req, res) {
+router.get("/featured/upcoming", [authJwt.verifyToken], function (req, res) {
   var event_dic = {};
-  let int = req.body.interests;
 
-  Event.find({
-    activityCategory: { $eq: int[0] },
+  Event.find({}).sort({
+    start: 1
   }).exec(function (err, event) {
-    if (event.length > 0) {
-      for (var i = 0; i < event.length; i++) {
-        event_dic[i] = event[i];
+  if (event.length > 0) {
+    for (var i = 0; i < 20; i++) {
+      if(typeof event[i] !== 'undefined'){
+        if(typeof event[i].start !== 'undefined'){
+          if (event[i].start.getTime() > new Date().getTime()) {
+            event_dic[i] = event[i];
+          }
+        }
       }
-      var int_events = {
-        title: activityCategory,
-        event_dic,
-      };
-      res.send(int_events);
     }
+    var int_events = {
+      title: "Upcoming Events",
+      type: "/upcoming",
+      event_dic,
+    };
+    res.send(int_events);
+  }
   });
 });
 
