@@ -13,10 +13,10 @@ var eventSchema = mongoose.Schema({
     quota:{type: Number, required: true},
     activityCategory:{type: String, required: true, enum: ['Basketball', 'Badminton', 'Soccer', 'Football','Hiking', 'Volleyball', 'Board Games', 'Tennis', 'Running', 'Gaming', 'Swimming', 'Drinking', 'Study', 'Movies', 'Frat Parties', 'Athletics', 'Arts', 'Cooking']},
     chatHistory:[{
-        user: {type: Number},
-        content: {type: String},
-        chatAt: {type: Date},
-        userDetails: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
+        user: {type: Number}, // SID
+        content: {type: String}, // The Message
+        chatAt: {type: Date}, // DateTime at which the message is created
+        userDetails: {type: mongoose.Schema.Types.ObjectId, ref: 'User'} // currentUser which has .sid, ._id, etc... (Sending the mongoose schema as a whole)
     }],
     createdAt:{type: Date, default: Date.now},
     createdBy:{type: mongoose.Schema.Types.ObjectId, required: false, unique: false, ref: 'User'},

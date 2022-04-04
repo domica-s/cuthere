@@ -10,6 +10,7 @@ import Badge from 'react-bootstrap/Badge';
 import AuthService from "../services/auth.service";
 import { auto } from "@popperjs/core";
 import { ThemeConsumer } from "react-bootstrap/esm/ThemeProvider";
+import { Axios } from "axios";
 
 
 var params = require("../params/params");
@@ -80,12 +81,20 @@ class Event extends React.Component {
         searchTerm: e.target.value
       });
     }
-    
-    onChangeFilter(e){
+
+    onChangeFilter = (e) => {
       this.setState({
         filterTerm: e.target.value
-      })
+      });
+    }
 
+    matchCategory(event){
+      return this.state.filterTerm === event.activityCategory
+    }
+
+    submitFilter = (e) => {
+      e.preventDefault()
+      console.log(this.state.filterTerm) 
     }
 
     render() {
@@ -102,6 +111,7 @@ class Event extends React.Component {
             <p>Filter by interest:</p>
             {/* Add Filtering options by interest*/}
               <Form.Select name="activityCategory" type="text" value = {this.state.filterTerm} onChange={this.onChangeFilter}>
+                  <option value="">None</option>
                   <option value="Basketball">Basketball</option>
                   <option value="Badminton">Badminton</option>
                   <option value="Soccer">Soccer</option>
@@ -120,6 +130,7 @@ class Event extends React.Component {
                   <option value="Arts">Arts</option>
                   <option value="Cooking">Cooking</option>
               </Form.Select>
+              <Button className="mb-5" variant="outline-success" type="submit" onClick={this.submitFilter}>Filter</Button>
             <div className="filter options-outline">
                 
             </div>
@@ -127,24 +138,41 @@ class Event extends React.Component {
             <hr></hr>
             {e.length > 0 && 
               (e.filter((val) => {
-                
-                if (this.state.searchTerm == "") {
-                  return val
+                if (this.state.filterTerm == "") {
+                  if (this.state.searchTerm == "") {
+                    return val
+                  }
+                  else {
+                    if (val[1].title.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
+                      return val
+                    }
+                    if (val[1].activityCategory.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
+                      return val
+                    }
+                    if (val[1].venue.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
+                      return val
+                    }
+                  }
                 }
-                else {
-                  if (val[1].title.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
-                    return val
-                  }
-                  if (val[1].activityCategory.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
-                    return val
-                  }
-                  if (val[1].venue.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
-                    return val
+                else  {
+                  if (this.state.filterTerm.toLowerCase() == val[1].activityCategory.toLowerCase()) {
+                    if (this.state.searchTerm == "") {
+                      return val
+                    }
+                    else {
+                      if (val[1].title.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
+                        return val
+                      }
+                      if (val[1].activityCategory.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
+                        return val
+                      }
+                      if (val[1].venue.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
+                        return val
+                      }
+                    }
                   }
                 }
-              })).map((data, index) => 
-              <OneEvent data={data} key={index}/>
-            )}
+              })).map((data, index) => <OneEvent data={data} key={index}/>)}
           </Container>
         );
     }
