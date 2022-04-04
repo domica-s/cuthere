@@ -130,7 +130,6 @@ class Event extends React.Component {
                   <option value="Arts">Arts</option>
                   <option value="Cooking">Cooking</option>
               </Form.Select>
-              <Button className="mb-5" variant="outline-success" type="submit" onClick={this.submitFilter}>Filter</Button>
             <div className="filter options-outline">
                 
             </div>
