@@ -97,7 +97,7 @@ class ForgotPw extends React.Component {
                             </FloatingLabel>                               
                         </Col>
                         {this.state.message && (
-                            <div className="form-group">
+                            <div className="form-group mt-3">
                                 <div
                                 className={
                                     this.state.successful
