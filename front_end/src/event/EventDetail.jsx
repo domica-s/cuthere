@@ -1,5 +1,6 @@
 import React, { useEffect, useState} from 'react'
 import { useLocation } from 'react-router-dom'
+import {useParams} from "react-router-dom";
 import Axios from 'axios' 
 import { Row, Col } from 'antd';
 import AuthService from "../services/auth.service";
@@ -132,7 +133,7 @@ export default function (props) {
                 <Row gutter = {[16,16]}>
 
                     <Col lg={12} xs={24}>
-                        <EventImage detail ={Event} />
+                        <EventImage detail={Event} eventID={eventId}/>
                     </Col> 
 
                     <Col lg={12} xs={24}>

@@ -37,10 +37,12 @@ function ViewProfile()  {
             "x-access-token": initialUser.accessToken,
           }),
       })
-  
+      const resultStatus = await loadResult.clone().status
       const resultBlob = await loadResult.blob();
-      img.crossOrigin = 'Anonymous';
-      img.src = await URL.createObjectURL(resultBlob);
+      if (resultStatus === 200){
+        img.crossOrigin = 'anonymous';
+        img.src = await URL.createObjectURL(resultBlob);
+      }
     }
 
   const [user, setUser] = useState(INITIAL_STATE);
