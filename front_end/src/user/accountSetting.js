@@ -10,7 +10,7 @@ var params = require("../params/params");
 
 const currentUser = authService.getCurrentUser();
 const API = params.baseBackURL + "/file/upload";
-const API_DELETE = params.baseBackURL + "/file/delete";
+const API_DELETE = params.baseBackURL + "/file/delete/";
 const API_Query = params.baseBackURL + "/file/";
 
 
@@ -136,18 +136,29 @@ function GeneralInformation() {
 
     const onUploadFile = async(e) => {
       e.preventDefault();
-      let data = new FormData();
-      data.append("file", user.uploadImg, "user-" + currentUser.sid);
-      const uploadResult = await fetch(API, {
-        method: "POST",
+      let api_delete = API_DELETE + "user-" + currentUser.sid;
+      const deletePrevious = await fetch(api_delete, {
+        method: "GET",
         headers: new Headers({
-          "x-access-token": currentUser.accessToken,
-          }),
-        body: data          
-      });
-
-      const resultJson = await uploadResult.json();
-      await window.alert(resultJson.message);
+            "x-access-token": currentUser.accessToken,
+          }),          
+      })
+      const ResponseJson = await deletePrevious.json();
+      
+      if (ResponseJson.message) {
+        let data = new FormData();
+        data.append("file", user.uploadImg, "user-" + currentUser.sid);
+        const uploadResult = await fetch(API, {
+          method: "POST",
+          headers: new Headers({
+            "x-access-token": currentUser.accessToken,
+            }),
+          body: data          
+        });
+  
+        const resultJson = await uploadResult.json();
+        await window.alert(resultJson.message);
+      }
     }
 
     const onLoadPic = async(e) => {
