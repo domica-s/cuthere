@@ -10,7 +10,7 @@ var params = require("../params/params");
 
 const currentUser = authService.getCurrentUser();
 const API = params.baseBackURL + "/file/upload";
-const API_DELETE = params.baseBackURL + "/file/delete";
+const API_DELETE = params.baseBackURL + "/file/delete/";
 const API_Query = params.baseBackURL + "/file/";
 
 
@@ -125,7 +125,6 @@ function GeneralInformation() {
     };
 
     const onChangeFile = async(e) => {
-      console.log(currentUser.sid);
       try {
         setUser({
           uploadImg: e.target.files[0]
@@ -137,18 +136,29 @@ function GeneralInformation() {
 
     const onUploadFile = async(e) => {
       e.preventDefault();
-      let data = new FormData();
-      data.append("file", user.uploadImg, "user-" + currentUser.sid);
-      const uploadResult = await fetch(API, {
-        method: "POST",
+      let api_delete = API_DELETE + "user-" + currentUser.sid;
+      const deletePrevious = await fetch(api_delete, {
+        method: "GET",
         headers: new Headers({
-          "x-access-token": currentUser.accessToken,
-          }),
-        body: data          
-      });
-
-      const resultJson = await uploadResult.json();
-      await window.alert(resultJson.message);
+            "x-access-token": currentUser.accessToken,
+          }),          
+      })
+      const ResponseJson = await deletePrevious.json();
+      
+      if (ResponseJson.message) {
+        let data = new FormData();
+        data.append("file", user.uploadImg, "user-" + currentUser.sid);
+        const uploadResult = await fetch(API, {
+          method: "POST",
+          headers: new Headers({
+            "x-access-token": currentUser.accessToken,
+            }),
+          body: data          
+        });
+  
+        const resultJson = await uploadResult.json();
+        await window.alert(resultJson.message);
+      }
     }
 
     const onLoadPic = async(e) => {
@@ -161,10 +171,12 @@ function GeneralInformation() {
             "x-access-token": currentUser.accessToken,
           }),
       })
-
+      const resultStatus = await loadResult.clone().status
       const resultBlob = await loadResult.blob();
-      img.crossOrigin = 'anonymous';
-      img.src = await URL.createObjectURL(resultBlob);
+      if (resultStatus === 200){
+        img.crossOrigin = 'anonymous';
+        img.src = await URL.createObjectURL(resultBlob);
+      }
     }
 
     return(
@@ -177,11 +189,12 @@ function GeneralInformation() {
                 <div className="media-body ml-4">
                   <label className="btn btn-outline-primary">
                     Select new photo
-                    <input type="file" className="account-settings-fileinput" onChange={onChangeFile}/>
+                    <input type="file" className="account-settings-fileinput" onChange={onChangeFile} accept="image/x-png, image/gif, image/jpeg"/>
                   </label> &nbsp;
                   {user.uploadImg && <button type="button" className="btn btn-default md-btn-flat" onClick={onUploadFile}>Upload</button>}
                   {user.uploadImg && <p>{user.uploadImg.name}</p>}
                   <div className="text-light small mt-1">Allowed JPG or PNG.</div>
+                  <div className="text-light small mt-1">Click on 'Select New Photo' then 'Upload' to save picture changes.</div>
                 </div>
               </div>
               <hr className="border-light m-0" />

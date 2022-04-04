@@ -54,7 +54,6 @@ class CreateEvent extends React.Component {
         this.onChangeEnd = this.onChangeEnd.bind(this);
         this.onChangeQuota = this.onChangeQuota.bind(this);
         this.onChangeCategory = this.onChangeCategory.bind(this);
-        this.onChangeFile = this.onChangeFile.bind(this);
 
         this.state = {
             title: "",
@@ -64,7 +63,6 @@ class CreateEvent extends React.Component {
             quota: 1,
             category: "Outdoor",
             quotaValidate: true,
-            file: ""
         }
     }
 
@@ -83,7 +81,6 @@ class CreateEvent extends React.Component {
                 category: this.state.category,
                 _id: currentUser._id,
                 sid: currentUser.sid,
-                file: this.state.file
             }
             fetch(API, {
                 method: "POST",
@@ -148,16 +145,6 @@ class CreateEvent extends React.Component {
         });
     }
 
-    onChangeFile(e) {
-        let reader = new FileReader()
-        reader.readAsArrayBuffer(e.target.files[0])
-        reader.onload = () => {
-            this.setState({
-                file: reader.result
-            })
-        }
-    }
-
     render() {
         return (
             <Container>
@@ -199,12 +186,6 @@ class CreateEvent extends React.Component {
                             <option value="Offline">Offline</option>
                             <option value="Online">Online</option>
                         </Form.Select>
-                    </Form.Group>
-    
-                    <Form.Group controlId="formFile" className="mb-3">
-                        <Form.Label>Upload a photo for your event?</Form.Label>
-                        <Form.Control type="file" onChange={this.onChangeFile}/>
-                        <Button type="button" onClick={this.testUpload}>Upload</Button>
                     </Form.Group>
     
                     <Form.Group className="mb3">

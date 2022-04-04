@@ -146,26 +146,26 @@ class Login extends React.Component {
                     </Col>
                 </Row>
                 <Row className="justify-content-center">
-                    <Form className="signin-form" onSubmit={this.handleLogin}
-                                                    ref={c => {
-                                                        this.form = c;
-                                                    }}>
+                    <Form className="signin-form" onSubmit={this.handleLogin} ref={c => {this.form = c;}}>
                         <h1 className="h3 mb-3 ">Sign in</h1>
+                        <div className="tab-content">
+                        <div className="tab-pane fade active show" id="account-change-password">
 
-                        <Col className="form-floating">
-                            <FloatingLabel controlId="floatingInput" label="SID">
+                       <div className="card-body">
+                        <div className="form-group">
+                            <FloatingLabel controlId="floatingInput" label="SID" className="form-label">
                                 <Form.Control name="sid" type="number" placeholder="SID" required 
                                 value={this.state.sid} onChange={this.onChangeSID}/>
                             </FloatingLabel>                                
-                        </Col>
+                        </div>
 
-                        <Col className="mb-3 form-floating">
-                            <FloatingLabel controlId="floatingPassword" label="Password">
+                        <div className="mb-3 form-group">
+                            <FloatingLabel controlId="floatingPassword" label="Password" className="form-label">
                                 <Form.Control name="password" type="password" placeholder="Password" required
                                 value={this.state.password} onChange={this.onChangePassword}/>
                             </FloatingLabel>
-                        </Col>           
-                        <div className="form-group">
+                        </div>           
+                        <div className="form-group mt-3">
                             <button
                                 className="btn btn-primary btn-block"
                                 disabled={this.state.loading}
@@ -177,7 +177,7 @@ class Login extends React.Component {
                             </button>
                         </div>
                         {this.state.message && (
-                            <div className="form-group">
+                            <div className="form-group mt-3">
                                 <div className="alert alert-danger" role="alert">
                                 {this.state.message}
                                 </div>
@@ -189,7 +189,7 @@ class Login extends React.Component {
                             </Button>
                         )}
                         {this.state.resendMessage && (
-                            <div className="form-group">
+                            <div className="form-group mt-3">
                                 <div className={
                                     this.state.verificationSent
                                     ? "alert alert-success"
@@ -206,7 +206,10 @@ class Login extends React.Component {
 
                         <Button className="mb-3 m-2" variant="outline-warning" onClick={this.handleForgetPw}>
                             Forgot Password?
-                        </Button>                        
+                        </Button> 
+                        </div>
+                        </div>
+                        </div>                       
                     </Form>
                 </Row>
             </Container>
