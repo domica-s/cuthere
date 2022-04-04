@@ -4,7 +4,7 @@ import {Button, Container} from "react-bootstrap";
 import "./myProfile.css"
 import authService from "../services/auth.service";
 import userService from "../services/user.service";
-
+var params = require("../params/params");
 
 
 //change user.user.attr into user.attr
@@ -12,7 +12,30 @@ import userService from "../services/user.service";
 
 
 function Profile()  {
-    const initialUser = authService.getCurrentUser();
+
+
+  const API = params.baseBackURL + "/file/upload";
+  const API_DELETE = params.baseBackURL + "/file/delete";
+  const API_Query = params.baseBackURL + "/file/";
+  const initialUser = authService.getCurrentUser();
+
+  const onLoadPic = async(e) => {
+    const img = document.querySelector("#profile-pic");
+
+    let api = API_Query + "user-" + initialUser.sid;
+    const loadResult = await fetch(api, {
+        method: "GET",
+        headers: new Headers({
+          "x-access-token": initialUser.accessToken,
+        }),
+    })
+
+    const resultBlob = await loadResult.blob();
+    img.crossOrigin = 'anonymous';
+    img.src = await URL.createObjectURL(resultBlob);
+  }
+
+    
     const INITIAL_STATE = {
       username: initialUser.username,
       name: initialUser.name,
@@ -85,7 +108,7 @@ function Profile()  {
 					<div className="card mt-3">
 						<div className="card-body">
 							<div className="d-flex flex-column align-items-center text-center">
-								<img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="Admin" className="rounded-circle p-1 bg-primary" width="110" />
+								<img src="https://bootdey.com/img/Content/avatar/avatar6.png" id="profile-pic" alt="profile-pic" className="rounded-circle p-1 bg-primary" width="110" onLoad={onLoadPic}/>
 								<div className="mt-3">
 									<h4>@{user.username}</h4>
 									<p className="text-secondary mb-1">{user.about || ""}</p>

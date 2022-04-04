@@ -6,13 +6,13 @@ import authService from "../services/auth.service";
 import userService from "../services/user.service";
 import { useParams } from "react-router-dom";
 var params = require("../params/params");
-
-const currentUser = authService.getCurrentUser();
 const API_Query = params.baseBackURL + "/file/";
+
 
 function ViewProfile()  {
   let {sid} = useParams();
-  
+
+  const initialUser = authService.getCurrentUser();
   const INITIAL_STATE = {
     username: "USER_NOT_FOUND",
     name: "",
@@ -24,7 +24,25 @@ function ViewProfile()  {
     friends: "",
     college: "", 
     rating: "",
-  };
+
+    };
+
+    const onLoadPic = async(e) => {
+      const img = document.querySelector("#profile-pic");
+  
+      let api = API_Query + "user-" + sid;
+      const loadResult = await fetch(api, {
+          method: "GET",
+          headers: new Headers({
+            "x-access-token": initialUser.accessToken,
+          }),
+      })
+  
+      const resultBlob = await loadResult.blob();
+      img.crossOrigin = 'Anonymous';
+      img.src = await URL.createObjectURL(resultBlob);
+    }
+
   const [user, setUser] = useState(INITIAL_STATE);
 
   useEffect(() => {
@@ -62,25 +80,7 @@ function ViewProfile()  {
       }
       })();
   }, []);
-
-  const onLoadPic = async(e) => {
-    const img = document.querySelector("#profile-pic");
-
-    let api = API_Query + "user-" + sid;
-    const loadResult = await fetch(api, {
-        method: "GET",
-        headers: new Headers({
-          "x-access-token": currentUser.accessToken,
-        }),
-    })
-
-    const resultBlob = await loadResult.blob();
-    img.crossOrigin = 'anonymous';
-    img.src = await URL.createObjectURL(resultBlob);
-  }
-
-      
-      
+  
       return (
         <Container className="myContainer">
               <div className="row">
