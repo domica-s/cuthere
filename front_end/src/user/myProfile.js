@@ -112,8 +112,7 @@ function Profile()  {
 								<div className="mt-3">
 									<h4>@{user.username}</h4>
 									<p className="text-secondary mb-1">{user.about || ""}</p>
-									<Button className="btn btn-primary" style={{marginRight:"5px"}}>Add Friend</Button>
-									<Button className="btn btn-outline-primary">Message</Button>
+									
 								</div>
 							</div>
 							<hr className="my-4" />
