@@ -182,6 +182,7 @@ function GeneralInformation() {
                   {user.uploadImg && <button type="button" className="btn btn-default md-btn-flat" onClick={onUploadFile}>Upload</button>}
                   {user.uploadImg && <p>{user.uploadImg.name}</p>}
                   <div className="text-light small mt-1">Allowed JPG or PNG.</div>
+                  <div className="text-light small mt-1">Click on 'Select New Photo' then 'Upload' to save picture changes.</div>
                 </div>
               </div>
               <hr className="border-light m-0" />
