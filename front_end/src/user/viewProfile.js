@@ -5,6 +5,10 @@ import "./myProfile.css"
 import authService from "../services/auth.service";
 import userService from "../services/user.service";
 import { useParams } from "react-router-dom";
+var params = require("../params/params");
+
+const currentUser = authService.getCurrentUser();
+const API_Query = params.baseBackURL + "/file/";
 
 function ViewProfile()  {
   let {sid} = useParams();
@@ -58,6 +62,23 @@ function ViewProfile()  {
       }
       })();
   }, []);
+
+  const onLoadPic = async(e) => {
+    const img = document.querySelector("#profile-pic");
+
+    let api = API_Query + "user-" + sid;
+    const loadResult = await fetch(api, {
+        method: "GET",
+        headers: new Headers({
+          "x-access-token": currentUser.accessToken,
+        }),
+    })
+
+    const resultBlob = await loadResult.blob();
+    img.crossOrigin = 'anonymous';
+    img.src = await URL.createObjectURL(resultBlob);
+  }
+
       
       
       return (
@@ -67,7 +88,7 @@ function ViewProfile()  {
                       <div className="card mt-3">
                           <div className="card-body">
                               <div className="d-flex flex-column align-items-center text-center">
-                                  <img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="Admin" className="rounded-circle p-1 bg-primary" width="110" />
+                                  <img id="profile-pic" src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="" className="rounded-circle p-1 bg-primary" width="110" onLoad={onLoadPic}/>
                                   <div className="mt-3">
                                       <h4>@{user.username}</h4>
                                       <p className="text-secondary mb-1">{user.about || ""}</p>
