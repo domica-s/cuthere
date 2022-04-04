@@ -111,6 +111,7 @@ class Event extends React.Component {
             <p>Filter by interest:</p>
             {/* Add Filtering options by interest*/}
               <Form.Select name="activityCategory" type="text" value = {this.state.filterTerm} onChange={this.onChangeFilter}>
+                  <option value="">None</option>
                   <option value="Basketball">Basketball</option>
                   <option value="Badminton">Badminton</option>
                   <option value="Soccer">Soccer</option>
@@ -137,27 +138,41 @@ class Event extends React.Component {
             <hr></hr>
             {e.length > 0 && 
               (e.filter((val) => {
-                
-                if (this.state.searchTerm == "") {
-                  return val
+                if (this.state.filterTerm == "") {
+                  if (this.state.searchTerm == "") {
+                    return val
+                  }
+                  else {
+                    if (val[1].title.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
+                      return val
+                    }
+                    if (val[1].activityCategory.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
+                      return val
+                    }
+                    if (val[1].venue.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
+                      return val
+                    }
+                  }
                 }
-                else {
-                  if (val[1].title.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
-                    return val
-                  }
-                  if (val[1].activityCategory.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
-                    return val
-                  }
-                  if (val[1].venue.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
-                    return val
+                else  {
+                  if (this.state.filterTerm.toLowerCase() == val[1].activityCategory.toLowerCase()) {
+                    if (this.state.searchTerm == "") {
+                      return val
+                    }
+                    else {
+                      if (val[1].title.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
+                        return val
+                      }
+                      if (val[1].activityCategory.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
+                        return val
+                      }
+                      if (val[1].venue.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
+                        return val
+                      }
+                    }
                   }
                 }
-              })).map((data, index) => 
-              <OneEvent data={data} key={index}/>
-            ) || ((this.state.filterTerm !=="") &&
-            (e.filter(this.matchCategory)).map((data,index) => 
-              <OneEvent data={data} key={index}/>
-            ))}
+              })).map((data, index) => <OneEvent data={data} key={index}/>)}
           </Container>
         );
     }

@@ -61,7 +61,7 @@ class CreateEvent extends React.Component {
             start: "",
             end: "",
             quota: 1,
-            category: "Outdoor",
+            category: "",
             quotaValidate: true,
         }
     }
