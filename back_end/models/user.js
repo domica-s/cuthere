@@ -17,7 +17,10 @@ var userSchema = mongoose.Schema({
     rating:{type:String},
     following:[{type: mongoose.Schema.Types.ObjectId}],
     followers:[{type: mongoose.Schema.Types.ObjectId}],
-    registeredEvents:[{type: mongoose.Schema.Types.ObjectId}],
+    registeredEvents:[{
+        event: {type: mongoose.Schema.Types.ObjectId},
+        registeredAt: {type: Date}
+    }],
     starredEvents:[{type: mongoose.Schema.Types.ObjectId}],
     role:{type:String, enum: ['User', 'Admin']},
     active:{type:Boolean, default: false},

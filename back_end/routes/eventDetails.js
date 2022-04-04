@@ -45,13 +45,29 @@ router.post('/event/register/:eventID', [authJwt.verifyToken], function (req, re
 
                 Event.findOneAndUpdate({eventID: eventID}, {$set: {numberOfParticipants: numberOfParticipants, participants : result.participants}}, function(err, doc){
                     if(err) res.status(404).send({message:"Error Ocurred "+ err})
-                    else {console.log("Updated The Database Nigga!")} // Please change this
+                    else {
+                        var timeNow = Date(Date.now());
+                        var entry = {
+                            $push: { registeredEvents:{
+                                event: doc,
+                                registeredAt: timeNow
+                            }}
+                        }
+                        User.findOneAndUpdate({_id: userID}, entry, (err, ress)=>{
+                            if (err) {
+                                res.status(400).send({ message: "error occured: " + err});
+                            }
+                            else{
+                                console.log("Updated The Database Nigga!"); // Please change this
+                                res.status(200).send({message: "OK"});
+                            }
+                        })
+                    }
                 })
             }
         }
         else res.status(200).send("You have already registered for this event!")
     })
-
 })
 
 // Unregister Events --> WORKING
@@ -75,14 +91,29 @@ router.post('/event/unregister/:eventID', [authJwt.verifyToken], function (req, 
 
                 Event.findOneAndUpdate({eventID: eventID}, {$set: {numberOfParticipants: numberOfParticipants, participants : result.participants}}, function(err, doc){
                     if(err) res.status(404).send({message:"Error Ocurred "+ err})
-                    else {console.log("Removed this nigga from the database!")} // Please change this
+                    else {
+                        var update = {
+                            $pull: 
+                            { registeredEvents :
+                                { event: doc}
+                            }
+                        }
+                        User.findOneAndUpdate({_id: userID}, update, (err, ress)=>{
+                            if (err) {
+                                res.status(400).send({ message: "error occured: " + err});
+                            }
+                            else{
+                                console.log("Updated The Database Nigga!"); // Please change this
+                                res.status(200).send({message: "OK"});
+                            }
+                        })
+                    }
                 })
-            
-        }
+            }
         else res.status(200).send({message:"You are not registered for this event"})
     })
-
 })
+
 // Update the event --> TESTING
 router.post('/event/update/:eventID', [authJwt.verifyToken], function(req,res){
     
