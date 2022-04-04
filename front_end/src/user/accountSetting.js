@@ -189,7 +189,7 @@ function GeneralInformation() {
                 <div className="media-body ml-4">
                   <label className="btn btn-outline-primary">
                     Select new photo
-                    <input type="file" className="account-settings-fileinput" onChange={onChangeFile}/>
+                    <input type="file" className="account-settings-fileinput" onChange={onChangeFile} accept="image/x-png, image/gif, image/jpeg"/>
                   </label> &nbsp;
                   {user.uploadImg && <button type="button" className="btn btn-default md-btn-flat" onClick={onUploadFile}>Upload</button>}
                   {user.uploadImg && <p>{user.uploadImg.name}</p>}
