@@ -10,6 +10,7 @@ import Badge from 'react-bootstrap/Badge';
 import AuthService from "../services/auth.service";
 import { auto } from "@popperjs/core";
 import { ThemeConsumer } from "react-bootstrap/esm/ThemeProvider";
+import { Axios } from "axios";
 
 
 var params = require("../params/params");
@@ -80,12 +81,20 @@ class Event extends React.Component {
         searchTerm: e.target.value
       });
     }
-    
-    onChangeFilter(e){
+
+    onChangeFilter = (e) => {
       this.setState({
         filterTerm: e.target.value
-      })
+      });
+    }
 
+    matchCategory(event){
+      return this.state.filterTerm === event.activityCategory
+    }
+
+    submitFilter = (e) => {
+      e.preventDefault()
+      console.log(this.state.filterTerm) 
     }
 
     render() {
@@ -120,6 +129,7 @@ class Event extends React.Component {
                   <option value="Arts">Arts</option>
                   <option value="Cooking">Cooking</option>
               </Form.Select>
+              <Button className="mb-5" variant="outline-success" type="submit" onClick={this.submitFilter}>Filter</Button>
             <div className="filter options-outline">
                 
             </div>
@@ -144,7 +154,10 @@ class Event extends React.Component {
                 }
               })).map((data, index) => 
               <OneEvent data={data} key={index}/>
-            )}
+            ) || ((this.state.filterTerm !=="") &&
+            (e.filter(this.matchCategory)).map((data,index) => 
+              <OneEvent data={data} key={index}/>
+            ))}
           </Container>
         );
     }
