@@ -9,6 +9,7 @@ import Badge from 'react-bootstrap/Badge';
 import AuthService from "../services/auth.service";
 import { auto } from "@popperjs/core";
 
+
 var params = require("../params/params");
 
 // const API = 'http://localhost:8080/allevents'
@@ -120,6 +121,7 @@ class EventWidget extends React.Component{
         super(props);
         this.state = {
           title: "",
+          type: "",
           events: {},
           currentUser: AuthService.getCurrentUser(),
         };
@@ -139,6 +141,7 @@ class EventWidget extends React.Component{
           .then((data) => {
             this.setState({
               title: data.title,
+              type: data.type,
               events: data.event_dic
             });
           });
@@ -149,13 +152,14 @@ class EventWidget extends React.Component{
       let disp_events =  (this.state.events)? Object.entries(this.state.events).slice(0,5): null;
       
       let title = this.state.title
+      let path = "featured" + this.state.type
         return (
-          <Card style={{ maxHeight: "22rem" }}>
+          <Card style={{maxHeight: "22rem", marginBottom: "0px"}}>
             <Card.Header style={{ textAlign: "left" }}>
-              <a href="featured/new">
+              <a href={path}>
                 <b>{title}</b>
               </a>
-              <a href="featured/new" style={{ float: "right" }}>
+              <a href={path} style={{ float: "right" }}>
                 See all
               </a>
             </Card.Header>

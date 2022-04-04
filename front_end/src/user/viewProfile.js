@@ -6,14 +6,13 @@ import authService from "../services/auth.service";
 import userService from "../services/user.service";
 import { useParams } from "react-router-dom";
 var params = require("../params/params");
+const API_Query = params.baseBackURL + "/file/";
+
 
 function ViewProfile()  {
-  const API = params.baseBackURL + "/file/upload";
-  const API_DELETE = params.baseBackURL + "/file/delete";
-  const API_Query = params.baseBackURL + "/file/";
   let {sid} = useParams();
-  const initialUser = authService.getCurrentUser();
 
+  const initialUser = authService.getCurrentUser();
   const INITIAL_STATE = {
     username: "USER_NOT_FOUND",
     name: "",
@@ -25,6 +24,7 @@ function ViewProfile()  {
     friends: "",
     college: "", 
     rating: "",
+
     };
 
     const onLoadPic = async(e) => {
@@ -80,8 +80,7 @@ function ViewProfile()  {
       }
       })();
   }, []);
-      
-      
+  
       return (
         <Container className="myContainer">
               <div className="row">
@@ -89,7 +88,7 @@ function ViewProfile()  {
                       <div className="card mt-3">
                           <div className="card-body">
                               <div className="d-flex flex-column align-items-center text-center">
-                                  <img id="profile-pic" src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="Admin" className="rounded-circle p-1 bg-primary" width="110" onLoad={onLoadPic}/>
+                                  <img id="profile-pic" src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="" className="rounded-circle p-1 bg-primary" width="110" onLoad={onLoadPic}/>
                                   <div className="mt-3">
                                       <h4>@{user.username}</h4>
                                       <p className="text-secondary mb-1">{user.about || ""}</p>
