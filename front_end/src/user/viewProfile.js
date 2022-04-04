@@ -8,18 +8,18 @@ import { useParams } from "react-router-dom";
 
 function ViewProfile()  {
   let {sid} = useParams();
-  const initialUser = authService.getCurrentUser();
+  
   const INITIAL_STATE = {
-    username: initialUser.username,
-    name: initialUser.name,
-    email: initialUser.email,
-    mobileNumber: initialUser.mobileNumber,
-    about: initialUser.about,
-    country: initialUser.country,
-    interests: initialUser.interests,
-    friends: initialUser.friends,
-    college: initialUser.college, 
-    rating: initialUser.rating,
+    username: "USER_NOT_FOUND",
+    name: "",
+    email: "",
+    mobileNumber: "",
+    about: "",
+    country: "",
+    interests: "",
+    friends: "",
+    college: "", 
+    rating: "",
   };
   const [user, setUser] = useState(INITIAL_STATE);
 
