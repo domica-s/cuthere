@@ -125,7 +125,6 @@ function GeneralInformation() {
     };
 
     const onChangeFile = async(e) => {
-      console.log(currentUser.sid);
       try {
         setUser({
           uploadImg: e.target.files[0]
@@ -161,10 +160,12 @@ function GeneralInformation() {
             "x-access-token": currentUser.accessToken,
           }),
       })
-
+      const resultStatus = await loadResult.clone().status
       const resultBlob = await loadResult.blob();
-      img.crossOrigin = 'anonymous';
-      img.src = await URL.createObjectURL(resultBlob);
+      if (resultStatus === 200){
+        img.crossOrigin = 'anonymous';
+        img.src = await URL.createObjectURL(resultBlob);
+      }
     }
 
     return(
