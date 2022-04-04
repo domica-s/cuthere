@@ -42,7 +42,6 @@ router.post('/event/register/:eventID', [authJwt.verifyToken], function (req, re
                 // Update the parameters
                 result.participants.push(userID)
                 const numberOfParticipants = result.numberOfParticipants + 1
-
                 Event.findOneAndUpdate({eventID: eventID}, {$set: {numberOfParticipants: numberOfParticipants, participants : result.participants}}, function(err, doc){
                     if(err) res.status(404).send({message:"Error Ocurred "+ err})
                     else {
@@ -54,13 +53,39 @@ router.post('/event/register/:eventID', [authJwt.verifyToken], function (req, re
                             }}
                         }
                         User.findOneAndUpdate({_id: userID}, entry, (err, ress)=>{
+                            console.log("The one who registered", ress);
+                            console.log(doc);
+                            var followers = ress.followers;
+
                             if (err) {
                                 res.status(400).send({ message: "error occured: " + err});
                             }
                             else{
                                 console.log("Updated The Database Nigga!"); // Please change this
-                                res.status(200).send({message: "OK"});
                             }
+                            var activity = {
+                                $push: {
+                                    feedActivities: {
+                                        friend: ress,
+                                        event: doc,
+                                        timestamp: timeNow,
+                                        type: "Register"
+                                    },
+                                },
+                            };
+                            for(var f in followers){
+                                var curFollowers = followers[f].toString();
+                                console.log("followers", followers[f].toString());
+                                User.findOneAndUpdate({_id: curFollowers}, activity, (err, fuser)=>{
+                                    if (err) {
+                                        res.status(400).send({ message: "error occured: " + err});
+                                    }
+                                    else{
+                                        console.log("Updated your followers!");
+                                    }
+                                })
+                            }
+                            res.status(200).send({message: "OK"});
                         })
                     }
                 })
@@ -99,13 +124,32 @@ router.post('/event/unregister/:eventID', [authJwt.verifyToken], function (req, 
                             }
                         }
                         User.findOneAndUpdate({_id: userID}, update, (err, ress)=>{
+                            var followers = ress.followers;
                             if (err) {
                                 res.status(400).send({ message: "error occured: " + err});
                             }
                             else{
                                 console.log("Updated The Database Nigga!"); // Please change this
-                                res.status(200).send({message: "OK"});
                             }
+                            var activity = {
+                                $pull: {
+                                    feedActivities: 
+                                    {event: doc}
+                                },
+                            };
+                            for(var f in followers){
+                                var curFollowers = followers[f].toString();
+                                console.log(followers[f].toString());
+                                User.findOneAndUpdate({_id: curFollowers}, activity, (err, fuser)=>{
+                                    if (err) {
+                                        res.status(400).send({ message: "error occured: " + err});
+                                    }
+                                    else{
+                                        console.log("Updated your followers!");
+                                    }
+                                })
+                            }
+                            res.status(200).send({message: "OK"});
                         })
                     }
                 })
@@ -138,6 +182,7 @@ router.post('/event/update/:eventID', [authJwt.verifyToken], function(req,res){
 
 
 // Delete Events --> WORKING
+//TODO: update registeredEvents of participants + feedActivity
 router.post('/event/delete/:eventID',[authJwt.verifyToken], function(req,res){
     // Acquire Parameters
     const eventID = req.params.eventID
@@ -148,11 +193,15 @@ router.post('/event/delete/:eventID',[authJwt.verifyToken], function(req,res){
 
         else if (result.createdBy != userID) res.status(200).send({message: "You have no authority to delete this event!"})
 
-        else Event.findOneAndDelete({eventID:eventID}).exec(function (err, result){
-            if(err) return res.status(400).send({message: "Error Occured: "+ err})
-            else if (result === null) return res.status(200).send({message:"There are no such events"})
-            else {return res.status(200).send({message:"Event is deleted!", status: 'SUCCESS'})} 
-        })
+        else {
+            //console.log(result.participants);
+            //var part_user = result.participants;
+            Event.findOneAndDelete({eventID:eventID}).exec(function (err, result){
+                if(err) return res.status(400).send({message: "Error Occured: "+ err})
+                else if (result === null) return res.status(200).send({message:"There are no such events"})
+                else {return res.status(200).send({message:"Event is deleted!", status: 'SUCCESS'})} 
+            })
+        }
     })
 })
 

@@ -21,6 +21,12 @@ var userSchema = mongoose.Schema({
         event: {type: mongoose.Schema.Types.ObjectId},
         registeredAt: {type: Date}
     }],
+    feedActivities:[{
+        friend: {type: mongoose.Schema.Types.ObjectId},
+        event: {type: mongoose.Schema.Types.ObjectId},
+        timestamp: {type: Date},
+        type: {type:String}
+    }],
     starredEvents:[{type: mongoose.Schema.Types.ObjectId}],
     role:{type:String, enum: ['User', 'Admin']},
     active:{type:Boolean, default: false},

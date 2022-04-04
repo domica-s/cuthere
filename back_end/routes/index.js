@@ -10,7 +10,7 @@ router.use(function(req,res, next){
     next();
 });
 
-
+//router.use("/", require("./feeds"));
 router.use("/", require("./event"));
 router.use("/", require("./eventDetails"))
 router.use("/api/calendar", require("./calendar"));

@@ -150,6 +150,7 @@ router.post("/myevents", [authJwt.verifyToken], function(req, res){
 
 // To create the event
 router.post("/event", [authJwt.verifyToken], function (req, res, next) {
+    var creator = req.body._id
     var title =  req.body.title
     var location = req.body.location
     var start = req.body.start
@@ -184,6 +185,47 @@ router.post("/event", [authJwt.verifyToken], function (req, res, next) {
         });
     
         newEvent.save(next)
+
+        var timeNow = Date(Date.now());
+        var entry = {
+          $push: {
+            registeredEvents: {
+              event: newEvent,
+              registeredAt: timeNow,
+            },
+          },
+        };
+        User.findOneAndUpdate({ _id: creator }, entry, (err, ress) => {
+          
+          var followers = ress.followers;
+          if (err) {
+            res.status(400).send({ message: "error occured: " + err });
+          } else {
+            console.log("User Obtained");
+          }
+          var timeNow = Date(Date.now());
+          var activity = {
+            $push: {
+              feedActivities: {
+                friend: ress,
+                event: newEvent,
+                timestamp: timeNow,
+                type: "Create",
+              },
+            },
+          };
+          for (var f in followers) {
+            var curFollowers = followers[f].toString();
+            User.findOneAndUpdate({ _id: curFollowers }, activity, (err, fuser) => {
+                if (err) {
+                  res.status(400).send({ message: "error occured: " + err });
+                } else {
+                  console.log("Updated your followers!"); 
+                }
+              }
+            );
+          }
+        });
         res.status(200).send({message: "event created successfully"})
     });    
 });
