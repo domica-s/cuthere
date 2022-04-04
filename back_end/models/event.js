@@ -11,7 +11,7 @@ var eventSchema = mongoose.Schema({
     end:{type: Date, required: true},
     numberOfParticipants:{type: Number},
     quota:{type: Number, required: true},
-    activityCategory:{type: String, required: true, enum: ['Outdoor', 'Indoor', 'Offline', 'Online']},
+    activityCategory:{type: String, required: true, enum: ['Basketball', 'Badminton', 'Soccer', 'Football','Hiking', 'Volleyball', 'Board Games', 'Tennis', 'Running', 'Gaming', 'Swimming', 'Drinking', 'Study', 'Movies', 'Frat Parties', 'Athletics', 'Arts', 'Cooking']},
     chatHistory:[{
         user: {type: Number},
         content: {type: String},

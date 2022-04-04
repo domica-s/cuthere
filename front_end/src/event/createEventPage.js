@@ -181,10 +181,23 @@ class CreateEvent extends React.Component {
                     <Form.Group className="mb-3" controlId="floatingInput">
                         <Form.Label>Category of your event</Form.Label>
                         <Form.Select name="category" onChange={this.onChangeCategory}>
-                            <option value="Outdoor">Outdoor</option>
-                            <option value="Indoor">Indoor</option>
-                            <option value="Offline">Offline</option>
-                            <option value="Online">Online</option>
+                            <option value="Basketball">Basketball</option>
+                            <option value="Badminton">Badminton</option>
+                            <option value="Soccer">Soccer</option>
+                            <option value="Hiking">Hiking</option>
+                            <option value="Volleyball">Volleyball</option>
+                            <option value="Board Games">Board Games</option>
+                            <option value="Tennis">Tennis</option>
+                            <option value="Running">Running</option>
+                            <option value="Gaming">Gaming</option>
+                            <option value="Swimming">Swimming</option>
+                            <option value="Drinking">Drinking</option>
+                            <option value="Study">Study</option>
+                            <option value="Movies">Movies</option>
+                            <option value="Frat Parties">Frat Parties</option>
+                            <option value="Athletics">Athletics</option>
+                            <option value="Arts">Arts</option>
+                            <option value="Cooking">Cooking</option>
                         </Form.Select>
                     </Form.Group>
     
