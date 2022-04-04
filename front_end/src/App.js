@@ -31,6 +31,7 @@ import { Nav, NavLink,Bars, NavMenu, NavBtn, NavBtnLink, Footer} from './NavBarS
 import logo from './images/logo.jfif';
 import { AdminDashboard } from './admin/adminPage';
 import {UploadImage} from './event/uploadImg';
+import ViewProfile from './user/viewProfile';
 
 
 Modal.setAppElement("#root");
@@ -102,6 +103,7 @@ class App extends React.Component {
             {currentUser !== undefined && <Route path='/accountSetting' element={<AccountSetting/>} />}
             {isAdmin && <Route path='/admin' element={<AdminDashboard/>} />}
             <Route path='/upload' element={<UploadImage/>} />
+            {currentUser !== undefined && <Route path='/user/:sid' element = {<ViewProfile />} />}
             <Route path='/help' element={<Help/>} />
             <Route path='/*' element={<NoMatch/>} />
           </Routes>
