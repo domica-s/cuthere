@@ -7,7 +7,7 @@ var params = require("../../params/params");
 
 const API = params.baseBackURL + "/file/upload";
 const API_Query = params.baseBackURL + "/file/";
-const API_DELETE = params.baseBackURL + "/file/delete";
+const API_DELETE = params.baseBackURL + "/file/delete/";
 const currentUser = authService.getCurrentUser();
 
 const INITIAL_STATE = {
@@ -26,18 +26,28 @@ function EventImage(props) {
 
     const onUploadFile = async(e) => {
         e.preventDefault();
-        let data = new FormData();
-        data.append("file", Images.file, "event-" + props.eventID);
-        const uploadResult = await fetch(API, {
-            method: "POST",
+        let api_delete = API_DELETE + "event-" + props.eventID;
+        const deletePrevious = await fetch(api_delete, {
+            method: "GET",
             headers: new Headers({
                 "x-access-token": currentUser.accessToken,
-                }),
-              body: data              
-        });
+              }),            
+        })
+        const ResponseJson = await deletePrevious.json();
 
-        const resultJson = await uploadResult.json();
-        await window.alert(resultJson.message);
+        if (ResponseJson.message) {
+            let data = new FormData();
+            data.append("file", Images.file, "event-" + props.eventID);
+            const uploadResult = await fetch(API, {
+                method: "POST",
+                headers: new Headers({
+                    "x-access-token": currentUser.accessToken,
+                    }),
+                  body: data              
+            });
+            const resultJson = await uploadResult.json();
+            await window.alert(resultJson.message);
+        }
     }
 
     const onLoadPic = async(e) => {
@@ -51,7 +61,7 @@ function EventImage(props) {
         })
         const resultStatus = await loadResult.clone().status
         const resultBlob = await loadResult.blob();
-        if (resultStatus == 200){
+        if (resultStatus === 200){
             img.crossOrigin = 'anonymous';
             img.src = await URL.createObjectURL(resultBlob);
         }
