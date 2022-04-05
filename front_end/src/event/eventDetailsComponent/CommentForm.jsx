@@ -1,8 +1,8 @@
 import React, { useEffect, useState} from 'react'
 import Button from 'react-bootstrap/Button';
 
-
 let commentCounter = 1;
+
 class CommentForm extends React.Component{
     constructor() {
         super();
@@ -10,6 +10,7 @@ class CommentForm extends React.Component{
         this.state = { 
             commentValue: '',
             commentLine: [{commentId:"", text:"",}],
+
         };
     }
 
@@ -34,8 +35,7 @@ class CommentForm extends React.Component{
     submitCommentLine = (e) => {
         e.preventDefault();
         this.setCommentLine();
-        // Send to the EventDetails Page
-        console.log(this.props)
+
         this.props.addComment(this.props.detail.eventID, this.state.commentValue)
     };
 
@@ -46,7 +46,7 @@ class CommentForm extends React.Component{
     };
 
     render() {
-        console.log(this.props.chatHistory)
+
         return(
             <>
             <React.Fragment>
@@ -69,7 +69,6 @@ class CommentBox extends React.Component {
         const {commentValue, handleCommentValue, enterCommentLine, submitCommentLine, chatHistory} = this.props; 
         const enableCommentButton = () => { return (commentValue ? false : true)}; 
         const changeCommentButtonStyle = () => {return (commentValue? "comments-button-enabled" : "comments-button-disabled")}; 
-        console.log(chatHistory)
 
         return (
             <React.Fragment>
@@ -77,9 +76,8 @@ class CommentBox extends React.Component {
                     <input onKeyPress = {enterCommentLine} value ={commentValue} id="comments-input" onChange={handleCommentValue} type="text" placeholder="Add a comment..." />
                     <Button onClick={submitCommentLine} type="submit" className="comments-button" id={changeCommentButtonStyle()} disabled ={enableCommentButton()}> Post </Button>
                 </div>
-                <ul className="comments-list">{chatHistory.map((data) => {
-                    return <OneChat chat={data}/>
-                })}
+                <ul className="comments-list">
+                    {chatHistory.map((data) => <OneChat chat={data}/>)}
                 </ul>
                 <br/>
                 <br/>
@@ -93,13 +91,12 @@ class Comment extends React.Component { // This is useless if we want to use One
 
     render () {
         const {chatHistory} = this.props 
-        console.log(chatHistory)
-
+  
         return(
             <ul className ="comments-list">
-                {chatHistory.map((data)=> {
-                    return <li className="each-comment"><strong>{data.user}</strong> commented: "{data.content}" on <i>{data.chatAt}</i></li>
-                    })}
+                {chatHistory.map((data)=> 
+                    <li className="each-comment"><strong>{data.user}</strong> commented: "{data.content}" on <i>{data.chatAt}</i></li>
+                    )}
             </ul>
         )
     }
