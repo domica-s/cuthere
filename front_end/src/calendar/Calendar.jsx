@@ -48,7 +48,11 @@ export default function () {
     
     // To handle Event Add --> WORKING
     async function handleEventAdd(data){
-        await axios.post("http://localhost:8080/api/calendar/create-event", data.event, config);
+        await axios.post("http://localhost:8080/api/calendar/create-event", data.event,         {
+            headers: {
+                "x-access-token": currentUser.accessToken
+            }
+        });
     }
 
 
@@ -56,13 +60,21 @@ export default function () {
 
         // To get all the events to the calendar --> WORKING
         if (!yourCalendar){
-        const response = await axios.get('http://localhost:8080/api/calendar/get-event?start='+moment(data.start).toISOString() +'&end='+moment(data.end).toISOString())
+        const response = await axios.get('http://localhost:8080/api/calendar/get-event?start='+moment(data.start).toISOString() +'&end='+moment(data.end).toISOString(),        {
+            headers: {
+                "x-access-token": currentUser.accessToken
+            }
+        })
         setEvents(response.data)
         }
 
         // To get only your events to the calendar --> WORKING // NEEDS FIX 
         else {
-        const response = await axios.post("http://localhost:8080/api/calendar/my-event?start="+moment(data.start).toISOString()+'&end='+moment(data.end).toISOString(),{createdBy: currentUser._id},config)
+        const response = await axios.post("http://localhost:8080/api/calendar/my-event?start="+moment(data.start).toISOString()+'&end='+moment(data.end).toISOString(),{user: currentUser},        {
+            headers: {
+                "x-access-token": currentUser.accessToken
+            }
+        })
         setEvents(response.data)
         }
         
@@ -74,7 +86,11 @@ export default function () {
     async function handleEventClick(event){
 
         const id = event.event._def.extendedProps.eventID
-        const response = await axios.get("http://localhost:8080/api/calendar/route-event/"+id);
+        const response = await axios.get("http://localhost:8080/api/calendar/route-event/"+id,        {
+            headers: {
+                "x-access-token": currentUser.accessToken
+            }
+        });
 
         history.push({
             state: response.data,
