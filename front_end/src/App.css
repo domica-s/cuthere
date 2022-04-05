@@ -1,4 +1,5 @@
 .App {
+  margin-top: 3%;
   text-align: center;
   display: flex;
   flex-flow: column;
@@ -40,6 +41,7 @@
   }
 }
 
-.App .search {
-
+.App footer {
+  background: #282c34;
+  color: #ffffff;
 }
