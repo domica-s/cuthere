@@ -281,8 +281,8 @@ export function AdminDashboard() {
                         <p>Rating: <strong>{user.rating}</strong></p>
                         <p>Following: <strong>{user.following}</strong></p>
                         <p>Followers: <strong>{user.followers}</strong></p>
-                        <p>Registered Events: <strong>{user.registeredEvents}</strong></p>
-                        <p>Starred Events: <strong>{user.starredEvents}</strong></p>
+                        <p>Registered Events: <strong>{JSON.stringify(user.registeredEvents, null, 2)}</strong></p>
+                        <p>Starred Events: <strong>{JSON.stringify(user.starredEvents, null, 2)}</strong></p>
                         <p>Role: <strong>{user.role}</strong></p>
                         <p>Active: <strong>{user.active}</strong></p>
                         <pre>Review History: <strong>{JSON.stringify(user.reviewHistory, null, 2)}</strong></pre>

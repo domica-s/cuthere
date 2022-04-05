@@ -1,5 +1,5 @@
 import './App.css';
-import {BrowserRouter, Routes, Route, useLocation, Link, useParams} from 'react-router-dom'
+import {BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import {Home, About} from './home/homePage'
 import {LoginWithNavigate} from './home/loginPage'
 import {Event} from './event/eventPage'
@@ -16,22 +16,19 @@ import Calendar from "./calendar/Calendar";
 
 import {CreateEvent} from "./event/createEventPage";
 import { ConfirmEmail } from './home/confirmEmail';
-import { NavDropdown } from 'react-bootstrap';
+import { Navbar, Container, Nav, NavDropdown, Button } from 'react-bootstrap';
 import {Help} from './home/helpPage';
-
-// import {EditProfile} from './user/editProfile';
-
 import EventDetail from './event/EventDetail';
 import {AccountSetting} from './user/accountSetting';
 import { Image } from 'react-bootstrap';
 import UserIcon from './images/userProfile.png';
 import LandingPage from './home/LandingPage';
 import { PasswordReset } from './home/passwordReset';
-import { Nav, NavLink,Bars, NavMenu, NavBtn, NavBtnLink, Footer} from './NavBarStyle';
 import logo from './images/logo.jfif';
 import { AdminDashboard } from './admin/adminPage';
 import {UploadImage} from './event/uploadImg';
 import ViewProfile from './user/viewProfile';
+import { Footer } from './FooterStyle';
 
 
 Modal.setAppElement("#root");
@@ -81,6 +78,8 @@ class App extends React.Component {
     return (
       <div className="App">
         <BrowserRouter>
+          <div class="content">
+          <div class="content-inside">
           <NavigationBar isAuthUser={(currentUser !== undefined)} username={(username)} isAdmin={(isAdmin)} />
           
           <Routes>
@@ -107,6 +106,8 @@ class App extends React.Component {
             <Route path='/help' element={<Help/>} />
             <Route path='/*' element={<NoMatch/>} />
           </Routes>
+          </div>
+          </div>
           <FooterBar />
         </BrowserRouter>
       </div>    
@@ -124,41 +125,43 @@ class NavigationBar extends React.Component {
     let isAuth = this.props.isAuthUser;
     let isAdmin = this.props.isAdmin;
     return (
-      <Nav>
-        <NavLink to='/'>
-          {/* <img src={logo} alt='logo' /> */}
-          CUthere
-        </NavLink>
-        <Bars />
-        <NavMenu>
-          <NavLink to="/about">About</NavLink>
-          {isAuth === true && <NavLink to="/event">Events</NavLink>}
-          {isAuth === true && <NavLink to="/createEvent">Create Events</NavLink>}
-          {isAuth === true && <NavLink to="/calendar">View Calendar</NavLink>}
-          {isAuth === true && isAdmin && <NavLink to="/admin">Admin Dashboard</NavLink>}
-          {isAuth === true && 
-          <NavDropdown title={"Hello, " + this.props.username} id="user-profile-dropdown">
-              <NavDropdown.Item as={Link} to="/profile">View Profile</NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/accountSetting">Account Setting</NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/logout">Logout</NavDropdown.Item>
-          </NavDropdown>}
-          {isAuth !== true && <NavLink to="/signup">Sign Up</NavLink>}
-        </NavMenu>
-        <NavBtn>
-          {isAuth !== true && <NavBtnLink to="/login">Login</NavBtnLink>}
-        </NavBtn>
-      </Nav>
+      <>
+      <Container>
+        <Navbar className="justify-content-center" collapseOnSelect fixed='top' expand='sm' bg='dark' variant='dark'>
+          <Container >
+            <Navbar.Brand href="/">CUthere</Navbar.Brand>
+            <Navbar.Toggle className="container-fluid" aria-controls='responsive-navbar-nav'/>
+            <Navbar.Collapse id='responsive-navbar-nav'>
+              <Nav>
+                <Nav.Link href='/about'>About</Nav.Link>
+                {isAuth === true && <Nav.Link href='/event'>Events</Nav.Link>}
+                {isAuth === true && <Nav.Link href='/createevent'>Create Events</Nav.Link>}
+                {isAuth === true && <Nav.Link href='/calendar'>View Calendar</Nav.Link>}
+                {isAuth === true && isAdmin && <Nav.Link href='/admin'>Admin Dashboard</Nav.Link>}
+                {isAuth === true && 
+                  <NavDropdown title={"Hello, " + this.props.username} id="user-profile-dropdown">
+                      <NavDropdown.Item href="/profile">View Profile</NavDropdown.Item>
+                      <NavDropdown.Item href="/accountSetting">Account Setting</NavDropdown.Item>
+                      <NavDropdown.Divider />
+                      <NavDropdown.Item href="/logout">Logout</NavDropdown.Item>
+                  </NavDropdown>}
+                {isAuth !== true && <Nav.Link href='/signup'>Sign Up</Nav.Link>}
+              </Nav>
+              {isAuth !== true && 
+                <Nav classaName="ms-auto"> 
+                  <Nav.Link href='/login'><Button>Login</Button></Nav.Link>
+                </Nav>}
+            </Navbar.Collapse>
+          </Container>
+        </Navbar>
+      </Container>
+      </>
     );
   }
 }
 
 function FooterBar() {
   return (
-    // <footer id="footer-bar" className="page-footer font-small">
-    //   <div className="footer-copyright text-center">
-    //     <b>© CUthere</b>
-    //   </div>
-    // </footer>
     <Footer>
       © CUthere
     </Footer>
