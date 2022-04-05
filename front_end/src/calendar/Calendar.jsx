@@ -60,7 +60,7 @@ export default function () {
         setEvents(response.data)
         }
 
-        // To get only your events to the calendar --> WORKING
+        // To get only your events to the calendar --> WORKING // NEEDS FIX 
         else {
         const response = await axios.post("http://localhost:8080/api/calendar/my-event?start="+moment(data.start).toISOString()+'&end='+moment(data.end).toISOString(),{createdBy: currentUser._id},config)
         setEvents(response.data)

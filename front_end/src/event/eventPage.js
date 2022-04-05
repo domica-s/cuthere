@@ -2,12 +2,15 @@ import React from "react";
 import Container from "react-bootstrap/Container";
 import Row from 'react-bootstrap/Row';
 import Col from "react-bootstrap/Col";
+import Form from 'react-bootstrap/Form';
 import "./eventPage.css";
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
 import AuthService from "../services/auth.service";
 import { auto } from "@popperjs/core";
+import { ThemeConsumer } from "react-bootstrap/esm/ThemeProvider";
+import { Axios } from "axios";
 
 
 var params = require("../params/params");
@@ -49,7 +52,8 @@ class Event extends React.Component {
         this.state = {
             events: {},
             currentUser: AuthService.getCurrentUser(),
-            searchTerm: ""
+            searchTerm: "",
+            filterTerm:""
         };
 
         this.onChangeSearch = this.onChangeSearch.bind(this);
@@ -78,6 +82,21 @@ class Event extends React.Component {
       });
     }
 
+    onChangeFilter = (e) => {
+      this.setState({
+        filterTerm: e.target.value
+      });
+    }
+
+    matchCategory(event){
+      return this.state.filterTerm === event.activityCategory
+    }
+
+    submitFilter = (e) => {
+      e.preventDefault()
+      console.log(this.state.filterTerm) 
+    }
+
     render() {
         let e = this.state.events;
         
@@ -89,28 +108,70 @@ class Event extends React.Component {
                 value={this.state.searchTerm} onChange={this.onChangeSearch}
               />
             </div>
+            <p>Filter by interest:</p>
+            {/* Add Filtering options by interest*/}
+              <Form.Select name="activityCategory" type="text" value = {this.state.filterTerm} onChange={this.onChangeFilter}>
+                  <option value="">None</option>
+                  <option value="Basketball">Basketball</option>
+                  <option value="Badminton">Badminton</option>
+                  <option value="Soccer">Soccer</option>
+                  <option value="Hiking">Hiking</option>
+                  <option value="Volleyball">Volleyball</option>
+                  <option value="Board Games">Board Games</option>
+                  <option value="Tennis">Tennis</option>
+                  <option value="Running">Running</option>
+                  <option value="Gaming">Gaming</option>
+                  <option value="Swimming">Swimming</option>
+                  <option value="Drinking">Drinking</option>
+                  <option value="Study">Study</option>
+                  <option value="Movies">Movies</option>
+                  <option value="Frat Parties">Frat Parties</option>
+                  <option value="Athletics">Athletics</option>
+                  <option value="Arts">Arts</option>
+                  <option value="Cooking">Cooking</option>
+              </Form.Select>
+            <div className="filter options-outline">
+                
+            </div>
             <h2>Here are the events</h2>
             <hr></hr>
             {e.length > 0 && 
               (e.filter((val) => {
-                
-                if (this.state.searchTerm == "") {
-                  return val
+                if (this.state.filterTerm == "") {
+                  if (this.state.searchTerm == "") {
+                    return val
+                  }
+                  else {
+                    if (val[1].title.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
+                      return val
+                    }
+                    if (val[1].activityCategory.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
+                      return val
+                    }
+                    if (val[1].venue.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
+                      return val
+                    }
+                  }
                 }
-                else {
-                  if (val[1].title.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
-                    return val
-                  }
-                  if (val[1].activityCategory.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
-                    return val
-                  }
-                  if (val[1].venue.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
-                    return val
+                else  {
+                  if (this.state.filterTerm.toLowerCase() == val[1].activityCategory.toLowerCase()) {
+                    if (this.state.searchTerm == "") {
+                      return val
+                    }
+                    else {
+                      if (val[1].title.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
+                        return val
+                      }
+                      if (val[1].activityCategory.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
+                        return val
+                      }
+                      if (val[1].venue.toLowerCase().includes(this.state.searchTerm.toLowerCase())) {
+                        return val
+                      }
+                    }
                   }
                 }
-              })).map((data, index) => 
-              <OneEvent data={data} key={index}/>
-            )}
+              })).map((data, index) => <OneEvent data={data} key={index}/>)}
           </Container>
         );
     }

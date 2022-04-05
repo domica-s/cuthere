@@ -70,7 +70,18 @@ exports.leaveUserRating = (req, res) => {
             // if their events are not empty
             if (sourceUser.registeredEvents && targetUser.registeredEvents) {
                 // if they share similar events
-                if (sourceUser.registeredEvents.some(i => targetUser.registeredEvents.includes(i))) {
+                let sameEvent = 0;
+                sourceUser.registeredEvents.forEach((item, index) => {
+                  targetUser.registeredEvents.forEach((item1, index1) => {
+                    if (item.event.equals(item1.event)) {
+                      sameEvent = 1;
+                    }
+                  })
+                })
+
+                if (sameEvent === 1) {
+
+                // if (sourceUser.registeredEvents.some(i => targetUser.registeredEvents['event'] == i['event'])) {
                     // if they left a comment before
                     // cannot comment anymore
                     let targetHistory = targetUser.reviewHistory;
@@ -143,7 +154,16 @@ exports.updateUserRating = (req, res) => {
             if (sourceUser.registeredEvents && targetUser.registeredEvents) {
 
                 // if they share similar events
-                if (sourceUser.registeredEvents.some(i => targetUser.registeredEvents.includes(i))) {
+                let sameEvent = 0;
+                sourceUser.registeredEvents.forEach((item, index) => {
+                  targetUser.registeredEvents.forEach((item1, index1) => {
+                    if (item.event.equals(item1.event)) {
+                      sameEvent = 1;
+                    }
+                  })
+                })
+
+                if (sameEvent === 1) {
                     
                     let targetHistory = targetUser.reviewHistory;
                     let hasLeftComment = targetHistory.some(targetHistory => targetHistory.user === sourceSID)

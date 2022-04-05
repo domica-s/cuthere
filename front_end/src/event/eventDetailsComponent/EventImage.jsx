@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import {Form, Button} from 'react-bootstrap';
 import defaultImage from '../../images/cuth.png';
 import authService from '../../services/auth.service';
-var params = require("../../params/params");
 
+var params = require("../../params/params");
 
 const API = params.baseBackURL + "/file/upload";
 const API_Query = params.baseBackURL + "/file/";
@@ -15,7 +15,7 @@ const INITIAL_STATE = {
 };
 
 function EventImage(props) {
-    console.log(props.eventID)
+    console.log(props.eventID, props.detail.activityCategory);
     const [Images, setImages] = useState(INITIAL_STATE);
 
     const onChangeFile = async(e) => {
@@ -69,10 +69,10 @@ function EventImage(props) {
 
   return (
       <div> 
-          <img id="event-pic" src={defaultImage} alt="" className="center ui-w-80" onLoad={onLoadPic}/>
+          <img id="event-pic" src={'/image/'+props.detail.activityCategory+'.jpeg'} alt="" className="center ui-w-80" onLoad={onLoadPic}/>
           <br/>
           <label className="m-3 btn btn-outline-primary">
-                Select new photo
+                Select new photo    {props.detail.activityCategory}
                 <input type="file" className="account-settings-fileinput" onChange={onChangeFile}/>
           </label> &nbsp;          
           {Images.file && <Button className="m-3" variant="outline-warning" type="button" onClick={onUploadFile}>Upload</Button>}
