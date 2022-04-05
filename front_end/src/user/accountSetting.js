@@ -6,12 +6,17 @@ import {useState, useEffect} from 'react';
 import authService from "../services/auth.service";
 import userService from "../services/user.service";
 import axios from "axios";
+import { interestOptions } from "./data.js";
+import Select from "react-select";
 var params = require("../params/params");
+
 
 const currentUser = authService.getCurrentUser();
 const API = params.baseBackURL + "/file/upload";
 const API_DELETE = params.baseBackURL + "/file/delete/";
 const API_Query = params.baseBackURL + "/file/";
+
+
 
 
 const INITIAL_STATE = {
@@ -23,7 +28,7 @@ const INITIAL_STATE = {
     message: "",
     about: "",
     country: "",
-    interests: "",
+    interests: [],
     uploadImg: "",
   };
 
@@ -40,6 +45,7 @@ function GeneralInformation() {
             .then(successResponse => {
               
               userFromDB = successResponse.data;
+              console.log(userFromDB.interests);
               setUser({
                 username: userFromDB.username,
                 email: userFromDB.email,
@@ -77,6 +83,13 @@ function GeneralInformation() {
         setUser({ ...user, [e.target.name]: e.target.value });
     };
 
+    const handleInterests =(e, action) => {
+      const value = e.map(x=>x.value)
+      console.log(value);
+      setUser({...user, [action.name]: value});
+      console.log(action);
+    }
+
     const handleGeneral = async (e) => {
         e.preventDefault();
         let currentUser = authService.getCurrentUser();
@@ -88,7 +101,7 @@ function GeneralInformation() {
           .then(successResponse => {
             
             updatedUser = successResponse.data;
-            // console.log(updatedUser.username);
+            console.log(updatedUser);
             setUser({
               username: updatedUser.username,
               email: updatedUser.email,
@@ -178,6 +191,12 @@ function GeneralInformation() {
         img.src = await URL.createObjectURL(resultBlob);
       }
     }
+    console.log(user.interests);
+    const defaultSelectData = [];
+    user.interests.map((data, index) => {
+      defaultSelectData.push({"label": data, "value": data});
+    })
+    // console.log(defaultSelectData);
 
     return(
         <Form onSubmit={handleGeneral}>
@@ -508,14 +527,21 @@ function GeneralInformation() {
                         <option value="Zimbabwe">Zimbabwe</option>
                     </Form.Control>
                 </div>
+                
                 <div className="form-group mb-3">
                   <label className="form-label">Interests</label>
-                  <Form.Control
-                  type="text"
-                  name="interests"
-                  value={user.interests || ""}
-                  placeholder={"Write something regarding your interests.."}
-                  onChange={handleInput} />
+                  <Select
+                    options={interestOptions}
+                    isMulti
+                    closeMenuOnSelect={false}
+                    name="interests"
+                    allowSelectAll={true} 
+                    onChange={handleInterests}
+                    placeholder="select your interests.."
+                    value={defaultSelectData}
+                    // value={{label:user.interests || "", 
+                    //         value: user.interests || ""}}
+                    />
                 </div>
                 <Button type="submit" variant="outline-dark" value="Update" style={{marginBottom:"3%"}}>Update Profile</Button>
                 <div style={{marginBottom:"5%"}}>
@@ -557,9 +583,7 @@ function ChangePassword() {
     useEffect(() => {
         (async () => {
         try {
-            // const user = await axios.get(
-            //   "https://jsonplaceholder.typicode.com/users/1"
-            // );
+
             const user = authService.getCurrentUser();
 
             setUser({
@@ -569,7 +593,7 @@ function ChangePassword() {
 
             })
             console.log(user);
-            // setUser(user.data);
+          
             
         } catch (error) {
             console.log(error);
