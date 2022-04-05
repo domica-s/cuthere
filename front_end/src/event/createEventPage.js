@@ -180,13 +180,14 @@ class CreateEvent extends React.Component {
     
                     <Form.Group className="mb-3" controlId="floatingInput">
                         <Form.Label>Category of your event</Form.Label>
-                        <Form.Select name="category" onChange={this.onChangeCategory}>
+                        <Form.Select name="category" onChange={this.onChangeCategory} required>
+                            <option value="">None</option>
                             <option value="Basketball">Basketball</option>
                             <option value="Badminton">Badminton</option>
                             <option value="Soccer">Soccer</option>
                             <option value="Hiking">Hiking</option>
                             <option value="Volleyball">Volleyball</option>
-                            <option value="Board Games">Board Games</option>
+                            <option value="Boardgame">Board Games</option>
                             <option value="Tennis">Tennis</option>
                             <option value="Running">Running</option>
                             <option value="Gaming">Gaming</option>
@@ -194,7 +195,7 @@ class CreateEvent extends React.Component {
                             <option value="Drinking">Drinking</option>
                             <option value="Study">Study</option>
                             <option value="Movies">Movies</option>
-                            <option value="Frat Parties">Frat Parties</option>
+                            <option value="FratParty">Frat Parties</option>
                             <option value="Athletics">Athletics</option>
                             <option value="Arts">Arts</option>
                             <option value="Cooking">Cooking</option>

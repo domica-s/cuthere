@@ -2,6 +2,7 @@ const router = require("express").Router();
 const Event = require("../models/event")
 const moment = require("moment")
 const { authJwt } = require("../middlewares");
+const User = require("../models/user");
 
 router.post("/create-event",[authJwt.verifyToken], (req,res)=> {
 
@@ -40,7 +41,7 @@ router.post("/create-event",[authJwt.verifyToken], (req,res)=> {
 })
 
 // Filter Function - All Events
-router.get("/get-event", async(req,res)=> {
+router.get("/get-event",[authJwt.verifyToken], async(req,res)=> {
     const events = await Event.find({
         start: {$gte: moment(req.query.start).toDate()}, 
         end: {$lte: moment(req.query.end).toDate()},
@@ -50,22 +51,22 @@ router.get("/get-event", async(req,res)=> {
 });
 
 // Filter Function - My events 
-router.post("/my-event", async(req, res) => { 
+router.post("/my-event", [authJwt.verifyToken], async(req, res) => { 
 
-    const events = await Event.find({
-        createdBy: req.body.createdBy, 
+    user = req.body.user 
+
+    const events = await Event.find({ 
+        participants: user._id,
         start: {$gte: moment(req.query.start).toDate()},
         end: {$lte: moment(req.query.end).toDate()}
     })
     
-
-    res.send(events);
-
-    
+    res.send(events)
 });
 
+
 // To route to an events detail page
-router.get("/route-event/:id", async(req,res)=> {
+router.get("/route-event/:id", [authJwt.verifyToken], async(req,res)=> {
 
     Event.findOne({eventID: req.params.id}, (err, result)=> {
         if (err) {
