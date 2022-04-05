@@ -33,7 +33,7 @@ router.get("/feed", [authJwt.verifyToken], function(req,res){
             let eventId = data[i].event;
             let timeId = data[i].timestamp;
 
-            Event.findById(eventId, function(err, resEvent){
+            event_tmp = Event.findById(eventId, function(err, resEvent){
                 if(err){
                     res.status(400).send({ message: "error occured: " + err });
                 }
@@ -42,12 +42,12 @@ router.get("/feed", [authJwt.verifyToken], function(req,res){
                     cont = true;
                 }
                 else{
-                    console.log("Event found");
-                    event_tmp = resEvent;
-                    //console.log(returnData[0]);
+                    console.log("Event found: ", resEvent);
+                    
                 }
             })
-            User.findById(userId, function(err, resUser){
+            
+            user_tmp = User.findById(userId, function(err, resUser){
                 if(err){
                     res.status(400).send({ message: "error occured: " + err });
                 }
@@ -56,9 +56,7 @@ router.get("/feed", [authJwt.verifyToken], function(req,res){
                     cont = true;
                 }
                 else{
-                    console.log("User found");
-                    user_tmp = resUser;
-                    //console.log(returnData[1]);
+                    console.log("User found: ", resUser);
                 }
             })
             returnData[0] = event_tmp;
