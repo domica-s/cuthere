@@ -23,46 +23,58 @@ router.get("/feed", [authJwt.verifyToken], function(req,res){
       else{
         let data = baseUser.feedActivities;
         let counter = 0;
-        var jsonData = {}
+        var jsonData = {};
         var returnData = {};
         var event_tmp, user_tmp;
         var cont = false;
         for (var i in data){
-            
-            let userId = data[i].friend;
-            let eventId = data[i].event;
-            let timeId = data[i].timestamp;
-
-            event_tmp = Event.findById(eventId, function(err, resEvent){
+          let userId = data[i].friend;
+          let eventId = data[i].event;
+          let timeId = data[i].timestamp;
+          /*
+            Event.findById(eventId, function(err, resEvent){
                 if(err){
                     res.status(400).send({ message: "error occured: " + err });
                 }
                 else if(resEvent == null){
-                    console.log("Event not found");
+                    //console.log("Event not found");
                     cont = true;
                 }
                 else{
-                    console.log("Event found: ", resEvent);
-                    
+                    //event_tmp = Object.assign({}, resEvent);
+                    //event_tmp = JSON.parse(JSON.stringify(resEvent));
+                    event_tmp = resEvent;
+                    console.log("Event found: ", event_tmp);
                 }
             })
             
-            user_tmp = User.findById(userId, function(err, resUser){
+            User.findById(userId, function(err, resUser){
                 if(err){
                     res.status(400).send({ message: "error occured: " + err });
                 }
                 else if(resUser == null){
-                    console.log("User not found");
+                    //console.log("User not found");
                     cont = true;
                 }
                 else{
-                    console.log("User found: ", resUser);
+                    //user_tmp = Object.assign({}, resUser);
+                    user_tmp = resUser;
+                    //console.log("User found: ", user_tmp);
                 }
             })
             returnData[0] = event_tmp;
             returnData[1] = user_tmp;
-            returnData[2] = timeId;
-            console.log(returnData);
+            returnData[2] = timeId;*/
+
+          //comment out the 3 line below to try
+          returnData[0] = userId;
+          returnData[1] = eventId;
+          returnData[2] = timeId;
+          console.log(returnData);
+          if (!cont) {
+            jsonData[counter] = returnData;
+            counter += 1;
+          }
         }
         res.send(jsonData);
       }
