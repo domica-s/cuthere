@@ -33,6 +33,7 @@ router.get("/allevents", [authJwt.verifyToken], function (req, res) {
 router.get("/event/:id", [authJwt.verifyToken], function (req, res) {
 
     var event_id = req.params.id;
+    
     Event.findOne({ eventID: event_id }).populate('chatHistory.userDetails').populate('participants').populate('createdBy')
     .exec(function(err, result){
         if (err) {
