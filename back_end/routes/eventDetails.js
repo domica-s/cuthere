@@ -11,6 +11,10 @@ const res = require("express/lib/response");
 const { authJwt } = require("../middlewares");
 const { update } = require("../models/event");
 
+const nodemailer = require('nodemailer');
+const sendgridTransport = require("nodemailer-sendgrid-transport");
+var params = require("../params/params");
+
 // STATUS --> WORKING
 function checkRegistered(user_id, participants){
     const stringParticipants = participants.map( x => x.toString()) 
@@ -19,6 +23,36 @@ function checkRegistered(user_id, participants){
     else return false
 
 }
+
+// Email reminder
+function sendReminder(res, to_email, email_body) {
+    let subject = "Reminder for registered event";
+    let resMsgSuccess = "A reminder email has been sent to " + to_email;
+    let resMsgFail = "Technical Issue! Please contact our moderators.";
+
+    var transporter = nodemailer.createTransport(
+        sendgridTransport({
+            auth: {
+                api_key: params.SENDGRID_APIKEY,
+            }
+        })
+    )
+
+    var mailOptions = {
+        from: 'noreply.cuther@gmail.com',
+        to: to_email,
+        subject: subject,
+        text: email_body
+    };
+
+    transporter.sendMail(mailOptions, function(err) {
+        if (err) {
+            return res.status(500).send({message: resMsgFail});
+        }
+        return res.status(200).send({message: resMsgSuccess});
+    });
+}
+
 
 // Register Events --> WORKING
 router.post('/event/register/:eventID', [authJwt.verifyToken], function (req, res){

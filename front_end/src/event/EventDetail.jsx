@@ -133,7 +133,7 @@ export default function (props) {
                 <Row gutter = {[16,16]}>
 
                     <Col lg={12} xs={24}>
-                        <EventImage detail={Event} eventID={eventId}/>
+                        <EventImage detail={Event} eventID={eventId} category={Event.activityCategory}/>
                     </Col> 
 
                     <Col lg={12} xs={24}>
