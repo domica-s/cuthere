@@ -12,8 +12,8 @@ class Home extends React.Component {
         super(props);
         this.state = {
             currentUser: AuthService.getCurrentUser(),
-            APIintEvents: params.baseBackURL + "/intevents",
-            APIdiscEvents: params.baseBackURL + "/discoverevents",
+            APIintEvents: params.baseBackURL + "/featured/interest",
+            APIdiscEvents: params.baseBackURL + "/featured/discover",
             APInewEvents: params.baseBackURL + "/featured/new",
             APIsortEvents: params.baseBackURL + "/featured/upcoming",
         }
@@ -27,14 +27,14 @@ class Home extends React.Component {
                   <EventWidget api={this.state.APInewEvents} />
                 </div>
                 <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
-                  <EventWidget api={this.state.APIsortEvents} />
-                </div>{/*
+                  <EventWidget api={this.state.APIintEvents} />
+                </div>
                 <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
                   <EventWidget api={this.state.APInewEvents} />
                 </div>
                 <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
-                  <EventWidget api={this.state.APInewEvents} />
-                </div> */}
+                  <EventWidget api={this.state.APIdiscEvents} />
+                </div>
               </Col>
               <Col md={3} xs={0}>
                 <h2>Feeds</h2>
@@ -46,7 +46,7 @@ class Home extends React.Component {
 }
 
 class Feeds extends React.Component{
-  
+
 }
 
 class About extends React.Component {
