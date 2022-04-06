@@ -1,0 +1,20 @@
+{
+  "name": "cuthere",
+  "version": "1.0.0",
+  "description": "CUthere is a web-app built to help members of The Chinese University of Hong Kong coordinate and participate in meetups with other members, this project is built using the MERN stack.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/domica-s/cuthere.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/domica-s/cuthere/issues"
+  },
+  "homepage": "https://github.com/domica-s/cuthere#readme"
+}
