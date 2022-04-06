@@ -1,5 +1,7 @@
 const User = require("../models/user");
-
+const Event = require("../models/event");
+const res = require("express/lib/response");
+const { json } = require("body-parser");
 // get user profile details
 exports.getUserProfile = (req, res) => {
     User.findOne({sid:req.params.sid}).exec(function(err, user){
@@ -308,3 +310,99 @@ exports.unfollowUser = (req, res) => {
     });
   });
 };
+
+getEvent = async (eventId) => {
+  try {
+    let event = await Event.findById(eventId).lean();
+    // res.status(200).send({event});
+    return (event);
+  }
+  catch (error) {
+    res.status(404).json(error);
+  }
+}
+
+getUser = async (userId) => {
+  try {
+    let user = await User.findById(userId).lean();
+    // res.status(200).send({event});
+    return (user);
+  }
+  catch (error) {
+    res.status(404).json(error);
+  }
+}
+
+exports.getFeeds = async (req, res) => {
+  try {
+    let currentUser = req.body.sid;
+
+    User.findOne({ sid: currentUser })
+    .exec((err, baseUser) => {
+      if (err) {
+        res.status(400).send({ message: "error occured: " + err });
+      }
+
+      if (!baseUser) {
+        res.status(404).send({ message: "User not found" });
+      }
+
+      let data = baseUser.feedActivities;
+      let jsonData = {};
+      let counter = 0;
+      let flag = false;
+      console.log("Data length", data.length);
+      for (let i in data) {
+        let userId = data[i].friend;
+        let eventId = data[i].event;
+        let timeId = data[i].timestamp;
+
+        let resEvent;
+        let resUser;
+        let returnData = {};
+        
+        returnData[2] = timeId;
+
+        getEvent(eventId)
+        .then(result => {
+          resEvent = result; 
+          console.log(resEvent)
+          returnData[0] = resEvent;
+        })
+        .then(() => {
+          getUser(userId)
+          .then(result => {
+            console.log("1 - I am here");
+            resUser = result;
+            returnData[1] = resUser;
+            flag = true;
+            jsonData[counter] = returnData;
+            counter++;
+            console.log(jsonData);
+          })
+          .catch((e) => {
+            // handle error here
+            return res.status(400).send({message: "2 - An error occured"});
+          })
+        })
+        .catch((e) => {
+          // handle error here
+          return res.status(400).send({message: "1 - An error occured"});
+        });
+      }
+      console.log(counter);
+      if (flag) {
+        console.log("I am here");
+        console.log(jsonData);
+        return res.status(200).send(jsonData);
+      }
+      else {
+        return res.status(400).send({message: "3 - An error occured"});
+      }
+
+    })
+  }
+  catch (err) {
+    throw res.status(500).send({message: err})
+  }
+}
