@@ -28,7 +28,6 @@ router.get("/allevents", [authJwt.verifyToken], function (req, res) {
     })
 })
 
-
 // List one event details
 router.get("/event/:id", [authJwt.verifyToken], function (req, res) {
 
@@ -44,7 +43,7 @@ router.get("/event/:id", [authJwt.verifyToken], function (req, res) {
 });
 
 router.post("/featured/interest", [authJwt.verifyToken], function(req,res){
-    var event_dic = {}
+    var event_dic = {};
     let int = req.body.interests;
     Event.find({
        activityCategory: { $in : int}
@@ -58,6 +57,7 @@ router.post("/featured/interest", [authJwt.verifyToken], function(req,res){
         }
         var int_events = {
           title: "Events you might be interested in",
+          type: "/interest",
           event_dic,
         };
         res.send(int_events);
@@ -80,6 +80,7 @@ router.post("/featured/discover", [authJwt.verifyToken], function (req, res) {
       }
       var int_events = {
         title: "Explore other interests!",
+        type: "/discover",
         event_dic,
       };
       res.send(int_events);
