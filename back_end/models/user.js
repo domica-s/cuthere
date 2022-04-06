@@ -22,10 +22,12 @@ var userSchema = mongoose.Schema({
         registeredAt: {type: Date}
     }],
     feedActivities:[{
-        friend: {type: mongoose.Schema.Types.ObjectId},
-        event: {type: mongoose.Schema.Types.ObjectId},
+        friend: {type: String},
+        sid: {type: Number},
+        event: {type: String},
+        eid: {type: Number},
         timestamp: {type: Date},
-        type: {type:String}
+        type: {type:String},
     }],
     starredEvents:[{type: mongoose.Schema.Types.ObjectId}],
     role:{type:String, enum: ['User', 'Admin']},

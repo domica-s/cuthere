@@ -22,16 +22,31 @@ router.get("/feed", [authJwt.verifyToken], function(req,res){
       }
       else{
         let data = baseUser.feedActivities;
-        let counter = 0;
+        var eidCol = [];
         var jsonData = {};
-        var returnData = {};
-        var event_tmp, user_tmp;
-        var cont = false;
         for (var i in data){
-          let userId = data[i].friend;
-          let eventId = data[i].event;
-          let timeId = data[i].timestamp;
-          /*
+          eidCol.push(data[i].eid);
+        }
+        Event.find({ eventID: { $in : eidCol}}).exec(function(err, event){
+          if(err){
+            res.status(400).send({ message: "error occured: " + err });
+          }
+          if(event.length>0){
+            for (var j=0; j < event.length; j++){
+              //can only display one events at once
+              var index = data.findIndex((element)=> element.eid == event[j].eventID);
+              jsonData[j] = data[index];
+            }
+            res.send(jsonData);
+          }
+        })
+      }
+    })
+})
+
+module.exports = router;
+
+/*
             Event.findById(eventId, function(err, resEvent){
                 if(err){
                     res.status(400).send({ message: "error occured: " + err });
@@ -64,7 +79,12 @@ router.get("/feed", [authJwt.verifyToken], function(req,res){
             })
             returnData[0] = event_tmp;
             returnData[1] = user_tmp;
-            returnData[2] = timeId;*/
+            returnData[2] = timeId;*//*
+        for (var i in data){
+          let userId = data[i].friend;
+          let eventId = data[i].eid;
+          console.log(eventId);
+          let timeId = data[i].timestamp;
 
           //comment out the 3 line below to try
           returnData[0] = userId;
@@ -74,11 +94,4 @@ router.get("/feed", [authJwt.verifyToken], function(req,res){
           if (!cont) {
             jsonData[counter] = returnData;
             counter += 1;
-          }
-        }
-        res.send(jsonData);
-      }
-    })
-})
-
-module.exports = router;
+          }*/

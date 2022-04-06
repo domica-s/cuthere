@@ -211,8 +211,10 @@ router.post("/event", [authJwt.verifyToken], function (req, res, next) {
           var activity = {
             $push: {
               feedActivities: {
-                friend: ress,
-                event: newEvent,
+                friend: ress.username,
+                sid: ress.sid,
+                event: title,
+                eid: eID,
                 timestamp: timeNow,
                 type: "Create",
               },

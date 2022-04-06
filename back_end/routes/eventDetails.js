@@ -100,8 +100,10 @@ router.post('/event/register/:eventID', [authJwt.verifyToken], function (req, re
                             var activity = {
                                 $push: {
                                     feedActivities: {
-                                        friend: ress,
-                                        event: doc,
+                                        friend: ress.username,
+                                        sid: ress.sid,
+                                        event: doc.event,
+                                        eid: doc.eventID,
                                         timestamp: timeNow,
                                         type: "Register"
                                     },
@@ -168,7 +170,7 @@ router.post('/event/unregister/:eventID', [authJwt.verifyToken], function (req, 
                             var activity = {
                                 $pull: {
                                     feedActivities: 
-                                    {event: doc}
+                                    {sid: ress.sid, eid: doc.eventID}
                                 },
                             };
                             for(var f in followers){
