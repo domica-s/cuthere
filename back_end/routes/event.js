@@ -46,11 +46,12 @@ router.get("/event/:id", [authJwt.verifyToken], function (req, res) {
 router.post("/featured/interest", [authJwt.verifyToken], function(req,res){
     var event_dic = {}
     let int = req.body.interests;
-    console.log(int);
-
     Event.find({
-       activityCategory: int
+       activityCategory: { $in : int}
     }).exec(function (err, event) {
+      if(err){
+        res.status(400).send({ message: "error occured: " + err });
+      }
       if (event.length > 0) {
         for (var i = 0; i < event.length; i++) {
           event_dic[i] = event[i];
@@ -64,12 +65,15 @@ router.post("/featured/interest", [authJwt.verifyToken], function(req,res){
     });
 })
 
-router.get("/featured/discover", [authJwt.verifyToken], function (req, res) {
+router.post("/featured/discover", [authJwt.verifyToken], function (req, res) {
   var event_dic = {};
-
+  let int = req.body.interests;
   Event.find({
-    int: { $not: { activityCategory } }
+    activityCategory: { $nin: int}
   }).exec(function (err, event) {
+    if (err) {
+      res.status(400).send({ message: "error occured: " + err });
+    }
     if (event.length > 0) {
       for (var i = 0; i < event.length; i++) {
         event_dic[i] = event[i];
