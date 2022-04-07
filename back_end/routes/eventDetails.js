@@ -219,6 +219,9 @@ router.post('/event/update/:eventID', [authJwt.verifyToken], function(req,res){
 
 // Delete Events --> WORKING
 //TODO: update registeredEvents of participants + feedActivity
+    // --> Delete the registeredEvents from the User
+    // --> Delete the feedActivities from the User
+    // --> Delete the starredEvents from the user
 router.post('/event/delete/:eventID',[authJwt.verifyToken], function(req,res){
     // Acquire Parameters
     const eventID = req.params.eventID
@@ -230,8 +233,7 @@ router.post('/event/delete/:eventID',[authJwt.verifyToken], function(req,res){
         else if (result.createdBy != userID) res.status(200).send({message: "You have no authority to delete this event!"})
 
         else {
-            //console.log(result.participants);
-            //var part_user = result.participants;
+            
             Event.findOneAndDelete({eventID:eventID}).exec(function (err, result){
                 if(err) return res.status(400).send({message: "Error Occured: "+ err})
                 else if (result === null) return res.status(200).send({message:"There are no such events"})

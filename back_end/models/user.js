@@ -1,5 +1,6 @@
 var bcrypt = require("bcryptjs");
 var mongoose = require("mongoose");
+var Event = require("./event");
 
 const SALT_FACTOR = 10;
 
@@ -42,6 +43,16 @@ var userSchema = mongoose.Schema({
     name:{type:String},
     country:{type:String},
 });
+
+userSchema.post("remove", function(next){
+
+    Event.remove({
+        chatHistory: {userDetails: this._id },
+        // createdBy: this._id, // This is dangerous, just try that after fixing the others
+        participants: this._id
+
+    }, next)
+})
 
 var User = mongoose.model("User", userSchema);
 
