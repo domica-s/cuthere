@@ -42,50 +42,57 @@ router.get("/event/:id", [authJwt.verifyToken], function (req, res) {
     })
 });
 
-router.post("/featured/interest", [authJwt.verifyToken], function(req,res){
+router.get("/featured/interest/:sid", [authJwt.verifyToken], function(req,res){
     var event_dic = {};
-    let int = req.body.interests;
-    Event.find({
-       activityCategory: { $in : int}
-    }).exec(function (err, event) {
-      if(err){
-        res.status(400).send({ message: "error occured: " + err });
-      }
-      if (event.length > 0) {
-        for (var i = 0; i < event.length; i++) {
-          event_dic[i] = event[i];
-        }
-        var int_events = {
-          title: "Events you might be interested in",
-          type: "/interest",
-          event_dic,
-        };
-        res.send(int_events);
-      }
-    });
+    var currentUser = req.params.sid;
+    User.findOne({sid: currentUser}).exec(function(err, baseUser){
+      var int = baseUser.interests;
+      Event.find({
+              activityCategory: { $in : int}
+            }).exec(function (err, event) {
+              if(err){
+                res.status(400).send({ message: "error occured: " + err });
+              }
+              if (event.length > 0) {
+                for (var i = 0; i < event.length; i++) {
+                  event_dic[i] = event[i];
+                }
+                var int_events = {
+                  title: "Events you might be interested in",
+                  type: "/interest",
+                  event_dic,
+                };
+                res.send(int_events);
+              }
+            });
+    })
+      
 })
 
-router.post("/featured/discover", [authJwt.verifyToken], function (req, res) {
+router.get("/featured/discover/:sid", [authJwt.verifyToken], function (req, res) {
   var event_dic = {};
-  let int = req.body.interests;
-  Event.find({
-    activityCategory: { $nin: int}
-  }).exec(function (err, event) {
-    if (err) {
-      res.status(400).send({ message: "error occured: " + err });
-    }
-    if (event.length > 0) {
-      for (var i = 0; i < event.length; i++) {
-        event_dic[i] = event[i];
-      }
-      var int_events = {
-        title: "Explore other interests!",
-        type: "/discover",
-        event_dic,
-      };
-      res.send(int_events);
-    }
-  });
+  var currentUser = req.params.sid;
+    User.findOne({sid: currentUser}).exec(function(err, baseUser){
+      var int = baseUser.interests;
+      Event.find({
+        activityCategory: { $nin: int}
+      }).exec(function (err, event) {
+        if (err) {
+          res.status(400).send({ message: "error occured: " + err });
+        }
+        if (event.length > 0) {
+          for (var i = 0; i < event.length; i++) {
+            event_dic[i] = event[i];
+          }
+          var int_events = {
+            title: "Explore other interests!",
+            type: "/discover",
+            event_dic,
+          };
+          res.send(int_events);
+        }
+      });
+    })
 });
 
 router.get("/featured/new", [authJwt.verifyToken], function (req, res) {
