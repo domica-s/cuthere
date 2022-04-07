@@ -286,7 +286,7 @@ router.post('/event/fav/:eventID', [authJwt.verifyToken], function (req,res){
         
                 else {
                     
-                    User.findOneAndUpdate({_id: userID},{$set:{starredEvents: [...resultUser.starredEvents,resultEvent]}}).exec(function (err, result){
+                    User.findOneAndUpdate({_id: userID},{$set:{starredEvents: [...resultUser.starredEvents,resultEvent._id]}}).exec(function (err, result){
                         if(err) res.status(400).send({message: "Error Occured: "+ err})
                         else res.status(200).send({message: "The event has been added to your fav list nigga!", response: result})
                     })
@@ -296,7 +296,7 @@ router.post('/event/fav/:eventID', [authJwt.verifyToken], function (req,res){
     })
 })
 
-// Unadd to favorite --> WORKING
+// Remove from favorite --> WORKING
 router.post('/event/noFav/:eventID', [authJwt.verifyToken], function (req,res){
     const eventID = req.params.eventID
     const userID = req.body.id 
@@ -316,7 +316,7 @@ router.post('/event/noFav/:eventID', [authJwt.verifyToken], function (req,res){
                 else {
                     // Remove the event from the starred
                     let starred = resultUser.starredEvents
-                    starred.remove(resultEvent)
+                    starred.remove(resultEvent._id)
                     
   
                     // Update the user
