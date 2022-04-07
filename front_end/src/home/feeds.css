@@ -1,0 +1,12 @@
+a:link{
+  text-decoration: black;
+}
+
+.text{
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-size: 15px;
+  text-align: left;
+  width: 10rem;
+  margin-bottom: 0;
+}

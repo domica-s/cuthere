@@ -24,8 +24,8 @@ class Home extends React.Component {
       var sid = currentUser.sid
       return (
         <div>
-          <Row className="m-0">
-            <Col md={9} xs={12}>
+          <Row className="mt-2 m-0" style={{ paddingTop: "20px"}}>
+            <Col xl={9} lg={12}>
               <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
                 <EventWidget api={this.state.APInewEvents} />
               </div>
@@ -39,8 +39,7 @@ class Home extends React.Component {
                 <EventWidget api={this.state.APIdiscEvents + "/" + sid} />
               </div>
             </Col>
-            <Col md={3} xs={0}>
-              <h2>Feeds</h2>
+            <Col xl={3} lg={0} >
               <Feed/>
             </Col>
           </Row>
