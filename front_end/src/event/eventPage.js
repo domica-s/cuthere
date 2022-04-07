@@ -191,7 +191,7 @@ class EventWidget extends React.Component{
       let currentUser = AuthService.getCurrentUser()
       if (currentUser === null) {
       }
-      {
+      if(this.props.type == "get"){
         currentUser !== null && fetch(this.props.api, {
             method: "GET",
             headers: new Headers({
@@ -206,7 +206,23 @@ class EventWidget extends React.Component{
               events: data.event_dic
             });
           });
-      }
+        }
+        else if(this.props.type == "post"){
+          currentUser !== null && fetch(this.props.api, {
+            method: "POST",
+            headers: new Headers({
+              "x-access-token": currentUser.accessToken,
+            }),
+          })
+          .then((res) => res.json())
+          .then((data) => {
+            this.setState({
+              title: data.title,
+              type: data.type,
+              events: data.event_dic
+            });
+          });
+        }
     }
     render(){
       let events = (this.state.events)? Object.entries(this.state.events): null;

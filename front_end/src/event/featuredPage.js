@@ -18,7 +18,9 @@ function Featured(){
 
     useEffect(() => {
       let api = params.baseBackURL + "/featured/" + type;
-      currentUser !== null && fetch(api, {
+      
+      if(type == "new" || type == "upcoming"){
+        currentUser !== null && fetch(api, {
             method: "GET",
             headers: new Headers({
               "x-access-token": currentUser.accessToken,
@@ -30,6 +32,22 @@ function Featured(){
               events: data.event_dic
             })
           });
+      }
+      else{
+        currentUser !== null && fetch(api, {
+            method: "POST",
+            headers: new Headers({
+              "x-access-token": currentUser.accessToken,
+            }),
+          })
+          .then((res) => res.json())
+          .then((data) => {
+            setData({
+              events: data.event_dic
+            })
+          });
+      }
+      
         }
         , []);
 
