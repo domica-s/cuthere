@@ -268,7 +268,7 @@ router.post('/event/addcomment/:eventID', [authJwt.verifyToken], function (req,r
     })
 })
 
-// Add Events to Favorites --> TESTING
+// Add Events to Favorites --> WORKING
 router.post('/event/fav/:eventID', [authJwt.verifyToken], function (req,res){
     const eventID = req.params.eventID
     const userID = req.body.id 
@@ -276,10 +276,16 @@ router.post('/event/fav/:eventID', [authJwt.verifyToken], function (req,res){
     User.findOne({_id: userID}).exec(function (err, resultUser){
         if(err) res.status(200).send({message:"Error occured: "+ err})
         else {
+            // Get the event
             Event.findOne({eventID: eventID}).exec(function(err, resultEvent){
                 if (err) res.status(200).send({message: "Error Occured: "+ err})
+
+                // Check if the event is already in your starred list 
+                if (resultUser.starredEvents.includes(resultEvent._id))
+                res.status(200).send({message: "You have already added this event on your starred list nigga!"})
         
                 else {
+                    
                     User.findOneAndUpdate({_id: userID},{$set:{starredEvents: [...resultUser.starredEvents,resultEvent]}}).exec(function (err, result){
                         if(err) res.status(400).send({message: "Error Occured: "+ err})
                         else res.status(200).send({message: "The event has been added to your fav list nigga!", response: result})
@@ -288,8 +294,40 @@ router.post('/event/fav/:eventID', [authJwt.verifyToken], function (req,res){
             })
         }
     })
+})
 
+// Unadd to favorite --> WORKING
+router.post('/event/noFav/:eventID', [authJwt.verifyToken], function (req,res){
+    const eventID = req.params.eventID
+    const userID = req.body.id 
+    User.findOne({_id: userID}).exec(function (err, resultUser){
+        if(err) res.status(200).send({message:"Error occured: "+ err})
+        else {
+            // Get the event
+            Event.findOne({eventID: eventID}).exec(function(err, resultEvent){
+                
+  
+                if (err) res.status(400).send({message: "Error Occured: "+ err})
 
+                // Check if the user have the event starred
+                if (!resultUser.starredEvents.includes(resultEvent._id))
+                res.status(200).send({message: "You have not added this event as your favorite"})
+        
+                else {
+                    // Remove the event from the starred
+                    let starred = resultUser.starredEvents
+                    starred.remove(resultEvent)
+                    
+  
+                    // Update the user
+                    User.findOneAndUpdate({_id: userID},{$set:{starredEvents:starred}}).exec(function (err, result){
+                        if(err) res.status(400).send({message: "Error Occured: "+ err})
+                        else res.status(200).send({message: "The event has been removed to your fav list nigga!", response: result})
+                    })
+                }
+            })
+        }
+    })
 
 })
 

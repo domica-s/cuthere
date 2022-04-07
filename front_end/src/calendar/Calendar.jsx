@@ -56,28 +56,39 @@ export default function () {
     }
 
 
-    async function handleDatesSet(data, yourCalendar = false, sid = 0){
+    async function handleDatesSet(data, yourCalendar = false, favorite = false){
 
         // To get all the events to the calendar --> WORKING
         if (!yourCalendar){
-        const response = await axios.get('http://localhost:8080/api/calendar/get-event?start='+moment(data.start).toISOString() +'&end='+moment(data.end).toISOString(),        {
-            headers: {
-                "x-access-token": currentUser.accessToken
-            }
-        })
-        setEvents(response.data)
+            const response = await axios.get('http://localhost:8080/api/calendar/get-event?start='+moment(data.start).toISOString() +'&end='+moment(data.end).toISOString(),        {
+                headers: {
+                    "x-access-token": currentUser.accessToken
+                }
+            })
+            setEvents(response.data)
         }
 
-        // To get only your events to the calendar --> WORKING // NEEDS FIX 
-        else {
-        const response = await axios.post("http://localhost:8080/api/calendar/my-event?start="+moment(data.start).toISOString()+'&end='+moment(data.end).toISOString(),{user: currentUser},        {
-            headers: {
-                "x-access-token": currentUser.accessToken
-            }
-        })
-        setEvents(response.data)
+        // To get only your events to the calendar --> WORKING 
+        else if (!favorite){
+            const response = await axios.post("http://localhost:8080/api/calendar/my-event?start="+moment(data.start).toISOString()+'&end='+moment(data.end).toISOString(),{user: currentUser},        {
+                headers: {
+                    "x-access-token": currentUser.accessToken
+                }
+            })
+            setEvents(response.data)
         }
         
+        // Get your favorite events --> TESTING
+        else {
+            const response = await axios.post("http://localhost:8080/api/calendar/fav-event?start="+moment(data.start).toISOString()+'&end='+moment(data.end).toISOString(), {user: currentUser}, {
+                headers: {
+                    "x-access-token": currentUser.accessToken
+                }
+            })
+            setEvents(response.data)
+        }
+        
+    
     }
 
 
@@ -124,7 +135,7 @@ export default function () {
                             click: () => {
                                 setYourCalendar(true)
                                 const calendarApi = calendarRef.current.getApi()
-                                handleDatesSet(calendarApi.currentDataManager.data.dateProfile.currentRange, true, 0)
+                                handleDatesSet(calendarApi.currentDataManager.data.dateProfile.currentRange, true)
 
                             }
                         },
@@ -135,12 +146,21 @@ export default function () {
                                 const calendarApi = calendarRef.current.getApi()
                                 handleDatesSet(calendarApi.currentDataManager.data.dateProfile.currentRange, false)
                             }
+                        },
+                        favEventButton: {
+                            text: 'Favourite Events',
+                            click: () => {
+                                setYourCalendar(true)
+                                const calendarApi = calendarRef.current.getApi()
+                                handleDatesSet(calendarApi.currentDataManager.data.dateProfile.currentRange, true, true)
+
+                            }
                         }
                     }}
                     headerToolbar = {{
                         right: 'prev,next today',
                         left:'title',
-                        center:'yourEventButton allEventButton'
+                        center:'favEventButton yourEventButton allEventButton'
 
                     }}
                     datesSet= {(date) => handleDatesSet(date)}
