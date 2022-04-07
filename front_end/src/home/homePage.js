@@ -20,30 +20,32 @@ class Home extends React.Component {
         }
     }
     render() {
-        return (
-          <div>
-            <Row className="m-0">
-              <Col md={9} xs={12}>
-                <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
-                  <EventWidget api={this.state.APInewEvents} type={"get"} />
-                </div>
-                <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
-                  <EventWidget api={this.state.APIintEvents} type={"post"} />
-                </div>
-                <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
-                  <EventWidget api={this.state.APIsortEvents} type={"get"} />
-                </div>
-                <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
-                  <EventWidget api={this.state.APIdiscEvents} type={"post"} />
-                </div>
-              </Col>
-              <Col md={3} xs={0}>
-                <h2>Feeds</h2>
-                <Feed/>
-              </Col>
-            </Row>
-          </div>
-        );
+      var currentUser = AuthService.getCurrentUser();
+      var sid = currentUser.sid
+      return (
+        <div>
+          <Row className="m-0">
+            <Col md={9} xs={12}>
+              <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
+                <EventWidget api={this.state.APInewEvents} />
+              </div>
+              <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
+                <EventWidget api={this.state.APIintEvents + "/" + sid} />
+              </div>
+              <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
+                <EventWidget api={this.state.APIsortEvents}  />
+              </div>
+              <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
+                <EventWidget api={this.state.APIdiscEvents + "/" + sid} />
+              </div>
+            </Col>
+            <Col md={3} xs={0}>
+              <h2>Feeds</h2>
+              <Feed/>
+            </Col>
+          </Row>
+        </div>
+      );
     }
 }
 

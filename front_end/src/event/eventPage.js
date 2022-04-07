@@ -191,45 +191,34 @@ class EventWidget extends React.Component{
       let currentUser = AuthService.getCurrentUser()
       if (currentUser === null) {
       }
-      if(this.props.type == "get"){
-        currentUser !== null && fetch(this.props.api, {
-            method: "GET",
-            headers: new Headers({
-              "x-access-token": currentUser.accessToken,
-            }),
-          })
-          .then((res) => res.json())
-          .then((data) => {
-            this.setState({
-              title: data.title,
-              type: data.type,
-              events: data.event_dic
-            });
+      currentUser !== null && fetch(this.props.api, {
+          method: "GET",
+          headers: new Headers({
+            "x-access-token": currentUser.accessToken,
+          }),
+        })
+        .then((res) => res.json())
+        .then((data) => {
+          this.setState({
+            title: data.title,
+            type: data.type,
+            events: data.event_dic
+            
           });
-        }
-        else if(this.props.type == "post"){
-          currentUser !== null && fetch(this.props.api, {
-            method: "POST",
-            headers: new Headers({
-              "x-access-token": currentUser.accessToken,
-            }),
-          })
-          .then((res) => res.json())
-          .then((data) => {
-            this.setState({
-              title: data.title,
-              type: data.type,
-              events: data.event_dic
-            });
-          });
-        }
+        });
+        
     }
     render(){
       let events = (this.state.events)? Object.entries(this.state.events): null;
       let disp_events =  (this.state.events)? Object.entries(this.state.events).slice(0,5): null;
-      
-      let title = this.state.title
+      let title = this.state.title;
+      //let type = this.state.type;
       let path = "featured" + this.state.type
+      /*
+      if(type == "/discover" || type == "/interest"){
+        path = path + "/" + currentUser.sid;
+      }*/
+      
         return (
           <Card style={{maxHeight: "22rem", marginBottom: "0px"}}>
             <Card.Header style={{ textAlign: "left" }}>

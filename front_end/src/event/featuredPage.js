@@ -18,36 +18,21 @@ function Featured(){
 
     useEffect(() => {
       let api = params.baseBackURL + "/featured/" + type;
-      
-      if(type == "new" || type == "upcoming"){
-        currentUser !== null && fetch(api, {
-            method: "GET",
-            headers: new Headers({
-              "x-access-token": currentUser.accessToken,
-            }),
-          })
-          .then((res) => res.json())
-          .then((data) => {
-            setData({
-              events: data.event_dic
-            })
-          });
+      if(type == "discover" || type == "interest"){
+        api = api + "/" + currentUser.sid;
       }
-      else{
-        currentUser !== null && fetch(api, {
-            method: "POST",
-            headers: new Headers({
-              "x-access-token": currentUser.accessToken,
-            }),
+      currentUser !== null && fetch(api, {
+          method: "GET",
+          headers: new Headers({
+            "x-access-token": currentUser.accessToken,
+          }),
+        })
+        .then((res) => res.json())
+        .then((data) => {
+          setData({
+            events: data.event_dic
           })
-          .then((res) => res.json())
-          .then((data) => {
-            setData({
-              events: data.event_dic
-            })
-          });
-      }
-      
+        });
         }
         , []);
 
