@@ -12,8 +12,8 @@ const { authJwt } = require("../middlewares");
 const { update } = require("../models/event");
 const { DATABASECONNECTION } = require("../params/params");
 
-router.get("/feed", [authJwt.verifyToken], function(req,res){
-    let currentUser = req.body.sid;
+router.get("/feed/:sid", [authJwt.verifyToken], function(req,res){
+    var currentUser = req.params.sid;
     User.findOne({ sid: currentUser }).exec(function (err, baseUser) {
       if (err) {
         res.status(400).send({ message: "error occured: " + err });

@@ -102,7 +102,7 @@ router.post('/event/register/:eventID', [authJwt.verifyToken], function (req, re
                                     feedActivities: {
                                         friend: ress.username,
                                         sid: ress.sid,
-                                        event: doc.event,
+                                        event: doc.title,
                                         eid: doc.eventID,
                                         timestamp: timeNow,
                                         type: "Register"
