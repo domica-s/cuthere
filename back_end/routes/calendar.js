@@ -64,6 +64,29 @@ router.post("/my-event", [authJwt.verifyToken], async(req, res) => {
     res.send(events)
 });
 
+// Filter Function - Favorite Events
+router.post("/fav-event", [authJwt.verifyToken], async(req, res) => { 
+
+    user = req.body.user 
+
+    
+    await User.find({_id: user._id}).exec(function (err,result){
+        // Send the events where start and end date is as the format follows:
+        let fav = result.starredEvents // Array of objects
+        console.log(result)
+        // let events = []
+        // for (i =0; i<fav.length ; i++){
+        //     // Check if start and End date match the condition 
+        //     if (fav[i].start == {$gte: moment(req.query.start).toDate()} && fav[i].end == {$lte: moment(req.query.end).toDate()}) {
+        //         // append event to the list
+        //         events.append(fav[i])
+        //     }
+        // }
+        // res.send(events)
+    })
+    
+});
+
 
 // To route to an events detail page
 router.get("/route-event/:id", [authJwt.verifyToken], async(req,res)=> {

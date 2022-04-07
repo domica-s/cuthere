@@ -132,6 +132,15 @@ export default function (props) {
         console.log(request)
     }
 
+    async function unaddToFav(eventID){
+        const request = await Axios.post(`http://localhost:8080/event/noFav/${eventID}`, {id: userID},         {
+            headers: {
+                "x-access-token": currentUser.accessToken
+            }
+        })
+        console.log(request)
+    }
+
     return (
         <React.Fragment>
             <div className="postPage" style={{
@@ -163,6 +172,7 @@ export default function (props) {
                         updateEvent = {updateEvent}
                         addComment = {addComment}
                         addToFav = {addToFav}
+                        unaddToFav = {unaddToFav}
                         detail = {Event}/>
                     </Col>
                     <CommentForm detail={Event} addComment={addComment} chatHistory={chatHistory}/>

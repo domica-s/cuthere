@@ -48,6 +48,11 @@ function EventInfo(props) {
     const addToFav = () => {
         props.addToFav(props.detail.eventID)
     }
+
+    const unaddToFav = () => {
+        props.unaddToFav(props.detail.eventID)
+    }
+
   return (
     <React.Fragment>
         <div> 
@@ -159,11 +164,15 @@ function EventInfo(props) {
                 <br/>
                 <br/>
                 <br/>
-                <Button size="large" shape="round" type="success" onClick={addToFav}>
-                    Add to favorites
-                </Button>
 
             </div>
+            <Button size="large" shape="round" type="success" onClick={addToFav}>
+                    Add to favorites
+            </Button>
+                
+            <Button size="large" shape="round" type="success" onClick={unaddToFav}>
+                Remove from favorites
+            </Button>
 
         </div>
 
