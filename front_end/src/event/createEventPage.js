@@ -185,6 +185,7 @@ class CreateEvent extends React.Component {
                             <option value="Basketball">Basketball</option>
                             <option value="Badminton">Badminton</option>
                             <option value="Soccer">Soccer</option>
+                            <option value="Football">Football</option>
                             <option value="Hiking">Hiking</option>
                             <option value="Volleyball">Volleyball</option>
                             <option value="Boardgame">Board Games</option>

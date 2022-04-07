@@ -14,6 +14,7 @@ function EventInfo(props) {
     const [modalOpen, setModalOpen] = useState(false)
     const currentUser = AuthService.getCurrentUser();
     const isHost = Event.createdBy === currentUser._id
+    const isEventDone = props.eventDone
 
     useEffect(() => {
         setEvent(props.detail)
@@ -45,81 +46,85 @@ function EventInfo(props) {
   return (
     <React.Fragment>
         <div> 
-            {isHost?
-            // View for Host
-            <React.Fragment>
-             <Container> 
-                    <Row> <Col><p>Event Status: {Event.status}</p></Col></Row>
-                    <Row> <Col><p>Event ID: {Event.eventID}</p></Col></Row>
-                    <Row><Col><p># of Participants: {Event.numberOfParticipants}</p></Col></Row>
-                    <Row>
-                        <Col>
-                            <p>Location: {Event.venue}</p>
-                        </Col>
-
-                        <Col>
-                            <UpdateForm type={"text"} label={"venue"} value={Event.venue} updateEvent={updateEvent}/>
-                        </Col>
-                    </Row>
-
-                    <Row>
-                        <Col>
-                            <p>Max Participants for this event: {Event.quota}</p>
-                        </Col>
-                        <Col>
-                            <UpdateForm type={"number"} label={"quota"} value={Event.quota} updateEvent={updateEvent}/>
-                        </Col>
-                    </Row>
-
-                    <Row>
-                        <Col>
-                            <p>Event Category: {Event.activityCategory}</p>
-                        </Col>
-
-                        <Col>
-                            <UpdateForm type={"text"} label={"activityCategory"} value={Event.activityCategory} updateEvent={updateEvent}/>
-                        </Col>
-                    </Row>
-
-                    <Row>
-                        <Col>
-                            <p>Starting Date: {Event.start}</p>
-                        </Col>
-                        <Col>
-                            <UpdateForm type={"date"} label={"start"} value={Event.start} updateEvent={updateEvent}/>    
-                        </Col>
-                    </Row>
-
-                    <Row>
-                        <Col>
-                            <p>Ending Date: {Event.end}</p>
-                        </Col>
-
-                        <Col>
-                            <UpdateForm type={"date"} label={"end"} value={Event.end} updateEvent={updateEvent}/>
-                        </Col>
-                    </Row>
-
-                    <Row><Col><p>The host of this event is: {Event.createdBy}</p></Col></Row>
-                    <Row><Col><p>The list of participants for this event is: {Event.participants}</p></Col></Row>
-                </Container>
-            </React.Fragment>
+            {isEventDone 
+            ? 
+            <p> Sorry! This Event is Finished! </p>
             :
-            // For other users 
-            <React.Fragment>
-            <Container> 
-                   <Row> <Col><p>Event Status: {Event.status}</p></Col></Row>
-                   <Row> <Col><p>Event ID: {Event.eventID}</p></Col></Row>
-                   <Row><Col><p># of Participants: {Event.numberOfParticipants}</p></Col></Row>
-                   <Row> <Col> <p>Location: {Event.venue}</p> </Col></Row>
-                   <Row><Col><p>Max Participants for this event: {Event.quota}</p></Col></Row>
-                   <Row><Col><p>Event Category: {Event.activityCategory}</p></Col></Row>
-                   <Row><Col><p>Starting Date: {Event.start}</p></Col></Row>
-                   <Row><Col><p>Ending Date: {Event.end}</p></Col></Row>
-                   <Row><Col><p>The host of this event is: {Event.createdBy}</p></Col></Row>
-                   <Row><Col><p>The list of participants for this event is: {Event.participants}</p></Col></Row>
-               </Container>
-           </React.Fragment>
+            isHost?
+                // View for Host
+                <React.Fragment>
+                 <Container> 
+                        <Row> <Col><p>Event Status: {Event.status}</p></Col></Row>
+                        <Row> <Col><p>Event ID: {Event.eventID}</p></Col></Row>
+                        <Row><Col><p># of Participants: {Event.numberOfParticipants}</p></Col></Row>
+                        <Row>
+                            <Col>
+                                <p>Location: {Event.venue}</p>
+                            </Col>
+    
+                            <Col>
+                                <UpdateForm type={"text"} label={"venue"} value={Event.venue} updateEvent={updateEvent}/>
+                            </Col>
+                        </Row>
+    
+                        <Row>
+                            <Col>
+                                <p>Max Participants for this event: {Event.quota}</p>
+                            </Col>
+                            <Col>
+                                <UpdateForm type={"number"} label={"quota"} value={Event.quota} updateEvent={updateEvent}/>
+                            </Col>
+                        </Row>
+    
+                        <Row>
+                            <Col>
+                                <p>Event Category: {Event.activityCategory}</p>
+                            </Col>
+    
+                            <Col>
+                                <UpdateForm type={"text"} label={"activityCategory"} value={Event.activityCategory} updateEvent={updateEvent}/>
+                            </Col>
+                        </Row>
+    
+                        <Row>
+                            <Col>
+                                <p>Starting Date: {Event.start}</p>
+                            </Col>
+                            <Col>
+                                <UpdateForm type={"date"} label={"start"} value={Event.start} updateEvent={updateEvent}/>    
+                            </Col>
+                        </Row>
+    
+                        <Row>
+                            <Col>
+                                <p>Ending Date: {Event.end}</p>
+                            </Col>
+    
+                            <Col>
+                                <UpdateForm type={"date"} label={"end"} value={Event.end} updateEvent={updateEvent}/>
+                            </Col>
+                        </Row>
+    
+                        <Row><Col><p>The host of this event is: {Event.createdBy}</p></Col></Row>
+                        <Row><Col><p>The list of participants for this event is: {Event.participants}</p></Col></Row>
+                    </Container>
+                </React.Fragment>
+                :
+                // For other users 
+                <React.Fragment>
+                <Container> 
+                       <Row> <Col><p>Event Status: {Event.status}</p></Col></Row>
+                       <Row> <Col><p>Event ID: {Event.eventID}</p></Col></Row>
+                       <Row><Col><p># of Participants: {Event.numberOfParticipants}</p></Col></Row>
+                       <Row> <Col> <p>Location: {Event.venue}</p> </Col></Row>
+                       <Row><Col><p>Max Participants for this event: {Event.quota}</p></Col></Row>
+                       <Row><Col><p>Event Category: {Event.activityCategory}</p></Col></Row>
+                       <Row><Col><p>Starting Date: {Event.start}</p></Col></Row>
+                       <Row><Col><p>Ending Date: {Event.end}</p></Col></Row>
+                       <Row><Col><p>The host of this event is: {Event.createdBy}</p></Col></Row>
+                       <Row><Col><p>The list of participants for this event is: {Event.participants}</p></Col></Row>
+                   </Container>
+               </React.Fragment>
             }
             <br/>
             <br/>
