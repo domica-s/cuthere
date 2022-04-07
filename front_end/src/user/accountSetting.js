@@ -32,6 +32,126 @@ const INITIAL_STATE = {
     uploadImg: "",
   };
 
+function ChangePicture () {
+  const [user, setUser] = useState(INITIAL_STATE);
+
+    useEffect(() => {
+        (async () => {
+        try {
+            const user = authService.getCurrentUser();
+            let userFromDB;
+            userService.getProfile(user, user.sid)
+            .then(successResponse => {
+              
+              userFromDB = successResponse.data;
+              console.log(userFromDB.interests);
+              setUser({
+                username: userFromDB.username,
+                email: userFromDB.email,
+                mobileNumber: userFromDB.mobileNumber,
+                name: userFromDB.name,
+                about: userFromDB.about,
+                country: userFromDB.country,
+                interests: userFromDB.interests,
+              });
+
+    
+            },
+            error => {
+             
+              setUser({
+                username: user.username,
+                email: user.email,
+                mobileNumber: user.mobileNumber,
+                name: user.name,
+                about: user.about,
+                country: user.country,
+                interests: user.interests,
+              });
+            })
+            // setUser(user.data);
+            
+        } catch (error) {
+            console.log(error);
+        }
+        })();
+    }, []);
+  
+  const onChangeFile = async(e) => {
+    try {
+      setUser({
+        uploadImg: e.target.files[0]
+      });        
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const onUploadFile = async(e) => {
+    e.preventDefault();
+    let api_delete = API_DELETE + "user-" + currentUser.sid;
+    const deletePrevious = await fetch(api_delete, {
+      method: "GET",
+      headers: new Headers({
+          "x-access-token": currentUser.accessToken,
+        }),          
+    })
+    const ResponseJson = await deletePrevious.json();
+    
+    if (ResponseJson.message) {
+      let data = new FormData();
+      data.append("file", user.uploadImg, "user-" + currentUser.sid);
+      const uploadResult = await fetch(API, {
+        method: "POST",
+        headers: new Headers({
+          "x-access-token": currentUser.accessToken,
+          }),
+        body: data          
+      });
+  
+      const resultJson = await uploadResult.json();
+      await window.alert(resultJson.message);
+    }
+    
+  }
+  
+  const onLoadPic = async(e) => {
+    const img = document.querySelector("#profile-pic");
+  
+    let api = API_Query + "user-" + currentUser.sid;
+    const loadResult = await fetch(api, {
+        method: "GET",
+        headers: new Headers({
+          "x-access-token": currentUser.accessToken,
+        }),
+    })
+    const resultStatus = await loadResult.clone().status
+    const resultBlob = await loadResult.blob();
+    if (resultStatus === 200){
+      img.crossOrigin = 'anonymous';
+      img.src = await URL.createObjectURL(resultBlob);
+    }
+  }
+
+  return(
+    <div className="card-body media align-items-center">
+                <img id="profile-pic" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="" className="d-block ui-w-80" onLoad={onLoadPic}/>
+                <div className="media-body ml-4">
+                  <label className="btn btn-outline-primary">
+                    Select new photo
+                    <input type="file" className="account-settings-fileinput" onChange={onChangeFile} accept="image/x-png, image/gif, image/jpeg"/>
+                  </label> &nbsp;
+                  {user.uploadImg && <button type="button" className="btn btn-default md-btn-flat" onClick={onUploadFile}>Upload</button>}
+                  {user.uploadImg && <p>{user.uploadImg.name}</p>}
+                  <div className="text-light small mt-1">Allowed JPG or PNG.</div>
+                  <div className="text-light small mt-1">Click on 'Select New Photo' then 'Upload' to save picture changes.</div>
+                </div>
+              </div>
+  );
+
+}
+
+
 //handle change profile pic
 function GeneralInformation() {
     const [user, setUser] = useState(INITIAL_STATE);
@@ -137,87 +257,21 @@ function GeneralInformation() {
       );
     };
 
-    const onChangeFile = async(e) => {
-      try {
-        setUser({
-          uploadImg: e.target.files[0]
-        });        
-      } catch (error) {
-        console.log(error);
-      }
-    }
 
-    const onUploadFile = async(e) => {
-      e.preventDefault();
-      let api_delete = API_DELETE + "user-" + currentUser.sid;
-      const deletePrevious = await fetch(api_delete, {
-        method: "GET",
-        headers: new Headers({
-            "x-access-token": currentUser.accessToken,
-          }),          
-      })
-      const ResponseJson = await deletePrevious.json();
-      
-      if (ResponseJson.message) {
-        let data = new FormData();
-        data.append("file", user.uploadImg, "user-" + currentUser.sid);
-        const uploadResult = await fetch(API, {
-          method: "POST",
-          headers: new Headers({
-            "x-access-token": currentUser.accessToken,
-            }),
-          body: data          
-        });
-  
-        const resultJson = await uploadResult.json();
-        await window.alert(resultJson.message);
-      }
-    }
-
-    const onLoadPic = async(e) => {
-      const img = document.querySelector("#profile-pic");
-
-      let api = API_Query + "user-" + currentUser.sid;
-      const loadResult = await fetch(api, {
-          method: "GET",
-          headers: new Headers({
-            "x-access-token": currentUser.accessToken,
-          }),
-      })
-      const resultStatus = await loadResult.clone().status
-      const resultBlob = await loadResult.blob();
-      if (resultStatus === 200){
-        img.crossOrigin = 'anonymous';
-        img.src = await URL.createObjectURL(resultBlob);
-      }
-    }
+    
     console.log(user.interests);
     const defaultSelectData = [];
-    user.interests.map((data, index) => {
-      defaultSelectData.push({"label": data, "value": data});
-    })
+    if (typeof user.interests != 'undefined') {
+      user.interests.map((data, index) => {
+        defaultSelectData.push({"label": data, "value": data});
+      })
+    }
     // console.log(defaultSelectData);
 
     return(
         <Form onSubmit={handleGeneral}>
         <div className="tab-content">
             <div className="tab-pane fade active show" id="account-general">
-
-              <div className="card-body media align-items-center">
-                <img id="profile-pic" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="" className="d-block ui-w-80" onLoad={onLoadPic}/>
-                <div className="media-body ml-4">
-                  <label className="btn btn-outline-primary">
-                    Select new photo
-                    <input type="file" className="account-settings-fileinput" onChange={onChangeFile} accept="image/x-png, image/gif, image/jpeg"/>
-                  </label> &nbsp;
-                  {user.uploadImg && <button type="button" className="btn btn-default md-btn-flat" onClick={onUploadFile}>Upload</button>}
-                  {user.uploadImg && <p>{user.uploadImg.name}</p>}
-                  <div className="text-light small mt-1">Allowed JPG or PNG.</div>
-                  <div className="text-light small mt-1">Click on 'Select New Photo' then 'Upload' to save picture changes.</div>
-                </div>
-              </div>
-              <hr className="border-light m-0" />
-            
               <div className="card-body">
                 <div className="form-group">
                   <label className="form-label">Username</label>
@@ -704,6 +758,9 @@ function DropdownMenu() {
         </Tab>
         <Tab eventKey="change-password" title="Change Password">
         <ChangePassword />
+        </Tab>
+        <Tab eventKey="change-picture" title="Change Picture">
+        <ChangePicture />
         </Tab>
       </Tabs>
     );
