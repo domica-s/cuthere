@@ -268,4 +268,29 @@ router.post('/event/addcomment/:eventID', [authJwt.verifyToken], function (req,r
     })
 })
 
+// Add Events to Favorites --> TESTING
+router.post('/event/fav/:eventID', [authJwt.verifyToken], function (req,res){
+    const eventID = req.params.eventID
+    const userID = req.body.id 
+
+    User.findOne({_id: userID}).exec(function (err, resultUser){
+        if(err) res.status(200).send({message:"Error occured: "+ err})
+        else {
+            Event.findOne({eventID: eventID}).exec(function(err, resultEvent){
+                if (err) res.status(200).send({message: "Error Occured: "+ err})
+        
+                else {
+                    User.findOneAndUpdate({_id: userID},{$set:{starredEvents: [...resultUser.starredEvents,resultEvent]}}).exec(function (err, result){
+                        if(err) res.status(400).send({message: "Error Occured: "+ err})
+                        else res.status(200).send({message: "The event has been added to your fav list nigga!", response: result})
+                    })
+                }
+            })
+        }
+    })
+
+
+
+})
+
 module.exports = router;

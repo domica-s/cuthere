@@ -111,7 +111,7 @@ export default function (props) {
         setChatHistory(request.data.response.chatHistory)
     }
 
-    // Update Event Front-end --> TESTING
+    // Update Event Front-end --> WORKING
     async function updateEvent(eventID, updatedContent){
         const request = await Axios.post(`http://localhost:8080/event/update/${eventID}`,{id:userID, update: updatedContent}, 
         {
@@ -122,7 +122,16 @@ export default function (props) {
         console.log(request)
     }
     
-    console.log(Event)
+    // Function to add to favorites --> WORKING
+    async function addToFav(eventID){
+        const request = await Axios.post(`http://localhost:8080/event/fav/${eventID}`, {id: userID},         {
+            headers: {
+                "x-access-token": currentUser.accessToken
+            }
+        })
+        console.log(request)
+    }
+
     return (
         <React.Fragment>
             <div className="postPage" style={{
@@ -153,6 +162,7 @@ export default function (props) {
                         deleteEvent = {deleteEvent}
                         updateEvent = {updateEvent}
                         addComment = {addComment}
+                        addToFav = {addToFav}
                         detail = {Event}/>
                     </Col>
                     <CommentForm detail={Event} addComment={addComment} chatHistory={chatHistory}/>

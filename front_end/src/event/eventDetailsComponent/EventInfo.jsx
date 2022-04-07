@@ -43,6 +43,11 @@ function EventInfo(props) {
         // Send to backend
         props.updateEvent(props.detail.eventID, updatedContent)
     }
+    
+    // Function to add to favorite
+    const addToFav = () => {
+        props.addToFav(props.detail.eventID)
+    }
   return (
     <React.Fragment>
         <div> 
@@ -151,6 +156,13 @@ function EventInfo(props) {
                 {isHost? <Button size="large" shape="round" type="danger" onClick={deleteEvent} isHost>
                     Delete Event
                 </Button>:(null)}
+                <br/>
+                <br/>
+                <br/>
+                <Button size="large" shape="round" type="success" onClick={addToFav}>
+                    Add to favorites
+                </Button>
+
             </div>
 
         </div>
