@@ -26,7 +26,7 @@ function SignUp() {
             </Row>
             <Row className="justify-content-center">
                 <Form className="signin-form" action="../../signup" method="POST">
-                    <h1 class="h3 mb-3 ">Sign Up</h1>
+                    <h1 className="h3 mb-3 ">Sign Up</h1>
 
                     <Col className="form-floating">
                         <FloatingLabel controlId="floatingUsername" label="Username">

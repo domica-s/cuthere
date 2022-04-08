@@ -8,9 +8,9 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
 import AuthService from "../services/auth.service";
-import { auto } from "@popperjs/core";
-import { ThemeConsumer } from "react-bootstrap/esm/ThemeProvider";
-import { Axios } from "axios";
+// import { auto } from "@popperjs/core";
+// import { ThemeConsumer } from "react-bootstrap/esm/ThemeProvider";
+// import { Axios } from "axios";
 
 
 var params = require("../params/params");
@@ -293,7 +293,7 @@ class EventCard extends React.Component {
       );
     }
     return (
-      <Card class="link" style={{ width: "12rem", height: "17.25rem" }}>
+      <Card className="link" style={{ width: "12rem", height: "17.25rem" }}>
         <a href={link_detail}>
           <Card.Img
             variant="top"
