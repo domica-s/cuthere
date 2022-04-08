@@ -4,6 +4,7 @@ import Row from 'react-bootstrap/Row';
 import Col from "react-bootstrap/Col";
 import Form from 'react-bootstrap/Form';
 import "./eventPage.css";
+import Axios from "axios"; 
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
@@ -19,6 +20,8 @@ var params = require("../params/params");
 const APIallEvents = params.baseBackURL + "/allevents";
 const API_Query = params.baseBackURL + "/file/";
 const currentUser = AuthService.getCurrentUser();
+const eventAPI = params.baseBackURL + "/event/";
+
 
 
 class OneEvent extends React.Component {
@@ -284,6 +287,19 @@ function EventCard(props){
     );
   }
 
+  async function joinTheEvent() {
+    const request = await Axios.post(
+      `http://localhost:8080/event/register/${eventId}`,
+      { id: currentUser._id },
+      {
+        headers: {
+          "x-access-token": currentUser.accessToken,
+        },
+      }
+    );
+    console.log(request);
+  }
+
   const onLoadPic = async (e) => {
     const img = document.querySelector("#event-pic");
     let api = API_Query + "event-" + eventId;
@@ -347,7 +363,7 @@ function EventCard(props){
               <p className="text">Quota: {quota}</p>
             </Col>
             <Col style={{ paddingLeft: "0" }} xs={4}>
-              <Button variant="primary" className="mt-2">
+              <Button variant="primary" className="mt-2" onClick={joinTheEvent}>
                 Join
               </Button>
             </Col>
