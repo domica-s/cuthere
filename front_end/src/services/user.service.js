@@ -47,6 +47,39 @@ class UserService {
             }
         })
     }
+
+    async recommendFriends(currentUser) {
+        let temp_url1 = "/recommendfriends/college";
+        let temp_url2 = "/recommendfriends/interests";
+        let sid = currentUser.sid;
+        let college = currentUser.college;
+
+        try {
+            const fromCollege = await axios.post(USER_URL + temp_url1, {
+                college: college
+            },
+            {
+                headers: {
+                    "x-access-token": currentUser.accessToken
+                }
+            })
+
+            const fromInterests = await axios.post(USER_URL + temp_url2, {
+                sid: sid
+            },
+            {
+                headers: {
+                    "x-access-token": currentUser.accessToken
+                }
+            })
+            let result = {fromCollege, fromInterests};
+            // console.log(result);
+            return result;
+        }
+        catch (err) {
+            return {message: "Failed loading recommendations"};
+        }
+    }
 }
 
 export default new UserService();

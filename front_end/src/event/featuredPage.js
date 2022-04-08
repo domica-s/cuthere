@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import { useParams } from "react-router-dom";
 
 import Container from "react-bootstrap/Container";
-import {EventCard} from "./eventPage";
+import EventCard from "./eventPage";
 import Button from "react-bootstrap/Button";
 import AuthService from "../services/auth.service";
 

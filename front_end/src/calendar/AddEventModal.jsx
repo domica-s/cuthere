@@ -8,7 +8,7 @@ import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import { Container } from "react-bootstrap";
-import FloatingLabel from 'react-bootstrap/FloatingLabel'
+// import FloatingLabel from 'react-bootstrap/FloatingLabel'
 
 export default function ({isOpen, onClose, onEventAdded}) {
     const [title, setTitle] = useState();
