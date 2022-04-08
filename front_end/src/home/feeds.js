@@ -235,24 +235,6 @@ class Feed extends React.Component {
       <Container className="flexbox" style={{paddingLeft: "0px", paddingRight: "10px", paddingTop: "20px"}}>
         <Card>
           <Card.Header style={{ textAlign: "left" }}>
-                <b>Friend Activity</b>
-          </Card.Header>
-          {feeds.length > 0 ? (
-            feeds.map((data) => (
-              <Row className="m-0" style={{ textAlign: "left" }}>
-                <OneFeed data={data} />
-                <hr className="m-0"></hr>
-              </Row>
-            ))
-          ) : (
-            <>
-            <h3>No activities to display</h3>
-            <h4>Find friends here</h4>
-            </>
-          )}
-        </Card>
-        <Card>
-          <Card.Header style={{ textAlign: "left" }}>
             <b>Search for friends</b>
           </Card.Header>
           <Row className="m-0" style={{ textAlign: "left" }}>
@@ -291,6 +273,25 @@ class Feed extends React.Component {
           )}
           </Container>
         </Card>
+        <Card>
+          <Card.Header style={{ textAlign: "left" }}>
+                <b>Friend Activity</b>
+          </Card.Header>
+          {feeds.length > 0 ? (
+            feeds.map((data) => (
+              <Row className="m-0" style={{ textAlign: "left" }}>
+                <OneFeed data={data} />
+                <hr className="m-0"></hr>
+              </Row>
+            ))
+          ) : (
+            <div className="m-2">
+            <h5>No friend activities to display</h5>
+            <h7>Find and follow other students first</h7>
+            </div>
+          )}
+        </Card>
+        
       </Container>
     );
   }
