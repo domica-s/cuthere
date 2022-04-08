@@ -4,6 +4,9 @@ import {Button, Container} from "react-bootstrap";
 import "./myProfile.css"
 import authService from "../services/auth.service";
 import userService from "../services/user.service";
+import UserRating from "./UserRating";
+import Axios from 'axios' 
+
 var params = require("../params/params");
 
 
@@ -46,8 +49,10 @@ function Profile()  {
       interests: initialUser.interests,
       friends: initialUser.friends,
       college: initialUser.college, 
+      reviewHistory: initialUser.reviewHistory
     };
     const [user, setUser] = useState(INITIAL_STATE);
+    const [reviewHistory, setReviewHistory] = useState(INITIAL_STATE.reviewHistory)
 
     useEffect(() => {
         (async () => {
@@ -68,7 +73,10 @@ function Profile()  {
                 interests: userFromDB.interests,
                 friends: userFromDB.friends,
                 college: userFromDB.college, 
+                reviewHistory: userFromDB.reviewHistory
               });
+
+              setReviewHistory(userFromDB.reviewHistory)
 
     
             },
@@ -84,7 +92,10 @@ function Profile()  {
                 interests: user.interests,
                 friends: user.friends,
                 college: user.college, 
+                reviewHistory: user.reviewHistory
               });
+
+              setReviewHistory(user.reviewHistory)
             })
             // setUser(user.data);
             
@@ -92,8 +103,32 @@ function Profile()  {
             console.log(error);
         }
         })();
-    }, []);
+    }, [reviewHistory, user]);
     
+    // Add review to back-end --> The sid in params should be changed to the target SID. 
+
+      // returns --> success, fail1 (user have previously left a comment, update instead)
+      //, fail2 (source/target sid not found, no similar events or other errors)
+    async function addReview (writer, content, type){
+      // Set the request's body
+      const body = {
+        sid: writer.sid,
+        content: content,
+        type: type
+       }
+
+       // Set the request
+      const request = await Axios.post(`http://localhost:8080/user/${initialUser.sid}/comment`, body,        {
+        headers: {
+            "x-access-token": writer.accessToken // Whose access token is this?
+        }
+      })
+
+      // Store reviewHistory
+      console.log(request.data)
+      setReviewHistory(request.data.response.reviewHistory)
+
+    }
     return (
       <Container className="myContainer">
         {/* <div className="container">
@@ -258,6 +293,12 @@ function Profile()  {
 								    <div className="card-body">
                       <h5 className="d-flex align-items-center mb-3">Friends/ Activities placeholder</h5>
                       {/* START HERE FOR CHANGING ACTIVITIES PLACEHOLDER */}
+
+                      <UserRating
+                        reviewHistory= {reviewHistory}
+                        addReview = {addReview}
+                        />
+
                     </div>
                   </div>
                 </div>
