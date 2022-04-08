@@ -267,12 +267,14 @@ router.post('/event/delete/:eventID',[authJwt.verifyToken], function(req,res){
 router.post('/event/addcomment/:eventID', [authJwt.verifyToken], function (req,res){
     const eventID = req.params.eventID 
     const comment = req.body.comment
+    console.log(comment)
 
     Event.findOne({eventID: eventID}).exec(function(err,result){
         if(err) res.status(200).send({message: "Error occured: "+ err})
 
         else {
             const chatHistory = [...result.chatHistory,comment]
+            console.log(chatHistory)
             // Update the dB
             Event.findOneAndUpdate({eventID: eventID}, {$set: {chatHistory: chatHistory}}).exec(function(err, result){
                 if(err) res.status(400).send({message:"Error Occured: "+ err})

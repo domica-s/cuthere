@@ -52,7 +52,7 @@ class UserRating extends React.Component{
 
     // Submit the rating to the database
     submitCommentLine = (e) => {
-        e.preventDefault();
+        // e.preventDefault();
 
         this.setCommentLine();
 
@@ -64,7 +64,7 @@ class UserRating extends React.Component{
     // I don't know what the fuck this does but I think we need this
     enterCommentLine = (e) => {
         if (e.charCode === 13){
-            this.setCommentLine();
+            this.submitCommentLine();
         }
     };
 

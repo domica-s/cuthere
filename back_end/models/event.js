@@ -13,6 +13,7 @@ var eventSchema = mongoose.Schema({
     activityCategory:{type: String, required: true, enum: ['Basketball', 'Badminton', 'Soccer', 'Football','Hiking', 'Volleyball', 'Boardgame', 'Tennis', 'Running', 'Gaming', 'Swimming', 'Drinking', 'Study', 'Movies', 'FratParty', 'Athletics', 'Arts', 'Cooking']},
     chatHistory:[{
         user: {type: Number}, // SID
+        name: {type: String}, // Name
         content: {type: String}, // The Message
         chatAt: {type: Date}, // DateTime at which the message is created
         userDetails: {type: mongoose.Schema.Types.ObjectId, ref: 'User'} // currentUser which has .sid, ._id, etc... (Sending the mongoose schema as a whole)
