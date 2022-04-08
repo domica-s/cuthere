@@ -47,7 +47,7 @@ export default function (props) {
         var event = moment(response.data.end).toDate().getTime()
         if (now > event)  setEventDone(true)
         })
-    }, [])
+    }, [chatHistory])
     
     // Register Event Front-end --> WORKING
     async function joinTheEvent(eventID){
