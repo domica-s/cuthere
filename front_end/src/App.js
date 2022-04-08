@@ -16,7 +16,7 @@ import Calendar from "./calendar/Calendar";
 
 import {CreateEvent} from "./event/createEventPage";
 import { ConfirmEmail } from './home/confirmEmail';
-import { Navbar, Container, Nav, NavDropdown, Button } from 'react-bootstrap';
+import { Navbar, Container, Nav, NavDropdown, Button, Col } from 'react-bootstrap';
 import {Help} from './home/helpPage';
 import EventDetail from './event/EventDetail';
 import {AccountSetting} from './user/accountSetting';
@@ -80,7 +80,7 @@ class App extends React.Component {
           <div className="content">
           <div className="content-inside">
           <NavigationBar isAuthUser={(currentUser !== undefined)} username={(username)} isAdmin={(isAdmin)} />
-          
+          <br />
           <Routes>
             {currentUser === undefined && <Route path="/" element={<LandingPage/>} />}
             {currentUser !== undefined && <Route path='/' element={<Home/>} />}
@@ -126,29 +126,45 @@ class NavigationBar extends React.Component {
     return (
       <>
       <Container>
-        <Navbar className="justify-content-center" collapseOnSelect fixed='top' expand='sm' bg='dark' variant='dark'>
+        <Navbar className="justify-content-center nav-margins" fixed='top' expand='sm' bg='dark' variant='dark'>
           <Container >
-            <Navbar.Brand href="/">CUthere</Navbar.Brand>
+            <Col>
+            <Navbar.Brand href="/" className='push-CUTHERE-left'>CUthere</Navbar.Brand>
+            </Col>
             <Navbar.Toggle className="container-fluid" aria-controls='responsive-navbar-nav'/>
             <Navbar.Collapse id='responsive-navbar-nav'>
               <Nav>
+                <Col>
                 <Nav.Link href='/about'>About</Nav.Link>
-                {isAuth === true && <Nav.Link href='/event'>Events</Nav.Link>}
-                {isAuth === true && <Nav.Link href='/createevent'>Create Events</Nav.Link>}
-                {isAuth === true && <Nav.Link href='/calendar'>View Calendar</Nav.Link>}
-                {isAuth === true && isAdmin && <Nav.Link href='/admin'>Admin Dashboard</Nav.Link>}
-                {isAuth === true && 
-                  <NavDropdown title={"Hello, " + this.props.username} id="user-profile-dropdown">
+                </Col>
+                <Col>
+                {isAuth === true && <Nav.Link href='/event' style={{whiteSpace: 'nowrap'}}>Events</Nav.Link>}
+                </Col>
+                <Col>
+                {isAuth === true && <Nav.Link href='/createevent' style={{whiteSpace: 'nowrap'}}>Create Events</Nav.Link>}
+                </Col>
+                <Col>
+                {isAuth === true && <Nav.Link href='/calendar' style={{whiteSpace: 'nowrap'}}>View Calendar</Nav.Link>}
+                </Col>
+               
+                {isAuth === true && <Col className='pull-user-left'>
+                  <NavDropdown title={"Hello, " + this.props.username} id="user-profile-dropdown" className='push-user-right'>
                       <NavDropdown.Item href="/profile">View Profile</NavDropdown.Item>
                       <NavDropdown.Item href="/accountSetting">Account Setting</NavDropdown.Item>
+                      {isAdmin && <NavDropdown.Item href='/admin' style={{whiteSpace: 'nowrap'}}>Admin Dashboard</NavDropdown.Item>}
                       <NavDropdown.Divider />
                       <NavDropdown.Item href="/logout">Logout</NavDropdown.Item>
-                  </NavDropdown>}
-                {isAuth !== true && <Nav.Link href='/signup'>Sign Up</Nav.Link>}
+                  </NavDropdown>
+                  </Col>}
+                <Col>{isAuth !== true && <Nav.Link href='/signup' style={{whiteSpace: 'nowrap'}}>Sign Up</Nav.Link>}</Col>
               </Nav>
               {isAuth !== true && 
-                <Nav className="ms-auto"> 
-                  <Nav.Link href='/login'><Button>Login</Button></Nav.Link>
+
+                <Nav className="ms-auto" > 
+                  <div className='push-login-right'>
+                  <Nav.Link href='/login'><Button >Login</Button></Nav.Link>
+                  </div>
+
                 </Nav>}
             </Navbar.Collapse>
           </Container>
