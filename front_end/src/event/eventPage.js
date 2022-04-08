@@ -223,12 +223,12 @@ class EventWidget extends React.Component{
 
       if (this.state.type == "/interest") {
          nullevents = (
-          <h7>State your interests <a href= "/accountSetting">here!</a></h7>
+          <h6>State your interests <a href= "/accountSetting">here!</a></h6>
         );
       }
       else if (this.state.type == "/upcoming"){
          nullevents = (
-          <h7>Create your own events <a href= "/createevent">here!</a></h7>
+          <h6>Create your own events <a href= "/createevent">here!</a></h6>
         );
       }
              return (

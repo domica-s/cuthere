@@ -343,7 +343,7 @@ class Feed extends React.Component {
           ) : (
             <div className="m-2">
             <h5>No friend activities to display</h5>
-            <h7>Find and follow other students first</h7>
+            <h6>Find and follow other students first</h6>
             </div>
           )}
         </Card>

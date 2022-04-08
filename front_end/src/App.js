@@ -28,7 +28,6 @@ import logo from './images/logo.jfif';
 import { AdminDashboard } from './admin/adminPage';
 import {UploadImage} from './event/uploadImg';
 import ViewProfile from './user/viewProfile';
-import { Footer } from './FooterStyle';
 
 
 Modal.setAppElement("#root");
@@ -162,9 +161,11 @@ class NavigationBar extends React.Component {
 
 function FooterBar() {
   return (
-    <Footer>
-      © CUthere
-    </Footer>
+    <footer class="footer mt-auto py-3 bg-light">
+      <div class="container">
+        <span class="text-muted">© CUthere 2022</span>
+      </div>
+    </footer>
   );
 }
 
