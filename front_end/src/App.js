@@ -28,6 +28,7 @@ import logo from './images/logo.jfif';
 import { AdminDashboard } from './admin/adminPage';
 import {UploadImage} from './event/uploadImg';
 import ViewProfile from './user/viewProfile';
+import AboutUs from './home/aboutPage';
 
 
 Modal.setAppElement("#root");
@@ -84,7 +85,7 @@ class App extends React.Component {
           <Routes>
             {currentUser === undefined && <Route path="/" element={<LandingPage/>} />}
             {currentUser !== undefined && <Route path='/' element={<Home/>} />}
-            <Route path='/about' element={<About/>} />
+            <Route path='/about' element={<AboutUs/>} />
             <Route path='/login' element={<LoginWithNavigate/>} />
             {currentUser !== undefined && <Route path='/event' element={<Event/>} />}
             {currentUser !== undefined && <Route path='/featured/:type' element={<Featured/>} />}
