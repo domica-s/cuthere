@@ -61,6 +61,7 @@ class OneProfile extends React.Component {
     let sid = data[0];
     let name = data[1];
     let college = data[2];
+    let interests = data[3];
     let userLink = "user/" + sid;
 
     return (
@@ -86,6 +87,16 @@ class OneProfile extends React.Component {
               <p className="mb-0">
                 {college}
               </p>
+              <p className="mb-0">
+                {interests.map((val, index) => {
+                  if (index != interests.length - 1) {
+                    return val + ", ";
+                  }
+                  else {
+                    return val;
+                  }
+                }) || ""}
+              </p>
             </div>
           </td>
         </tr>
@@ -108,18 +119,19 @@ class Feed extends React.Component {
       queryName: "",
       queryCollege: "",
       queryMessage: "",
+      recommendedFriends: [],
     };
     this.handleSearch = this.handleSearch.bind(this);
     this.onChangeSearch = this.onChangeSearch.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     let currentUser = AuthService.getCurrentUser();
     let api = APIfeed + "/" + currentUser.sid;
     if (currentUser === null) {
     }
     currentUser !== null &&
-    fetch(api, {
+    await fetch(api, {
         method: "GET",
         headers: new Headers({
             "x-access-token": currentUser.accessToken,
@@ -130,6 +142,28 @@ class Feed extends React.Component {
         this.setState({
             feeds: data,
         });
+    });
+
+    await UserService.recommendFriends(currentUser)
+    .then(successResponse => {
+      // console.log(successResponse);
+      let fromCollege = successResponse.fromCollege.data;
+      let fromInterests = successResponse.fromInterests.data;
+
+      let data1 = [];
+      let data2 = [];
+      fromCollege.fromCollege.map((val, index) => {
+        data1[index] = val;
+      })
+
+      fromInterests.fromInterests.map((val, index) => {
+        data2[index] = val;
+      })
+      let data = data1.concat(data2);
+      this.setState({recommendedFriends: data})
+    },
+    error => {
+      console.log(error.response.data.message);
     });
   }
 
@@ -151,7 +185,8 @@ class Feed extends React.Component {
       this.setState({
         querySID: userFromDB.sid,
         queryName: userFromDB.name,
-        queryCollege: userFromDB.college
+        queryCollege: userFromDB.college,
+        queryInterests: userFromDB.interests,
       })
     },
     error => {
@@ -168,38 +203,41 @@ class Feed extends React.Component {
     })
   }
 
-  render(){
-    // console.log(this.state.feeds);
+  
+  
+  render() {
+    // console.log(this.state.recommendedFriends);
     let feeds = (this.state.feeds) ? Object.entries(this.state.feeds): null;
-    let queryRes = (this.state.querySID) ? [this.state.querySID, this.state.queryName, this.state.queryCollege]: null;
+    let queryRes = (this.state.querySID) ? [this.state.querySID, this.state.queryName, this.state.queryCollege, this.state.queryInterests]: null;
     return (
       <Container className="flexbox" style={{paddingLeft: "0px", paddingRight: "10px", paddingTop: "20px"}}>
         <Card>
           <Card.Header style={{ textAlign: "left" }}>
-                <b>Friend Activity</b>
+            <b>Discover new friends</b>
           </Card.Header>
-          {feeds.length > 0 ? (
-            feeds.map((data) => (
-              <Row className="m-0" style={{ textAlign: "left" }}>
-                <OneFeed data={data} />
-                <hr className="m-0"></hr>
-              </Row>
-            ))
-          ) : (
-            <>
-            <h3>No activities to display</h3>
-            <h4>Find friends here</h4>
-            </>
-          )}
-        </Card>
-        <Card>
-          <Card.Header style={{ textAlign: "left" }}>
-            <b>Search for friends</b>
-          </Card.Header>
+          <Row className="m-0" style={{ textAlign: "left" }}>
+            <h6>Friends you may know</h6>
+            {/* get friends from same college (2) and same interests (3) */}
+            { this.state.recommendedFriends ? (
+              <>
+                {this.state.recommendedFriends.map((data, index) => (
+                  <Row className="m-0" style={{ textAlign: "left" }}>
+                    <OneProfile data={[data.sid, data.name, data.college, data.interests]} key={index} />
+                  </Row>
+                ))}
+              </>
+            ): (
+              <>
+              <p>No recommended friends right now</p>
+              <p>Invite your friends to CUthere or add more interests!</p>
+              </>
+            )}
+            <hr/>
+          </Row>
           <Row className="m-0" style={{ textAlign: "left" }}>
             <Form onSubmit={this.handleSearch}>
               <div className="form-group">
-                  <label className="form-label">Enter SID to query:</label>
+                  <label className="form-label">Enter friend's SID:</label>
                   <Form.Control 
                       name="querySID"
                       type="number" 
@@ -210,9 +248,9 @@ class Feed extends React.Component {
                   />
               </div>
               <Container style={{display:'flex', justifyContent:'center'}}>
-                <Button type="submit" variant="primary" value="Query SID">Query SID</Button>
+                <Button type="submit" variant="primary" value="Query SID">Search</Button>
               </Container>
-          </Form>
+            </Form>
           </Row>
           {queryRes && (
             <Row className="m-0" style={{ textAlign: "left" }}>
@@ -231,6 +269,25 @@ class Feed extends React.Component {
             </div>
           )}
           </Container>
+        </Card>
+        
+        <Card>
+          <Card.Header style={{ textAlign: "left" }}>
+                <b>Friend Activity</b>
+          </Card.Header>
+          {feeds.length > 0 ? (
+            feeds.map((data) => (
+              <Row className="m-0" style={{ textAlign: "left" }}>
+                <OneFeed data={data} />
+                <hr className="m-0"></hr>
+              </Row>
+            ))
+          ) : (
+            <>
+            <h3>No activities to display</h3>
+            <h4>Find friends here</h4>
+            </>
+          )}
         </Card>
       </Container>
     );

@@ -308,3 +308,70 @@ exports.unfollowUser = (req, res) => {
     });
   });
 };
+
+// POST request with college in body
+exports.recommendedFriendsCollege = (req, res) => {
+  let sid = req.body.sid;
+  let college = req.body.college;
+
+  User.count({ college: college })
+  .exec((err, count) =>  {
+    if (err) {
+      res.status(400).send({ message: err });
+    }
+
+    var random = Math.floor(Math.random() * count);
+
+    User.find({ college: college}, { sid: 1, name: 1, college: 1, interests: 1 }).skip(random).limit(2)
+    .exec((err, users) => {
+      if (err) {
+        return res.status(400).send({ message: err });
+      }
+      if (!users) {
+        return res.status(404).send({ message: "No users found" });
+      }
+      // console.log(users);
+      return res.status(200).send({ fromCollege: users });
+    })
+  })
+
+}
+
+// POST request with sid in body
+exports.recommendedFriendsInterests = async (req, res) => {
+  try {
+    await User.findOne({ sid: req.body.sid })
+    .exec((err, sourceUser) => {
+      if (err) {
+        res.status(400).send({ message: err });
+      }
+      // console.log(sourceUser);
+      // console.log(sourceUser.interests);
+      User.count({ interests: { "$in": sourceUser.interests } })
+      .exec((err, count) => {
+        // console.log(sourceUser.interests);
+        // console.log(count);
+        if (err) {
+          res.status(400).send({ message: err });
+        }
+
+        var random = Math.floor(Math.random() * count);
+        
+        User.find({ sid: { $ne: req.body.sid }, interests: { "$in": sourceUser.interests} }, { sid: 1, name: 1, college: 1, interests: 1 }).skip(random).limit(3)
+        .exec((err, users) => {
+          if (err) {
+            res.status(400).send({ message: err });
+          }
+          if (!users) {
+            return res.status(404).send({ message: "No users found" });
+          }
+          // console.log(users);
+          return res.status(200).send({ fromInterests: users });
+        })
+      })
+    })
+  }
+  catch {
+    return res.status(404).send({message: "Failed fetching data"});
+  }
+}
