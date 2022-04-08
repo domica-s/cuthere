@@ -592,9 +592,7 @@ function GeneralInformation() {
                     allowSelectAll={true} 
                     onChange={handleInterests}
                     placeholder="select your interests.."
-                    value={defaultSelectData}
-                    // value={{label:user.interests || "", 
-                    //         value: user.interests || ""}}
+                    value={defaultSelectData || ""}
                     />
                 </div>
                 <Button type="submit" variant="outline-dark" value="Update" style={{marginBottom:"3%"}}>Update Profile</Button>
