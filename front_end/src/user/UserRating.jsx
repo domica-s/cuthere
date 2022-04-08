@@ -2,20 +2,23 @@
 
 import React from 'react'
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import authService from "../services/auth.service";
 
-let commentCounter = 1;
+const WRITER = authService.getCurrentUser();
 class UserRating extends React.Component{
     constructor() {
         super();
 
         this.state = { 
             commentValue: '',
-            commentLine: [{commentId:"", text:"",}], // CommentID is basically not used
+            commentLine: [''], // CommentID is basically not used
+            reviewType: false
 
         };
     }
 
-
+    // Set the current comment / rating Value when we type into the box
     handleCommentValue = (e) => {
 
         this.setState({
@@ -23,25 +26,42 @@ class UserRating extends React.Component{
         });
     };
 
-    setCommentLine = () => {
+    // Set Review type
+    handleSetType = (e) => {
         this.setState({
-            commentLine: [
-                ...this.state.commentLine,
-                {commentId: commentCounter++, text: this.state.commentValue}
-            ],
+            reviewType: e.target.value
+        })
+    }
+    // Set the commentLine --> Kind of like a local memory here
+    setCommentLine = () => {
+        // Add to local memory
+        this.setState({
+            commentLine: [...this.state.commentLine, this.state.commentValue],
+        })
 
-            commentValue:""
+        // Re-initialize commentValue
+        this.setState({
+            commentValue: '',
+        })
+
+        // Re-initialize review Type 
+        this.setState({
+            reviewType: false,
         })
     }
 
+    // Submit the rating to the database
     submitCommentLine = (e) => {
         e.preventDefault();
 
         this.setCommentLine();
 
-        // this.props.addRating
+        // Function call to send to dB --> Send SID who wrote it, Content, and if it is a good or bad review
+        this.props.addReview(WRITER, this.state.commentValue, this.state.reviewType)
+
     };
 
+    // I don't know what the fuck this does but I think we need this
     enterCommentLine = (e) => {
         if (e.charCode === 13){
             this.setCommentLine();
@@ -54,11 +74,13 @@ class UserRating extends React.Component{
             <>
             <React.Fragment>
                 <CommentBox 
-                    commentValue = {this.state.commentValue}
+                    commentValue = {this.state.commentValue} 
+                    handleSetType = {this.handleSetType}
                     handleCommentValue = {this.handleCommentValue}
                     enterCommentLine = {this.enterCommentLine}
-                    submitCommentLine = {this.submitCommentLine} 
-                    chatHistory = {this.props.chatHistory}/>
+                    submitCommentLine = {this.submitCommentLine}
+                    reviewHistory = {this.props.reviewHistory}
+                    reviewType = {this.state.reviewType} /> 
             </React.Fragment>
             
             </>
@@ -69,26 +91,29 @@ class UserRating extends React.Component{
 }
 class CommentBox extends React.Component { 
     render() {
-        const {commentValue, handleCommentValue, enterCommentLine, submitCommentLine, chatHistory} = this.props; 
+        const {commentValue, handleSetType, handleCommentValue, enterCommentLine, submitCommentLine, reviewHistory, reviewType} = this.props; 
         const enableCommentButton = () => { return (commentValue ? false : true)}; 
         const changeCommentButtonStyle = () => {return (commentValue? "comments-button-enabled" : "comments-button-disabled")}; 
        
         return (
             <React.Fragment>
                 <div className="comments-box">
-                    <input onKeyPress = {enterCommentLine} value ={commentValue} id="comments-input" onChange={handleCommentValue} type="text" placeholder="Add a comment..." />
-                    <Button onClick={submitCommentLine} type="submit" className="comments-button" id={changeCommentButtonStyle()} disabled ={enableCommentButton()}> Post </Button>
+                    <Form>
+                        <Form.Select required name="activityCategory" type="text" value = {reviewType} onChange={handleSetType}>
+                            <option value="true">Positive Review</option>
+                            <option value="false">Negative Review</option>
+                        </Form.Select>
+
+                        <input onKeyPress = {enterCommentLine} value ={commentValue} id="comments-input" onChange={handleCommentValue} type="text" placeholder="Add a Review..." />
+                        <Button onClick={submitCommentLine} type="submit" className="comments-button" id={changeCommentButtonStyle()} disabled ={enableCommentButton()}> Post Review </Button>
+                    </Form>
                 </div>
-                {chatHistory ? 
+                {reviewHistory ? 
                 <ul classNam="comments-list"> 
-                    {chatHistory.map((data) => 
-                        <OneChat chat={data}/>
-                    )}
+                    {reviewHistory.map((data) => <OneReview review={data}/>)}
                 </ul>
                 :
                 (null)}
-
-        
                 <br/>
                 <br/>
                 <br/>
@@ -98,20 +123,19 @@ class CommentBox extends React.Component {
 }
 
 
-class OneChat extends React.Component {
+class OneReview extends React.Component {
     constructor(props) {
         super(props);
     }
     render() {
-        let chat = this.props.chat;
-        let content = chat.content;
-        let username = chat.userDetails;
-        let chatAt = chat.chatAt;
+
+        const {user, type, content, reviewAt} = this.props.review // Fix this if wrong
         return (
             <div className="bg-dark text-success">
-                <p>Time posted: {chatAt}</p>
-                <p>user: {username}</p>
-                <p>content: {content}</p>
+                {type? <p>Positive Review!</p>: <p>Negative Review!</p>}
+                <p>Written by: {user}</p>
+                <p>Review: {content}</p>
+                <p>Posted on: {reviewAt}</p>
                 <hr/>
             </div>
         );
