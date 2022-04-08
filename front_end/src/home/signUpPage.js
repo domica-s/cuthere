@@ -8,6 +8,8 @@ import Row from 'react-bootstrap/Row';
 import { Container } from "react-bootstrap";
 import FloatingLabel from 'react-bootstrap/FloatingLabel'
 import AuthService from "../services/auth.service";
+import Select from "react-select";
+import {interestOptions} from './data';
 
 function SignUpWithNavigate() {
   let navigate = useNavigate();
@@ -25,7 +27,7 @@ class SignUp extends React.Component {
       this.onChangeCollege = this.onChangeCollege.bind(this);
       this.onChangePassword = this.onChangePassword.bind(this);
       this.onChangeRepassword = this.onChangeRepassword.bind(this);
-
+      this.onChangeInterests = this.onChangeInterests.bind(this);
       this.state = {
         username: "",
         sid: "",
@@ -33,8 +35,18 @@ class SignUp extends React.Component {
         repassword: "",
         college: "",
         successful: false,
-        message: ""
+        message: "",
+        interests: [],
       };
+  }
+
+  onChangeInterests(e) {
+    const value = e.map(x => x.value);
+    console.log(value);
+    this.setState({
+      interests : value,
+    })
+    console.log(this.state.interests)
   }
 
   onChangeUsername(e) {
@@ -79,7 +91,7 @@ class SignUp extends React.Component {
 
   handleRegister(e) {
     e.preventDefault();
-
+    console.log(this.state.interests);
     this.setState({
       message: "",
       successful: false
@@ -91,6 +103,7 @@ class SignUp extends React.Component {
       this.state.password,
       this.state.repassword,
       this.state.college,
+      this.state.interests,
     ).then(
       response => {
         this.setState({
@@ -205,6 +218,24 @@ class SignUp extends React.Component {
                       />
                       </FloatingLabel>
                     </div>
+                    <div className="form-group mb-3">
+                    <br />
+                    <hr class="border-light m-0" />
+                    <br />
+                    <div className="text-light small mt-1">Consider adding an interest before signing in!</div>
+                
+                    <Select
+                      options={interestOptions}
+                      isMulti
+                      closeMenuOnSelect={false}
+                      name="interests"
+                      allowSelectAll={true} 
+                      onChange={this.onChangeInterests}
+                      placeholder="Interests.."
+                      
+                      />
+                      
+                  </div>
                   </div>
                 </div>
               </div>

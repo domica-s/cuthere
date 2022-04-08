@@ -76,7 +76,7 @@ exports.signup = (req, res) => {
         email:req.body.sid + "@link.cuhk.edu.hk",
         mobileNumber:0,
         // profilePicture:"",
-        interests:"",
+        interests:req.body.interests,
         college: req.body.college,
         about:"",
         rating:"",

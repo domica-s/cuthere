@@ -64,6 +64,14 @@ router.get("/featured/interest/:sid", [authJwt.verifyToken], function(req,res){
                 };
                 res.send(int_events);
               }
+              else{
+                var int_events = {
+                  title: "Events you might be interested in",
+                  type: "/interest",
+                  event_dic,
+                };
+                res.send(int_events);
+              }
             });
     })
       
@@ -90,6 +98,13 @@ router.get("/featured/discover/:sid", [authJwt.verifyToken], function (req, res)
             event_dic,
           };
           res.send(int_events);
+        } else {
+          var int_events = {
+            title: "Events you might be interested in",
+            type: "/interest",
+            event_dic,
+          };
+          res.send(int_events);
         }
       });
     })
@@ -111,6 +126,13 @@ router.get("/featured/new", [authJwt.verifyToken], function (req, res) {
         event_dic,
       };
       res.send(int_events);
+    } else {
+      var int_events = {
+        title: "Events you might be interested in",
+        type: "/interest",
+        event_dic,
+      };
+      res.send(int_events);
     }
   });
 });
@@ -123,8 +145,8 @@ router.get("/featured/upcoming", [authJwt.verifyToken], function (req, res) {
   }).exec(function (err, event) {
   if (event.length > 0) {
     for (var i = 0; i < 20; i++) {
-      if(typeof event[i] !== 'undefined'){
-        if(typeof event[i].start !== 'undefined'){
+      if (typeof event[i] !== "undefined") {
+        if (typeof event[i].start !== "undefined") {
           if (event[i].start.getTime() > new Date().getTime()) {
             event_dic[i] = event[i];
           }
@@ -134,6 +156,13 @@ router.get("/featured/upcoming", [authJwt.verifyToken], function (req, res) {
     var int_events = {
       title: "Upcoming Events",
       type: "/upcoming",
+      event_dic,
+    };
+    res.send(int_events);
+  } else {
+    var int_events = {
+      title: "Events you might be interested in",
+      type: "/interest",
       event_dic,
     };
     res.send(int_events);

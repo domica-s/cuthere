@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Row from 'react-bootstrap/Row';
 import Col from "react-bootstrap/Col";
 import Form from 'react-bootstrap/Form';
 import "./eventPage.css";
+import Axios from "axios"; 
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
@@ -17,7 +18,11 @@ var params = require("../params/params");
 
 // const API = 'http://localhost:8080/allevents'
 const APIallEvents = params.baseBackURL + "/allevents";
-const APIgetFile = params.baseBackURL + "/file/";
+const API_Query = params.baseBackURL + "/file/";
+const currentUser = AuthService.getCurrentUser();
+const eventAPI = params.baseBackURL + "/event/";
+
+
 
 class OneEvent extends React.Component {
     // render one event
@@ -206,53 +211,209 @@ class EventWidget extends React.Component{
             
           });
         });
-        
     }
     render(){
       let events = (this.state.events)? Object.entries(this.state.events): null;
+      console.log(events);
       let disp_events =  (this.state.events)? Object.entries(this.state.events).slice(0,5): null;
       let title = this.state.title;
       //let type = this.state.type;
-      let path = "featured" + this.state.type
-      /*
-      if(type == "/discover" || type == "/interest"){
-        path = path + "/" + currentUser.sid;
-      }*/
-      
-        return (
-          <Card style={{maxHeight: "22rem", marginBottom: "0px"}}>
-            <Card.Header style={{ textAlign: "left" }}>
-              <a href={path}>
-                <b>{title}</b>
-              </a>
-              <a href={path} style={{ float: "right" }}>
-                See all
-              </a>
-            </Card.Header>
-            <Card.Body style={{ overflowY: "hidden" }}>
-              <Row className="widget g-4">
-                {events &&
-                  disp_events.map((data) => (
-                    <Col style={{ justifyContent: "center", display: "flex" }}>
-                      <EventCard data={data} />
-                    </Col>
-                  ))}
-              </Row>
-            </Card.Body>
-          </Card>
+      let path = "featured" + this.state.type;
+      let nullevents;
+
+      if (this.state.type == "/interest") {
+         nullevents = (
+          <h7>State your interests <a href= "/accountSetting">here!</a></h7>
         );
+      }
+      else if (this.state.type == "/upcoming"){
+         nullevents = (
+          <h7>Create your own events <a href= "/createevent">here!</a></h7>
+        );
+      }
+             return (
+               <Card style={{ maxHeight: "22rem", marginBottom: "0px" }}>
+                 <Card.Header style={{ textAlign: "left" }}>
+                   <a href={path}>
+                     <b>{title}</b>
+                   </a>
+                   <a href={path} style={{ float: "right" }}>
+                     See all
+                   </a>
+                 </Card.Header>
+                 <Card.Body style={{ overflowY: "hidden" }}>
+                   <Row className="widget g-4">
+                     {events.length > 0 ? (
+                       disp_events.map((data) => (
+                         <Col
+                           style={{ justifyContent: "center", display: "flex" }}
+                         >
+                           <EventCard data={data} />
+                         </Col>
+                       ))
+                     ) : (
+                       <div>
+                         <h5>Sorry, we currently have no events for you</h5>
+                         {nullevents}
+                       </div>
+                     )}
+                   </Row>
+                 </Card.Body>
+               </Card>
+             );
     }
 }
 
+function EventCard(props){
+
+  let data = props.data[1];
+  let eventId = data.eventID;
+  let date = new Date(data.start).toDateString();
+  let time = new Date(data.date).toString().slice(16, 21);
+  let avail = data.numberOfParticipants + "/" + data.quota;
+  let link_detail = "/event/" + data.eventID;
+  let quota;
+  if (data.quota - data.numberOfParticipants > 3) {
+    quota = (
+      <Badge pill bg="success">
+        {avail}
+      </Badge>
+    );
+  } else {
+    quota = (
+      <Badge pill bg="warning">
+        {avail}
+      </Badge>
+    );
+  }
+
+  async function joinTheEvent() {
+    const request = await Axios.post(
+      `http://localhost:8080/event/register/${eventId}`,
+      { id: currentUser._id },
+      {
+        headers: {
+          "x-access-token": currentUser.accessToken,
+        },
+      }
+    );
+    console.log(request);
+  }
+
+  const onLoadPic = async (e) => {
+    const img = document.querySelector("#event-pic");
+    let api = API_Query + "event-" + eventId;
+    const loadResult = await fetch(api, {
+      method: "GET",
+      headers: new Headers({
+        "x-access-token": currentUser.accessToken,
+      }),
+    });
+    const resultStatus = await loadResult.clone().status;
+    const resultBlob = await loadResult.blob();
+    if (resultStatus === 200) {
+      img.crossOrigin = "anonymous";
+      img.src = await URL.createObjectURL(resultBlob);
+    }
+  };
+
+  return (
+    <Card class="link" style={{ width: "12rem", height: "17.25rem" }}>
+      <a href={link_detail}>
+        <Card.Img
+          id="event-pic"
+          variant="top"
+          style={{ height: "125px", objectFit: "cover" }}
+          src={"/image/" + data.activityCategory + ".jpeg"}
+          onLoad={onLoadPic}
+        />
+      </a>
+      <Card.Body>
+        <a href={link_detail}>
+          <Card.Title
+            style={{
+              color: "black",
+              whiteSpace: "nowrap",
+              textAlign: "left",
+              width: "10rem",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              fontSize: "125%",
+            }}
+          >
+            <b>{data.title}</b>
+          </Card.Title>
+          <div style={{ color: "black", height: "2.75rem" }}>
+            <p className="text">
+              {date}
+              <span style={{ float: "right" }}>
+                <Badge bg="dark">{time}</Badge>
+              </span>
+            </p>
+            <p className="text">{data.venue}</p>
+          </div>
+        </a>
+        <Container style={{ paddingLeft: "0px", paddingRight: "0px" }}>
+          <Row>
+            <Col xs={8}>
+              <h6 style={{ height: "1.2rem", textAlign: "left" }}>
+                {" "}
+                <Badge bg="secondary">{data.activityCategory}</Badge>
+              </h6>
+              <p className="text">Quota: {quota}</p>
+            </Col>
+            <Col style={{ paddingLeft: "0" }} xs={4}>
+              <Button variant="primary" className="mt-2" onClick={joinTheEvent}>
+                Join
+              </Button>
+            </Col>
+          </Row>
+        </Container>
+      </Card.Body>
+    </Card>
+  );
+
+}
+
+/*
 class EventCard extends React.Component {
-  /*
   constructor(props) {
     super(props);
+    this.onLoad = this.onLoad.bind(this);
     this.state = {
-      fileUrl: ""
+      data: this.props.data[1],
+      resultstatus: 0,
+      resultblob: 0,
     };
   }
-  componentDidMount() {
+  
+  onLoad(e){
+    const img = document.querySelector("#event-pic");
+    if (this.state.resultstatus === 200) {
+      img.crossOrigin = "anonymous";
+      img.src = URL.createObjectURL(this.state.resultblob);
+    }
+  }
+
+  async componentDidMount() {
+    let currentUser = AuthService.getCurrentUser();
+    var data = this.state.data;
+    var eventId = data.eventID;
+    let api = API_Query + "event-" + eventId;
+    const loadResult = await fetch(api, {
+        method: "GET",
+        headers: new Headers({
+          "x-access-token": currentUser.accessToken,
+        }),
+    });
+    const resultStatus = await loadResult.clone().status;
+    const resultBlob = await loadResult.blob();
+    this.setState({
+      resultStatus: resultStatus,
+      resultBlob: resultBlob,
+    })
+  };
+    /*
     let currentUser = AuthService.getCurrentUser();
     if (currentUser === null) {
     }
@@ -271,7 +432,7 @@ class EventCard extends React.Component {
             });
           });
     }
-  }*/
+  }
   render() {
     let data = this.props.data[1];
     let date = new Date(data.start).toDateString();
@@ -296,9 +457,11 @@ class EventCard extends React.Component {
       <Card className="link" style={{ width: "12rem", height: "17.25rem" }}>
         <a href={link_detail}>
           <Card.Img
+            id="event-pic"
             variant="top"
             style={{ maxHeight: "200px" }}
-            src={require("../images/basket.jpeg")}
+            src={"/image/" + data.activityCategory + ".jpeg"}
+            onLoad = {this.onLoad}
           />
         </a>
         <Card.Body>
@@ -346,6 +509,7 @@ class EventCard extends React.Component {
       </Card>
     );
   }
-}
+}*/
 
-export {Event, EventWidget, EventCard}
+export {Event, EventWidget}
+export default EventCard
