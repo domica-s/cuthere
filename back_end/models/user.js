@@ -15,7 +15,6 @@ var userSchema = mongoose.Schema({
     interests:[{type:String}],
     college:{type:String},
     about:{type:String},
-    rating:{type:String},
     following:[{type: mongoose.Schema.Types.ObjectId}],
     followers:[{type: mongoose.Schema.Types.ObjectId}],
     registeredEvents:[{
