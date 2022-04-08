@@ -161,10 +161,10 @@ class NavigationBar extends React.Component {
               </Nav>
               {isAuth !== true && 
 
-                <Nav className="ms-auto" > 
-                  <div className='push-login-right'>
+                <Nav className="ms-auto"> 
+                  {/* <div className='push-login-right'> */}
                   <Nav.Link href='/login'><Button >Login</Button></Nav.Link>
-                  </div>
+                  {/* </div> */}
 
                 </Nav>}
             </Navbar.Collapse>
