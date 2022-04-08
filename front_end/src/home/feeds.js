@@ -184,13 +184,13 @@ class Feed extends React.Component {
     this.onChangeSearch = this.onChangeSearch.bind(this);
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     let currentUser = AuthService.getCurrentUser();
     let api = APIfeed + "/" + currentUser.sid;
     if (currentUser === null) {
     }
     currentUser !== null &&
-    await fetch(api, {
+    fetch(api, {
         method: "GET",
         headers: new Headers({
             "x-access-token": currentUser.accessToken,
@@ -203,9 +203,10 @@ class Feed extends React.Component {
         });
     });
 
-    await UserService.recommendFriends(currentUser)
+    UserService.recommendFriends(currentUser)
     .then(successResponse => {
-      // console.log(successResponse);
+      // console.log("called");
+      console.log(successResponse);
       let fromCollege = successResponse.fromCollege.data;
       let fromInterests = successResponse.fromInterests.data;
 
@@ -218,10 +219,14 @@ class Feed extends React.Component {
       fromInterests.fromInterests.map((val, index) => {
         data2[index] = val;
       })
+
       let data = data1.concat(data2);
+      data = [...new Set(data)];
+      data = data.slice(0,4);
       this.setState({recommendedFriends: data})
     },
     error => {
+      // console.log("called err");
       console.log(error.response.data.message);
     });
   }
@@ -246,11 +251,13 @@ class Feed extends React.Component {
         queryName: userFromDB.name,
         queryCollege: userFromDB.college,
         queryInterests: userFromDB.interests,
+        searchTerm: ""
       })
     },
     error => {
       this.setState({
         queryMessage: error.response.data.message,
+        searchTerm: ""
       })
       // console.log(this.state.queryMessage);
     });

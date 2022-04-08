@@ -32,6 +32,7 @@ var userSchema = mongoose.Schema({
     starredEvents:[{type: mongoose.Schema.Types.ObjectId}],
     role:{type:String, enum: ['User', 'Admin']},
     active:{type:Boolean, default: false},
+    rating:{type:Number, default: 0},
     reviewHistory:[{
         user: {type: Number, ref: 'User'},
         type: {type: Boolean},
