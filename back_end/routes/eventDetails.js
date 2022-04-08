@@ -39,7 +39,7 @@ function sendReminder(to_email, email_body) {
     )
 
     var mailOptions = {
-        from: 'noreply.cuther@gmail.com',
+        from: 'noreply.cuthere@gmail.com',
         to: to_email,
         subject: subject,
         text: email_body
