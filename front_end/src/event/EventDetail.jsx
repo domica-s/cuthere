@@ -5,12 +5,15 @@ import Axios from 'axios'
 import { Row, Col } from 'antd';
 import AuthService from "../services/auth.service";
 import history from "../history";
+import moment from 'moment';
 import { OneChat } from './eventDetailPage';
 
 // import smaller components related to the events 
 import EventImage from './eventDetailsComponent/EventImage'
 import EventInfo from './eventDetailsComponent/EventInfo'
 import CommentForm from './eventDetailsComponent/CommentForm';
+import { DayTableSlicer } from '@fullcalendar/daygrid';
+import { isDateSelectionValid } from '@fullcalendar/react';
 
 export default function (props) { 
 
@@ -21,6 +24,7 @@ export default function (props) {
     const [Event, setEvent] = useState([])
     const location = useLocation();
     const [chatHistory, setChatHistory] = useState([]);
+    const [eventDone, setEventDone] = useState(false)
 
     // Defining Configuration and Parameters
     const currentUser = AuthService.getCurrentUser();
@@ -38,9 +42,14 @@ export default function (props) {
         }).then(response => {    
         setEvent(response.data);
         setChatHistory([response.data.chatHistory])
+
+        // Set Event Done if > ending date: 
+        var now = moment().toDate().getTime()
+        var event = moment(response.data.end).toDate().getTime()
+        if (now > event)  setEventDone(true)
         })
     }, [location])
-
+    
     // Register Event Front-end --> WORKING
     async function joinTheEvent(eventID){
         const request = await Axios.post(`http://localhost:8080/event/register/${eventID}`,{id: userID},         
@@ -102,7 +111,7 @@ export default function (props) {
         setChatHistory(request.data.response.chatHistory)
     }
 
-    // Update Event Front-end --> TESTING
+    // Update Event Front-end --> WORKING
     async function updateEvent(eventID, updatedContent){
         const request = await Axios.post(`http://localhost:8080/event/update/${eventID}`,{id:userID, update: updatedContent}, 
         {
@@ -113,7 +122,25 @@ export default function (props) {
         console.log(request)
     }
     
-    console.log(Event)
+    // Function to add to favorites --> WORKING
+    async function addToFav(eventID){
+        const request = await Axios.post(`http://localhost:8080/event/fav/${eventID}`, {id: userID},         {
+            headers: {
+                "x-access-token": currentUser.accessToken
+            }
+        })
+        console.log(request)
+    }
+
+    async function unaddToFav(eventID){
+        const request = await Axios.post(`http://localhost:8080/event/noFav/${eventID}`, {id: userID},         {
+            headers: {
+                "x-access-token": currentUser.accessToken
+            }
+        })
+        console.log(request)
+    }
+
     return (
         <React.Fragment>
             <div className="postPage" style={{
@@ -138,11 +165,14 @@ export default function (props) {
 
                     <Col lg={12} xs={24}>
                     <EventInfo 
+                        eventDone ={eventDone}
                         unjoinEvent = {unregister}
                         joinEvent = {joinTheEvent}
                         deleteEvent = {deleteEvent}
                         updateEvent = {updateEvent}
                         addComment = {addComment}
+                        addToFav = {addToFav}
+                        unaddToFav = {unaddToFav}
                         detail = {Event}/>
                     </Col>
                     <CommentForm detail={Event} addComment={addComment} chatHistory={chatHistory}/>

@@ -21,13 +21,14 @@ class AuthService {
       })
   }
 
-  register(username, sid, password, repassword, college) {
+  register(username, sid, password, repassword, college, interests) {
     return axios.post(API_URL + "signup", {
       username,
       sid,
       password,
       repassword,
-      college
+      college,
+      interests,
     });
   }
 

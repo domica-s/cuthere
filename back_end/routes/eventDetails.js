@@ -219,6 +219,9 @@ router.post('/event/update/:eventID', [authJwt.verifyToken], function(req,res){
 
 // Delete Events --> WORKING
 //TODO: update registeredEvents of participants + feedActivity
+    // --> Delete the registeredEvents from the User
+    // --> Delete the feedActivities from the User
+    // --> Delete the starredEvents from the user
 router.post('/event/delete/:eventID',[authJwt.verifyToken], function(req,res){
     // Acquire Parameters
     const eventID = req.params.eventID
@@ -230,8 +233,7 @@ router.post('/event/delete/:eventID',[authJwt.verifyToken], function(req,res){
         else if (result.createdBy != userID) res.status(200).send({message: "You have no authority to delete this event!"})
 
         else {
-            //console.log(result.participants);
-            //var part_user = result.participants;
+            
             Event.findOneAndDelete({eventID:eventID}).exec(function (err, result){
                 if(err) return res.status(400).send({message: "Error Occured: "+ err})
                 else if (result === null) return res.status(200).send({message:"There are no such events"})
@@ -266,6 +268,69 @@ router.post('/event/addcomment/:eventID', [authJwt.verifyToken], function (req,r
             
         }
     })
+})
+
+// Add Events to Favorites --> WORKING
+router.post('/event/fav/:eventID', [authJwt.verifyToken], function (req,res){
+    const eventID = req.params.eventID
+    const userID = req.body.id 
+
+    User.findOne({_id: userID}).exec(function (err, resultUser){
+        if(err) res.status(200).send({message:"Error occured: "+ err})
+        else {
+            // Get the event
+            Event.findOne({eventID: eventID}).exec(function(err, resultEvent){
+                if (err) res.status(200).send({message: "Error Occured: "+ err})
+
+                // Check if the event is already in your starred list 
+                if (resultUser.starredEvents.includes(resultEvent._id))
+                res.status(200).send({message: "You have already added this event on your starred list nigga!"})
+        
+                else {
+                    
+                    User.findOneAndUpdate({_id: userID},{$set:{starredEvents: [...resultUser.starredEvents,resultEvent._id]}}).exec(function (err, result){
+                        if(err) res.status(400).send({message: "Error Occured: "+ err})
+                        else res.status(200).send({message: "The event has been added to your fav list nigga!", response: result})
+                    })
+                }
+            })
+        }
+    })
+})
+
+// Remove from favorite --> WORKING
+router.post('/event/noFav/:eventID', [authJwt.verifyToken], function (req,res){
+    const eventID = req.params.eventID
+    const userID = req.body.id 
+    User.findOne({_id: userID}).exec(function (err, resultUser){
+        if(err) res.status(200).send({message:"Error occured: "+ err})
+        else {
+            // Get the event
+            Event.findOne({eventID: eventID}).exec(function(err, resultEvent){
+                
+  
+                if (err) res.status(400).send({message: "Error Occured: "+ err})
+
+                // Check if the user have the event starred
+                if (!resultUser.starredEvents.includes(resultEvent._id))
+                res.status(200).send({message: "You have not added this event as your favorite"})
+        
+                else {
+                    // Remove the event from the starred
+                    let starred = resultUser.starredEvents
+                    starred.remove(resultEvent._id)
+                    
+  
+                    // Update the user
+                    User.findOneAndUpdate({_id: userID},{$set:{starredEvents:starred}}).exec(function (err, result){
+                        if(err) res.status(400).send({message: "Error Occured: "+ err})
+                        else res.status(200).send({message: "The event has been removed to your fav list nigga!", response: result})
+                    })
+                }
+            })
+        }
+    })
+
 })
 
 module.exports = router;

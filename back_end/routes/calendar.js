@@ -64,6 +64,48 @@ router.post("/my-event", [authJwt.verifyToken], async(req, res) => {
     res.send(events)
 });
 
+// Filter Function - Favorite Events
+router.post("/fav-event", [authJwt.verifyToken], (req, res) => { 
+
+    user = req.body.user 
+    
+
+    // Get the User from db 
+    User.findOne({_id: user._id}).exec(async function(err, userResult){
+        let fav = userResult.starredEvents
+        const stringFav = fav.map(x => x.toString()) // String
+        console.log(stringFav)
+
+        const events = await Event.find({
+            _id: {$in: stringFav},
+            start: {$gte: moment(req.query.start).toDate()}, 
+            end: {$lte: moment(req.query.end).toDate()},
+        })
+
+        res.send(events)
+
+
+    })
+    
+
+    
+    // await User.find({_id: user._id}).exec(function (err,result){
+    //     // Send the events where start and end date is as the format follows:
+    //     let fav = result.starredEvents // Array of objects
+    //     console.log(result)
+    //     // let events = []
+    //     // for (i =0; i<fav.length ; i++){
+    //     //     // Check if start and End date match the condition 
+    //     //     if (fav[i].start == {$gte: moment(req.query.start).toDate()} && fav[i].end == {$lte: moment(req.query.end).toDate()}) {
+    //     //         // append event to the list
+    //     //         events.append(fav[i])
+    //     //     }
+    //     // }
+    //     // res.send(events)
+    // })
+    
+});
+
 
 // To route to an events detail page
 router.get("/route-event/:id", [authJwt.verifyToken], async(req,res)=> {

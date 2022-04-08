@@ -5,7 +5,8 @@ import Row from "react-bootstrap/Row";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import "./feeds.css";
-
+import UserService from "../services/user.service";
+import {Form, Button} from 'react-bootstrap';
 var params = require("../params/params");
 const APIfeed = params.baseBackURL + "/feed";
 const currentUser = AuthService.getCurrentUser();
@@ -78,6 +79,7 @@ class OneFeed extends React.Component {
     let event = "event/" + data.event;
     return (
       <table>
+        <tbody>
         <tr className="p-1">
           <td style={{ width: "90px", textAlign: "center" }}>
             <img
@@ -105,11 +107,53 @@ class OneFeed extends React.Component {
             </div>
           </td>
         </tr>
+        </tbody>
       </table>
     );
   }
 }
 */
+
+class OneProfile extends React.Component {
+  render() {
+    let data = this.props.data;
+    let sid = data[0];
+    let name = data[1];
+    let college = data[2];
+    let userLink = "user/" + sid;
+
+    return (
+      <>
+      <hr/>
+      <table>
+        <tbody>
+        <tr className="p-1">
+          <td style={{ width: "90px", textAlign: "center" }}>
+            <img
+              src="https://bootdey.com/img/Content/avatar/avatar6.png"
+              id="profile-pic"
+              alt="profile-pic"
+              className="rounded-circle p-1"
+              width="75"
+            />
+          </td>
+          <td>
+            <div>
+              <a href={userLink}>
+                <h5>{name}</h5>
+              </a>
+              <p className="mb-0">
+                {college}
+              </p>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      </>
+    )
+  }
+}
 
 class Feed extends React.Component {
   constructor(props) {
@@ -117,8 +161,17 @@ class Feed extends React.Component {
     this.state = {
       feeds: {},
       currentUser: AuthService.getCurrentUser(),
+      searchTerm: "",
+      searchResults: "",
+      querySID: "",
+      queryName: "",
+      queryCollege: "",
+      queryMessage: "",
     };
+    this.handleSearch = this.handleSearch.bind(this);
+    this.onChangeSearch = this.onChangeSearch.bind(this);
   }
+
   componentDidMount() {
     let currentUser = AuthService.getCurrentUser();
     let api = APIfeed + "/" + currentUser.sid;
@@ -138,8 +191,46 @@ class Feed extends React.Component {
         });
     });
   }
+
+  handleSearch(e) {
+    e.preventDefault();
+    this.setState({
+      searchTerm: e.target.value
+    })
+
+    // console.log(this.state.searchTerm);
+
+    let currentUser = AuthService.getCurrentUser();
+    let userFromDB;
+
+    UserService.getProfile(currentUser, this.state.searchTerm)
+    .then(successResponse => {
+      userFromDB = successResponse.data;
+      // console.log(userFromDB);
+      this.setState({
+        querySID: userFromDB.sid,
+        queryName: userFromDB.name,
+        queryCollege: userFromDB.college
+      })
+    },
+    error => {
+      this.setState({
+        queryMessage: error.response.data.message,
+      })
+      // console.log(this.state.queryMessage);
+    });
+  }
+
+  onChangeSearch(e) {
+    this.setState({
+      searchTerm: e.target.value
+    })
+  }
+
   render(){
+    // console.log(this.state.feeds);
     let feeds = (this.state.feeds) ? Object.entries(this.state.feeds): null;
+    let queryRes = (this.state.querySID) ? [this.state.querySID, this.state.queryName, this.state.queryCollege]: null;
     return (
       <Container className="flexbox" style={{paddingLeft: "0px", paddingRight: "10px", paddingTop: "20px"}}>
         <Card>
@@ -154,11 +245,51 @@ class Feed extends React.Component {
               </Row>
             ))
           ) : (
-            <p>
+            <>
             <h3>No activities to display</h3>
             <h4>Find friends here</h4>
-            </p>
+            </>
           )}
+        </Card>
+        <Card>
+          <Card.Header style={{ textAlign: "left" }}>
+            <b>Search for friends</b>
+          </Card.Header>
+          <Row className="m-0" style={{ textAlign: "left" }}>
+            <Form onSubmit={this.handleSearch}>
+              <div className="form-group">
+                  <label className="form-label">Enter SID to query:</label>
+                  <Form.Control 
+                      name="querySID"
+                      type="number" 
+                      value={this.state.searchTerm} 
+                      onChange={this.onChangeSearch}
+                      placeholder={"Type in an SID"}
+                      required
+                  />
+              </div>
+              <Container style={{display:'flex', justifyContent:'center'}}>
+                <Button type="submit" variant="primary" value="Query SID">Query SID</Button>
+              </Container>
+          </Form>
+          </Row>
+          {queryRes && (
+            <Row className="m-0" style={{ textAlign: "left" }}>
+              <OneProfile data={queryRes} />
+            </Row>
+          )}
+          <Container>
+          {this.state.queryMessage && (
+            <div className="form-group">
+              <div
+              className="alert alert-danger"
+              role="alert"
+              >
+              {this.state.queryMessage}
+              </div>
+            </div>
+          )}
+          </Container>
         </Card>
       </Container>
     );

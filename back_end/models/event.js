@@ -1,7 +1,6 @@
 var mongoose = require("mongoose");
+var User = require("./user");
 
-// link tags
-// fix activityCategory
 var eventSchema = mongoose.Schema({
     title:{type: String, required: true},
     eventID:{type: Number},
@@ -11,7 +10,7 @@ var eventSchema = mongoose.Schema({
     end:{type: Date, required: true},
     numberOfParticipants:{type: Number},
     quota:{type: Number, required: true},
-    activityCategory:{type: String, required: true, enum: ['Basketball', 'Badminton', 'Soccer', 'Football','Hiking', 'Volleyball', 'Board Games', 'Tennis', 'Running', 'Gaming', 'Swimming', 'Drinking', 'Study', 'Movies', 'Frat Parties', 'Athletics', 'Arts', 'Cooking']},
+    activityCategory:{type: String, required: true, enum: ['Basketball', 'Badminton', 'Soccer', 'Football','Hiking', 'Volleyball', 'Boardgame', 'Tennis', 'Running', 'Gaming', 'Swimming', 'Drinking', 'Study', 'Movies', 'FratParty', 'Athletics', 'Arts', 'Cooking']},
     chatHistory:[{
         user: {type: Number}, // SID
         content: {type: String}, // The Message
@@ -23,7 +22,16 @@ var eventSchema = mongoose.Schema({
     participants: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}]
 });
 
+// To fix, check this --> https://stackoverflow.com/questions/42521550/concurrency-issues-when-removing-dependent-documents-with-mongoose-middlewares 
+eventSchema.post('remove', function(next){
+    // Remove all the assignment docs that reference the removed event 
+    User.remove({
+        registeredEvents: {event: this._id},
+        starredEvents: this._id
+    }, next)
+});
 
 var Event = mongoose.model("Event", eventSchema);
+
 
 module.exports = Event;

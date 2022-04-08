@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
@@ -185,6 +185,7 @@ class CreateEvent extends React.Component {
                             <option value="Basketball">Basketball</option>
                             <option value="Badminton">Badminton</option>
                             <option value="Soccer">Soccer</option>
+                            <option value="Football">Football</option>
                             <option value="Hiking">Hiking</option>
                             <option value="Volleyball">Volleyball</option>
                             <option value="Boardgame">Board Games</option>

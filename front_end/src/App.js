@@ -78,8 +78,8 @@ class App extends React.Component {
     return (
       <div className="App">
         <BrowserRouter>
-          <div class="content">
-          <div class="content-inside">
+          <div className="content">
+          <div className="content-inside">
           <NavigationBar isAuthUser={(currentUser !== undefined)} username={(username)} isAdmin={(isAdmin)} />
           
           <Routes>
@@ -148,7 +148,7 @@ class NavigationBar extends React.Component {
                 {isAuth !== true && <Nav.Link href='/signup'>Sign Up</Nav.Link>}
               </Nav>
               {isAuth !== true && 
-                <Nav classaName="ms-auto"> 
+                <Nav className="ms-auto"> 
                   <Nav.Link href='/login'><Button>Login</Button></Nav.Link>
                 </Nav>}
             </Navbar.Collapse>
