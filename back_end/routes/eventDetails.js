@@ -25,10 +25,10 @@ function checkRegistered(user_id, participants){
 }
 
 // Email reminder
-function sendReminder(res, to_email, email_body) {
+function sendReminder(to_email, email_body) {
     let subject = "Reminder for registered event";
-    let resMsgSuccess = "A reminder email has been sent to " + to_email;
-    let resMsgFail = "Technical Issue! Please contact our moderators.";
+    // let resMsgSuccess = "A reminder email has been sent to " + to_email;
+    // let resMsgFail = "Technical Issue! Please contact our moderators.";
 
     var transporter = nodemailer.createTransport(
         sendgridTransport({
@@ -39,17 +39,18 @@ function sendReminder(res, to_email, email_body) {
     )
 
     var mailOptions = {
-        from: 'noreply.cuther@gmail.com',
+        from: 'noreply.cuthere@gmail.com',
         to: to_email,
         subject: subject,
         text: email_body
     };
-
+    console.log(email_body);
     transporter.sendMail(mailOptions, function(err) {
         if (err) {
-            return res.status(500).send({message: resMsgFail});
+            console.log(err);
+            return false;
         }
-        return res.status(200).send({message: resMsgSuccess});
+        return true
     });
 }
 
@@ -60,6 +61,8 @@ router.post('/event/register/:eventID', [authJwt.verifyToken], function (req, re
     // Acquire parameters
     const eventID = req.params.eventID
     const userID = req.body.id // This is an ObjectID
+    var eventName = "";
+    var eventTime = "";
 
     // Find event with the corresponding Event Id 
     Event.findOne({eventID: eventID}).exec(function(err, result){
@@ -80,6 +83,9 @@ router.post('/event/register/:eventID', [authJwt.verifyToken], function (req, re
                     if(err) res.status(404).send({message:"Error Ocurred "+ err})
                     else {
                         var timeNow = Date(Date.now());
+                        var eventName = doc.title;
+                        var eventTime = doc.start.toString();
+                        console.log(eventName, eventTime);
                         var entry = {
                             $push: { registeredEvents:{
                                 event: doc,
@@ -91,8 +97,22 @@ router.post('/event/register/:eventID', [authJwt.verifyToken], function (req, re
                             console.log(doc);
                             var followers = ress.followers;
 
+                            // send reminder
+                            var user_email = ress.email;
+                            var userName = ress.username;
+                            var reminder_body = "Hi " + userName + ",\n\n  Here is a reminder for the event you registered:\n\n";
+                            reminder_body += "Event Name: " + eventName + "\n";
+                            reminder_body += "Event Time: " + eventTime + "\n";
+                            reminder_body += "Remember to participate on time and have fun!\n\n"
+                            reminder_body += "Warm regards, \nCUthere Development Team"
+
+                            var emailSent = sendReminder(user_email, reminder_body);
+
                             if (err) {
                                 res.status(400).send({ message: "error occured: " + err});
+                            }
+                            else if (!emailSent) {
+                                console.log("Email reminder is not sent!");
                             }
                             else{
                                 console.log("Updated The Database Nigga!"); // Please change this

@@ -6,7 +6,6 @@ import { Row, Col } from 'antd';
 import AuthService from "../services/auth.service";
 import history from "../history";
 import moment from 'moment';
-import { OneChat } from './eventDetailPage';
 
 // import smaller components related to the events 
 import EventImage from './eventDetailsComponent/EventImage'
@@ -41,14 +40,14 @@ export default function (props) {
             }
         }).then(response => {    
         setEvent(response.data);
-        setChatHistory([response.data.chatHistory])
+        setChatHistory(response.data.chatHistory)
 
         // Set Event Done if > ending date: 
         var now = moment().toDate().getTime()
         var event = moment(response.data.end).toDate().getTime()
         if (now > event)  setEventDone(true)
         })
-    }, [location])
+    }, [chatHistory, Event, eventDone])
     
     // Register Event Front-end --> WORKING
     async function joinTheEvent(eventID){

@@ -4,6 +4,9 @@ import {Button, Container} from "react-bootstrap";
 import "./myProfile.css"
 import authService from "../services/auth.service";
 import userService from "../services/user.service";
+import UserRating from "./UserRating";
+import Axios from 'axios' 
+
 var params = require("../params/params");
 
 
@@ -46,9 +49,10 @@ function Profile()  {
       interests: initialUser.interests,
       friends: initialUser.friends,
       college: initialUser.college, 
-      rating: initialUser.rating,
+      reviewHistory: initialUser.reviewHistory
     };
     const [user, setUser] = useState(INITIAL_STATE);
+    const [reviewHistory, setReviewHistory] = useState(INITIAL_STATE.reviewHistory)
 
     useEffect(() => {
         (async () => {
@@ -69,8 +73,10 @@ function Profile()  {
                 interests: userFromDB.interests,
                 friends: userFromDB.friends,
                 college: userFromDB.college, 
-                rating: userFromDB.rating,
+                reviewHistory: userFromDB.reviewHistory
               });
+
+              setReviewHistory(userFromDB.reviewHistory)
 
     
             },
@@ -86,8 +92,10 @@ function Profile()  {
                 interests: user.interests,
                 friends: user.friends,
                 college: user.college, 
-                rating: user.rating,
+                reviewHistory: user.reviewHistory
               });
+
+              setReviewHistory(user.reviewHistory)
             })
             // setUser(user.data);
             
@@ -95,8 +103,32 @@ function Profile()  {
             console.log(error);
         }
         })();
-    }, []);
+    }, [reviewHistory, user]);
     
+    // Add review to back-end --> The sid in params should be changed to the target SID. 
+
+      // returns --> success, fail1 (user have previously left a comment, update instead)
+      //, fail2 (source/target sid not found, no similar events or other errors)
+    async function addReview (writer, content, type){
+      // Set the request's body
+      const body = {
+        sid: writer.sid,
+        content: content,
+        type: type
+       }
+
+       // Set the request
+      const request = await Axios.post(`http://localhost:8080/user/${initialUser.sid}/comment`, body,        {
+        headers: {
+            "x-access-token": writer.accessToken // Whose access token is this?
+        }
+      })
+
+      // Store reviewHistory
+      console.log(request.data)
+      setReviewHistory(request.data.response.reviewHistory)
+
+    }
     return (
       <Container className="myContainer">
         {/* <div className="container">
@@ -136,10 +168,6 @@ function Profile()  {
 								<li className="list-group-item d-flex justify-content-between align-items-center flex-wrap">
 									<h6 className="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="0.266667in" height="0.266667in" viewBox="0 0 24 24"><path id="Imported Path" fill="black" fillOpacity="1" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" d="M 7.20,12.00 C 9.52,12.00 11.40,10.12 11.40,7.80 11.40,5.48 9.52,3.60 7.20,3.60 4.88,3.60 3.00,5.48 3.00,7.80 3.00,10.12 4.88,12.00 7.20,12.00 Z M 10.08,13.20 C 10.08,13.20 9.77,13.20 9.77,13.20 8.99,13.57 8.12,13.80 7.20,13.80 6.28,13.80 5.42,13.57 4.63,13.20 4.63,13.20 4.32,13.20 4.32,13.20 1.94,13.20 0.00,15.14 0.00,17.52 0.00,17.52 0.00,18.60 0.00,18.60 0.00,19.59 0.81,20.40 1.80,20.40 1.80,20.40 12.60,20.40 12.60,20.40 13.59,20.40 14.40,19.59 14.40,18.60 14.40,18.60 14.40,17.52 14.40,17.52 14.40,15.13 12.46,13.20 10.08,13.20 Z M 18.00,12.00 C 19.99,12.00 21.60,10.39 21.60,8.40 21.60,6.41 19.99,4.80 18.00,4.80 16.01,4.80 14.40,6.41 14.40,8.40 14.40,10.39 16.01,12.00 18.00,12.00 Z M 19.80,13.20 C 19.80,13.20 19.66,13.20 19.66,13.20 19.14,13.38 18.59,13.50 18.00,13.50 17.42,13.50 16.86,13.38 16.34,13.20 16.34,13.20 16.20,13.20 16.20,13.20 15.44,13.20 14.73,13.42 14.11,13.78 15.03,14.76 15.60,16.07 15.60,17.52 15.60,17.52 15.60,18.96 15.60,18.96 15.60,19.04 15.58,19.12 15.58,19.20 15.58,19.20 22.20,19.20 22.20,19.20 23.19,19.20 24.00,18.39 24.00,17.40 24.00,15.08 22.12,13.20 19.80,13.20 19.80,13.20 19.80,13.20 19.80,13.20 Z" /></svg> Friends</h6>
 									<span className="text-secondary">{user.friends || ""}</span>
-								</li>
-                				<li className="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-									<h6 className="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="0.266667in" height="0.266667in" viewBox="0 0 24 24"><path id="Imported Path" fill="black" fillOpacity="1" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" d="M 17.98,9.32 C 17.98,9.32 14.52,8.82 14.52,8.82 14.52,8.82 12.98,5.69 12.98,5.69 12.79,5.32 12.42,5.08 12.00,5.08 11.58,5.08 11.21,5.32 11.02,5.69 11.02,5.69 9.48,8.82 9.48,8.82 9.48,8.82 6.02,9.32 6.02,9.32 5.61,9.38 5.27,9.67 5.14,10.07 5.02,10.46 5.12,10.89 5.42,11.18 5.42,11.18 7.92,13.62 7.92,13.62 7.92,13.62 7.33,17.06 7.33,17.06 7.26,17.47 7.43,17.88 7.76,18.13 8.10,18.37 8.54,18.40 8.91,18.21 8.91,18.21 12.00,16.58 12.00,16.58 12.00,16.58 15.09,18.21 15.09,18.21 15.25,18.29 15.42,18.33 15.60,18.33 15.60,18.33 15.60,18.33 15.60,18.33 16.20,18.33 16.69,17.84 16.69,17.24 16.69,17.16 16.68,17.08 16.66,17.00 16.66,17.00 16.08,13.62 16.08,13.62 16.08,13.62 18.58,11.18 18.58,11.18 18.88,10.89 18.98,10.46 18.86,10.07 18.73,9.67 18.39,9.38 17.98,9.32 Z M 12.00,0.00 C 5.38,0.00 0.00,5.38 0.00,12.00 0.00,18.62 5.38,24.00 12.00,24.00 18.62,24.00 24.00,18.62 24.00,12.00 24.00,5.38 18.62,0.00 12.00,0.00 Z M 12.00,21.82 C 6.59,21.82 2.18,17.41 2.18,12.00 2.18,6.59 6.59,2.18 12.00,2.18 17.41,2.18 21.82,6.59 21.82,12.00 21.82,17.41 17.41,21.82 12.00,21.82 Z M 218.00,32.00" /></svg> Rating</h6>
-									<span className="text-secondary">{user.rating || ""}</span>
 								</li>
 								<li className="list-group-item d-flex justify-content-between align-items-center flex-wrap">
 									<h6 className="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="0.266667in" height="0.266667in" viewBox="0 0 24 24"><path id="Imported Path" fill="black" fillOpacity="0.9" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" 
@@ -265,6 +293,12 @@ function Profile()  {
 								    <div className="card-body">
                       <h5 className="d-flex align-items-center mb-3">Friends/ Activities placeholder</h5>
                       {/* START HERE FOR CHANGING ACTIVITIES PLACEHOLDER */}
+
+                      <UserRating
+                        reviewHistory= {reviewHistory}
+                        addReview = {addReview}
+                        />
+
                     </div>
                   </div>
                 </div>

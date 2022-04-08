@@ -22,7 +22,7 @@ function LandingPage() {
               </Link>
               <Link to="/SignUp">
                 <Button
-                  variant="outline-primary"
+                  variant="primary"
                   size="lg"
                   className="landingbutton"
                 >

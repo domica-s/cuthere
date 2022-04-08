@@ -47,6 +47,9 @@ exports.leaveUserRating = (req, res) => {
     let type = req.body.type; // good or bad rating (true for good)
     let content = req.body.content;
 
+    console.log(req.body)
+    console.log(req.params.sid)
+
     User.findOne({ sid: targetSID })
     .exec((err, targetUser) => {
         if (err) {
@@ -54,21 +57,25 @@ exports.leaveUserRating = (req, res) => {
         }
         
         if (!targetUser) {
+            console.log("Can't find the guy!")
             return res.status(404).send({ message: "Target user not found "});
         }
 
         User.findOne({ sid: sourceSID })
         .exec((err, sourceUser) => {
             if (err) {
+                console.log("Second Error")
                 return res.status(500).send({ message: err});
             }
 
             if (!sourceUser) {
+                console.log("Can't find who wrote this thing man!")
                 return res.status(404).send({ message: "Source user not found "});
             }
 
             // if their events are not empty
             if (sourceUser.registeredEvents && targetUser.registeredEvents) {
+                console.log("The users share the same event brother!")
                 // if they share similar events
                 let sameEvent = 0;
                 sourceUser.registeredEvents.forEach((item, index) => {
@@ -87,23 +94,34 @@ exports.leaveUserRating = (req, res) => {
                     let targetHistory = targetUser.reviewHistory;
                     let hasLeftComment = targetHistory.some(targetHistory => targetHistory.user === sourceSID)
                     if (hasLeftComment) {
+                        console.log("You left a comment already brother I'm sorry!")
                         return res.status(404).send({ message: "You have previously left a comment, update your comment instead."});
                     }
 
                     //  not yet left comment before
                     // can comment
                     let commentObj = {"user": sourceSID, "type": type, "content": content}
-                    targetHistory.push(commentObj);
-                    targetUser.reviewHistory = targetHistory;
+                    const reviewHistory = [...targetUser.reviewHistory, commentObj]
+                    
 
-                    targetUser.save((err) => {
-                        if (err) {
-                            return res.status(500).send({message: err});
-                        }
-                        
-                        // console.log(targetUser.registeredEvents);
-                        return res.status(200).send({ sourceSID: sourceSID,message: 'Your comment has been added successfully'});
+                    // Use FindOneAndUpdate
+                    User.findOneAndUpdate({sid: targetSID}, {$push:{reviewHistory: reviewHistory}}).exec(function(err, result){
+                      if (err) res.status(400).send({message:"Error Occured: "+ err})
+                      else res.status(200).send({message: "Review Added!", response: result, sourceSID: sourceSID})
                     })
+
+                    // Dom's method below
+                    // targetHistory.push(commentObj);
+                    // targetUser.reviewHistory = targetHistory;
+
+                    // targetUser.save((err) => {
+                    //     if (err) {
+                    //         return res.status(500).send({message: err});
+                    //     }
+                        
+                    //     // console.log(targetUser.registeredEvents);
+                    //     return res.status(200).send({ sourceSID: sourceSID, message: 'Your comment has been added successfully'});
+                    // })
                 }
                 else {
                     return res.status(404).send({ message: "You do not share any similar events with the target user"});
@@ -308,3 +326,70 @@ exports.unfollowUser = (req, res) => {
     });
   });
 };
+
+// POST request with college in body
+exports.recommendedFriendsCollege = (req, res) => {
+  let sid = req.body.sid;
+  let college = req.body.college;
+
+  User.count({ college: college })
+  .exec((err, count) =>  {
+    if (err) {
+      res.status(400).send({ message: err });
+    }
+
+    var random = Math.floor(Math.random() * count);
+
+    User.find({ college: college}, { sid: 1, name: 1, college: 1, interests: 1 }).skip(random).limit(2)
+    .exec((err, users) => {
+      if (err) {
+        return res.status(400).send({ message: err });
+      }
+      if (!users) {
+        return res.status(404).send({ message: "No users found" });
+      }
+      // console.log(users);
+      return res.status(200).send({ fromCollege: users });
+    })
+  })
+
+}
+
+// POST request with sid in body
+exports.recommendedFriendsInterests = async (req, res) => {
+  try {
+    await User.findOne({ sid: req.body.sid })
+    .exec((err, sourceUser) => {
+      if (err) {
+        res.status(400).send({ message: err });
+      }
+      // console.log(sourceUser);
+      // console.log(sourceUser.interests);
+      User.count({ interests: { "$in": sourceUser.interests } })
+      .exec((err, count) => {
+        // console.log(sourceUser.interests);
+        // console.log(count);
+        if (err) {
+          res.status(400).send({ message: err });
+        }
+
+        var random = Math.floor(Math.random() * count);
+        
+        User.find({ sid: { $ne: req.body.sid }, interests: { "$in": sourceUser.interests} }, { sid: 1, name: 1, college: 1, interests: 1 }).skip(random).limit(3)
+        .exec((err, users) => {
+          if (err) {
+            res.status(400).send({ message: err });
+          }
+          if (!users) {
+            return res.status(404).send({ message: "No users found" });
+          }
+          // console.log(users);
+          return res.status(200).send({ fromInterests: users });
+        })
+      })
+    })
+  }
+  catch {
+    return res.status(404).send({message: "Failed fetching data"});
+  }
+}

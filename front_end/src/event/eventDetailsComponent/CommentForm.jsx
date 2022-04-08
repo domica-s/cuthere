@@ -14,6 +14,7 @@ class CommentForm extends React.Component{
         };
     }
 
+
     handleCommentValue = (e) => {
 
         this.setState({
@@ -69,16 +70,23 @@ class CommentBox extends React.Component {
         const {commentValue, handleCommentValue, enterCommentLine, submitCommentLine, chatHistory} = this.props; 
         const enableCommentButton = () => { return (commentValue ? false : true)}; 
         const changeCommentButtonStyle = () => {return (commentValue? "comments-button-enabled" : "comments-button-disabled")}; 
-
+       
         return (
             <React.Fragment>
                 <div className="comments-box">
                     <input onKeyPress = {enterCommentLine} value ={commentValue} id="comments-input" onChange={handleCommentValue} type="text" placeholder="Add a comment..." />
                     <Button onClick={submitCommentLine} type="submit" className="comments-button" id={changeCommentButtonStyle()} disabled ={enableCommentButton()}> Post </Button>
                 </div>
-                <ul className="comments-list">
-                    {chatHistory.map((data) => <OneChat chat={data}/>)}
+                {chatHistory ? 
+                <ul classNam="comments-list"> 
+                    {chatHistory.map((data) => 
+                        <OneChat chat={data}/>
+                    )}
                 </ul>
+                :
+                (null)}
+
+        
                 <br/>
                 <br/>
                 <br/>
@@ -87,20 +95,6 @@ class CommentBox extends React.Component {
     }
 }
 
-class Comment extends React.Component { // This is useless if we want to use OneChat
-
-    render () {
-        const {chatHistory} = this.props 
-  
-        return(
-            <ul className ="comments-list">
-                {chatHistory.map((data)=> 
-                    <li className="each-comment"><strong>{data.user}</strong> commented: "{data.content}" on <i>{data.chatAt}</i></li>
-                    )}
-            </ul>
-        )
-    }
-}
 
 class OneChat extends React.Component {
     constructor(props) {
@@ -112,7 +106,7 @@ class OneChat extends React.Component {
         let username = chat.userDetails;
         let chatAt = chat.chatAt;
         return (
-            <div className="bg-dark text-warning">
+            <div className="bg-dark text-success">
                 <p>Time posted: {chatAt}</p>
                 <p>user: {username}</p>
                 <p>content: {content}</p>

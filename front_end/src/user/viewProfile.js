@@ -6,6 +6,8 @@ import authService from "../services/auth.service";
 import userService from "../services/user.service";
 import { useParams } from "react-router-dom";
 import history from "../history";
+import UserRating from "./UserRating";
+import Axios from 'axios' 
 var params = require("../params/params");
 const API_Query = params.baseBackURL + "/file/";
 
@@ -36,7 +38,7 @@ function ViewProfile()  {
     friends: "",
     college: "", 
     rating: "",
-
+    reviewHistory:[],
     };
 
     const onLoadPic = async(e) => {
@@ -58,6 +60,7 @@ function ViewProfile()  {
     }
 
   const [user, setUser] = useState(INITIAL_STATE);
+  const [reviewHistory, setReviewHistory] = useState(INITIAL_STATE.reviewHistory)
 
   useEffect(() => {
       (async () => {
@@ -79,9 +82,11 @@ function ViewProfile()  {
               friends: userFromDB.friends,
               college: userFromDB.college, 
               rating: userFromDB.rating,
+              reviewHistory: userFromDB.reviewHistory,
             });
 
-  
+            setReviewHistory(userFromDB.reviewHistory)
+
           },
           error => {
            
@@ -93,8 +98,28 @@ function ViewProfile()  {
           console.log(error);
       }
       })();
-  }, []);
-  
+  }, [reviewHistory, user]);
+
+  async function addReview (writer, content, type){
+    // Set the request's body
+    const body = {
+      sid: writer.sid,
+      content: content,
+      type: type
+     }
+
+     // Set the request
+    const request = await Axios.post(`http://localhost:8080/user/${initialUser.sid}/comment`, body,        {
+      headers: {
+          "x-access-token": writer.accessToken // Whose access token is this?
+      }
+    })
+
+    // Store reviewHistory
+    console.log(request.data)
+    setReviewHistory(request.data.response.reviewHistory)
+
+  }
       return (
         <Container className="myContainer">
               <div className="row">
@@ -259,6 +284,10 @@ function ViewProfile()  {
                                       <div className="card-body">
                         <h5 className="d-flex align-items-center mb-3">Friends/ Activities placeholder</h5>
                         {/* START HERE FOR CHANGING ACTIVITIES PLACEHOLDER */}
+                        <UserRating
+                        reviewHistory= {reviewHistory}
+                        addReview = {addReview}
+                        />
                       </div>
                     </div>
                   </div>

@@ -10,5 +10,7 @@ router.post("/:sid/comment", [authJwt.verifyToken], controller.leaveUserRating);
 router.post("/:sid/comment/update", [authJwt.verifyToken], controller.updateUserRating);
 router.post("/follow/:sid", [authJwt.verifyToken], controller.followUser);
 router.post("/unfollow/:sid", [authJwt.verifyToken], controller.unfollowUser);
+router.post("/recommendfriends/college", [authJwt.verifyToken], controller.recommendedFriendsCollege);
+router.post("/recommendfriends/interests", [authJwt.verifyToken], controller.recommendedFriendsInterests);
 
 module.exports = router;
