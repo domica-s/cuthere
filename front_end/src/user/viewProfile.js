@@ -98,8 +98,8 @@ function ViewProfile()  {
           console.log(error);
       }
       })();
-  }, []);
-  
+  }, [reviewHistory, user]);
+
   async function addReview (writer, content, type){
     // Set the request's body
     const body = {

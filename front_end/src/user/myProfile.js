@@ -103,7 +103,7 @@ function Profile()  {
             console.log(error);
         }
         })();
-    }, []);
+    }, [reviewHistory, user]);
     
     // Add review to back-end --> The sid in params should be changed to the target SID. 
 
