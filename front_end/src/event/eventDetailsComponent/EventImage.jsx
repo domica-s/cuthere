@@ -15,7 +15,7 @@ const INITIAL_STATE = {
 };
 
 function EventImage(props) {
-    console.log(props.eventID, props.detail.activityCategory);
+    // console.log(props.eventID, props.detail.activityCategory);
     const [Images, setImages] = useState(INITIAL_STATE);
 
     const onChangeFile = async(e) => {

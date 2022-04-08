@@ -94,8 +94,10 @@ export default function (props) {
     
     // Add comments Front-End --> WORKING
     async function addComment(eventID, comment){
+
         const updatedComment = { 
             user: sid,
+            name: currentUser.name,
             content: comment,
             chatAt: Date.now(),
             userDetails: currentUser
