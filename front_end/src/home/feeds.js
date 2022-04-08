@@ -279,10 +279,10 @@ class Feed extends React.Component {
       <Container className="flexbox" style={{paddingLeft: "0px", paddingRight: "10px", paddingTop: "20px"}}>
         <Card>
           <Card.Header style={{ textAlign: "left" }}>
-            <b>Discover new friends</b>
+            <b>Discover friends</b>
           </Card.Header>
           <Row className="m-0" style={{ textAlign: "left" }}>
-            <h6>Friends you may know</h6>
+            <h6>Users you may be interested in</h6>
             {/* get friends from same college (2) and same interests (3) */}
             { this.state.recommendedFriends ? (
               <>
