@@ -13,7 +13,7 @@ class UserRating extends React.Component{
         this.state = { 
             commentValue: '',
             commentLine: [''], // CommentID is basically not used
-            reviewType: false
+            reviewType: true
 
         };
     }
@@ -44,10 +44,7 @@ class UserRating extends React.Component{
             commentValue: '',
         })
 
-        // Re-initialize review Type 
-        this.setState({
-            reviewType: false,
-        })
+
     }
 
     // Submit the rating to the database
@@ -58,7 +55,10 @@ class UserRating extends React.Component{
 
         // Function call to send to dB --> Send SID who wrote it, Content, and if it is a good or bad review
         this.props.addReview(WRITER, this.state.commentValue, this.state.reviewType)
-
+        // Re-initialize review Type 
+        this.setState({
+            reviewType: true,
+        })
     };
 
     // I don't know what the fuck this does but I think we need this

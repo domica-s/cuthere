@@ -56,7 +56,8 @@ class UserService {
 
         try {
             const fromCollege = await axios.post(USER_URL + temp_url1, {
-                college: college
+                college,
+                sid
             },
             {
                 headers: {
@@ -65,7 +66,7 @@ class UserService {
             })
 
             const fromInterests = await axios.post(USER_URL + temp_url2, {
-                sid: sid
+                sid
             },
             {
                 headers: {
