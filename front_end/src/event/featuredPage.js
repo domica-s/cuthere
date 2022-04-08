@@ -17,10 +17,16 @@ function Featured(){
     let currentUser = AuthService.getCurrentUser();
 
     useEffect(() => {
+      var strType = type;
       let api = params.baseBackURL + "/featured/" + type;
       if(type == "discover" || type == "interest"){
         api = api + "/" + currentUser.sid;
       }
+      else if(type.includes('ctg')){
+        strType = strType.replace("ctg-", "");
+        api = params.baseBackURL + "/featured/ctg/" + strType;
+      }
+      console.log(api)
       currentUser !== null && fetch(api, {
           method: "GET",
           headers: new Headers({
