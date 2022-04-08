@@ -213,11 +213,11 @@ exports.leaveUserRating = async (req, res) => {
 
                           if (type === true) {
                             // console.log("gave good rating");
-                            targetUser.rating = targetUser.rating + 1;
+                            targetUser.posRating = targetUser.posRating + 1;
                           }
                           else {
                             // console.log("gave bad rating");
-                            targetUser.rating = targetUser.rating - 1;
+                            targetUser.negRating = targetUser.negRating + 1;
                           }
 
                           targetUser.save((err) => {
@@ -239,11 +239,11 @@ exports.leaveUserRating = async (req, res) => {
 
                         if (type === true) {
                           // console.log("gave good rating");
-                          targetUser.rating = targetUser.rating + 1;
+                          targetUser.posRating = targetUser.posRating + 1;
                         }
                         else {
                           // console.log("gave bad rating");
-                          targetUser.rating = targetUser.rating - 1;
+                          targetUser.negRating = targetUser.negRating + 1;
                         }
 
                         targetUser.save((err) => {
