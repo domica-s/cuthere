@@ -59,3 +59,11 @@
     color: green;
     cursor: pointer
 }
+
+.card-header {
+    font-weight: 500;
+}
+
+.unresize {
+    resize: none;
+}
