@@ -356,26 +356,27 @@ router.post('/event/noFav/:eventID', [authJwt.verifyToken], function (req,res){
 })
 
 // Pin Commnent --> TESTING
-router.post('event/pin/:eventID', [authJwt.verifyToken], function (req,res){
+router.post('/event/pin/:eventID', [authJwt.verifyToken], function (req,response){
     const eventID = req.params.eventID
     const comment = req.body.comment  
+
     Event.findOne({eventID:eventID}).exec(function(err, res){
-        if(err) res.status(400).send({message:"Error occured: "+ err})
+        if(err) response.status(400).send({message:"Error occured: "+ err})
         else {
             chatHistory = res.chatHistory
             pinnedComment = res.pinnedComment
 
             // Perform modification
             chatHistory.remove(comment)
-            pinnedComment.append(comment)
+            pinnedComment.push(comment)
 
             // Update to the database 
             Event.findOneAndUpdate({eventID:eventID}, {$set:{
                 chatHistory: chatHistory,
                 pinnedComment: pinnedComment
             }}, function (err ,result){ 
-                if (err) res.status(400).send({message:"Error Occured "+ err})
-                else res.status(200).send({message: "The comment has been pinned nigga!", response: result})
+                if (err) response.status(400).send({message:"Error Occured "+ err})
+                else response.status(200).send({message: "The comment has been pinned nigga!", response: result})
             })
         }
     })
@@ -383,18 +384,18 @@ router.post('event/pin/:eventID', [authJwt.verifyToken], function (req,res){
 })
 
 // Unpin Comment --> TESTING
-router.post('event/unpin/:eventID',[authJwt.verifyToken], function (req, res){
+router.post('/event/unpin/:eventID',[authJwt.verifyToken], function (req, response){
     const eventID = req.params.eventID
     const comment = req.body.comment 
 
     Event.findOne({eventID:eventID}).exec(function (err, res){
-        if (err) res.status(400).send({message: "Error Occured: "+ err})
+        if (err) response.status(400).send({message: "Error Occured: "+ err})
         else {
             chatHistory = res.chatHistory
             pinnedComment = res.pinnedComment
 
             // Perform Modification 
-            chatHistory.append(comment)
+            chatHistory.push(comment)
             pinnedComment.remove(comment)
 
             // Update the database
@@ -402,8 +403,8 @@ router.post('event/unpin/:eventID',[authJwt.verifyToken], function (req, res){
                 chatHistory: chatHistory,
                 pinnedComment: pinnedComment
             }}, function (err, result){
-                if(err) req.status(400).send({message: "Error Occured: "+ err})
-                else res.status(200).send({message: "The comment has been unpinned Nigga!", response: result})
+                if(err) response.status(400).send({message: "Error Occured: "+ err})
+                else response.status(200).send({message: "The comment has been unpinned Nigga!", response: result})
             })
         }
     })

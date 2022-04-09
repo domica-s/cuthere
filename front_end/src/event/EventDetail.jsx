@@ -148,6 +148,7 @@ export default function (props) {
 
     // Function to pin comment --> TESTING
     async function pinComment(eventID, comment){
+        console.log(eventID, comment)
         const request = await Axios.post(`http://localhost:8080/event/pin/${eventID}`,{comment: comment},
             {
                 headers: {
@@ -162,6 +163,7 @@ export default function (props) {
     
     // Function to unpin comment --> TESTING
     async function unPinComment(eventID, comment){
+        
         const request = await Axios.post(`http://localhost:8080/event/unpin/${eventID}`, {comment: comment}, 
             {
                 headers: {
@@ -208,6 +210,7 @@ export default function (props) {
                         unaddToFav = {unaddToFav}
                         detail = {Event}/>
                     </Col>
+
                     <CommentForm 
                         detail={Event} 
                         addComment={addComment} 
