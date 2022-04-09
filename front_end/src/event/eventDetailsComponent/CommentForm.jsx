@@ -78,8 +78,17 @@ class CommentForm extends React.Component{
 
 }
 class CommentBox extends React.Component {  
+    pinComment = (chat) => {
+        this.props.pinComment(chat)
+    }
+
+    unPinComment = (chat) => {
+        this.props.unPinComment(chat)
+    }
+
     render() {
-        const {commentValue, handleCommentValue, enterCommentLine, submitCommentLine, chatHistory, pinnedComment, pinComment, unPinComment} = this.props; 
+
+        const {commentValue, handleCommentValue, enterCommentLine, submitCommentLine, chatHistory, pinnedComment} = this.props; 
         const enableCommentButton = () => { return (commentValue ? false : true)}; 
         const changeCommentButtonStyle = () => {return (commentValue? "comments-button-enabled" : "comments-button-disabled")}; 
        
@@ -96,7 +105,7 @@ class CommentBox extends React.Component {
                 {pinnedComment? 
                 <ul className="comments-list">
                     {pinnedComment.map((data) => 
-                        <OneChat chat={data} unPinComment= {unPinComment}/> 
+                        <OneChat chat={data} state={'pinned'} unPinComment= {this.unPinComment}/> 
                         )}
                 </ul>
                 :
@@ -106,7 +115,7 @@ class CommentBox extends React.Component {
                 {chatHistory ? 
                 <ul className="comments-list"> 
                     {chatHistory.map((data) => 
-                        <OneChat chat={data} pinComment={pinComment}/>
+                        <OneChat chat={data} state={'unpinned'} pinComment={this.pinComment}/>
                     )}
                 </ul>
                 :
@@ -131,7 +140,13 @@ class OneChat extends React.Component {
         this.props.pinComment(this.props.chat)
     }
 
+    unPinComment = () => {
+        this.props.unPinComment(this.props.chat)
+    }
+
     render() {
+        const state = this.props.state
+
         let chat = this.props.chat;
         let content = chat.content;
         let username = chat.name;
@@ -150,7 +165,15 @@ class OneChat extends React.Component {
                 <div class="action d-flex justify-content-between mt-2 align-items-center">
                     <div class="reply px-4"> <small>Remove</small> <span class="dots"></span> <small>Reply</small> <span class="dots"></span> <small>Translate</small> </div>
                     <div class="icons align-items-center"> <i class="fa fa-star text-warning"></i> <i class="fa fa-check-circle-o check-icon"></i> </div>
-                    <Button onClick={this.pinComment} type="submit" >Pin this Comment</Button>
+                    
+                    {
+                    (state ==="pinned")
+                        ?
+                        <Button onClick = {this.unPinComment} type="submit"> Unpin this comment </Button>
+                        :
+                        <Button onClick = {this.pinComment} type="submit">Pin this comment</Button> 
+                    }
+                    
                 </div>
             </div>
             </div>
