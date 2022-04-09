@@ -26,10 +26,10 @@ router.post("/create-event",[authJwt.verifyToken], (req,res)=> {
         event.venue = req.body.extendedProps.venue
         event.eventID = eID
         event.status = 'Open'
+        console.log(req.body.extendedProps.activityCategory)
         event.activityCategory = req.body.extendedProps.activityCategory
         event.quota = req.body.extendedProps.quota
         event.numberOfParticipants = 1
-        event.chatHistory = new Object()
         event.createdBy = req.body.extendedProps.createdBy
         event.participants = [req.body.extendedProps.createdBy]
         

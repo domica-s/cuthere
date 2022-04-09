@@ -47,6 +47,14 @@ class CommentForm extends React.Component{
         }
     };
 
+    pinComment = (comment) => {
+        this.props.pinComment(this.props.detail.eventID, comment)
+    }
+
+    unPinComment = (comment) => {
+        this.props.unPinComment(this.props.detail.eventID, comment)
+    }
+
     render() {
 
         return(
@@ -57,7 +65,10 @@ class CommentForm extends React.Component{
                     handleCommentValue = {this.handleCommentValue}
                     enterCommentLine = {this.enterCommentLine}
                     submitCommentLine = {this.submitCommentLine} 
-                    chatHistory = {this.props.chatHistory}/>
+                    chatHistory = {this.props.chatHistory}
+                    pinnedComment = {this.props.pinnedComment}
+                    pinComment = {this.pinComment}
+                    unPinComment = {this.unPinComment}/>
             </React.Fragment>
             
             </>
@@ -66,9 +77,9 @@ class CommentForm extends React.Component{
 
 
 }
-class CommentBox extends React.Component { 
+class CommentBox extends React.Component {  
     render() {
-        const {commentValue, handleCommentValue, enterCommentLine, submitCommentLine, chatHistory} = this.props; 
+        const {commentValue, handleCommentValue, enterCommentLine, submitCommentLine, chatHistory, pinnedComment, pinComment, unPinComment} = this.props; 
         const enableCommentButton = () => { return (commentValue ? false : true)}; 
         const changeCommentButtonStyle = () => {return (commentValue? "comments-button-enabled" : "comments-button-disabled")}; 
        
@@ -81,10 +92,21 @@ class CommentBox extends React.Component {
                     </div>
                 </Form>
 
+                {/* Pinned Comments Part */}
+                {pinnedComment? 
+                <ul className="comments-list">
+                    {pinnedComment.map((data) => 
+                        <OneChat chat={data} unPinComment= {unPinComment}/> 
+                        )}
+                </ul>
+                :
+                (null)}
+
+                {/* Rest of the Chat History */}
                 {chatHistory ? 
-                <ul classNam="comments-list"> 
+                <ul className="comments-list"> 
                     {chatHistory.map((data) => 
-                        <OneChat chat={data}/>
+                        <OneChat chat={data} pinComment={pinComment}/>
                     )}
                 </ul>
                 :
@@ -104,6 +126,11 @@ class OneChat extends React.Component {
     constructor(props) {
         super(props);
     }
+
+    pinComment = () => {
+        this.props.pinComment(this.props.chat)
+    }
+
     render() {
         let chat = this.props.chat;
         let content = chat.content;
@@ -123,6 +150,7 @@ class OneChat extends React.Component {
                 <div class="action d-flex justify-content-between mt-2 align-items-center">
                     <div class="reply px-4"> <small>Remove</small> <span class="dots"></span> <small>Reply</small> <span class="dots"></span> <small>Translate</small> </div>
                     <div class="icons align-items-center"> <i class="fa fa-star text-warning"></i> <i class="fa fa-check-circle-o check-icon"></i> </div>
+                    <Button onClick={this.pinComment} type="submit" >Pin this Comment</Button>
                 </div>
             </div>
             </div>
