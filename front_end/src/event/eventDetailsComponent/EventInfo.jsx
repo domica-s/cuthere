@@ -118,6 +118,44 @@ function EventInfo(props) {
                         <Row><Col><p>The host of this event is: {Event.createdBy}</p></Col></Row>
                         <Row><Col><p>The list of participants for this event is: {Event.participants}</p></Col></Row>
                     </Container>
+
+                    <br/>
+                    <br/>
+                    <br/>
+                    <div style = {{
+                        display: 'flex',
+                        justifyContent: 'center'
+                        }}> 
+                        <Button size="large" shape="round" type="danger" onClick={joinEvent}>
+                            Join Event
+                        </Button>
+
+                        <Button size="large" shape="round" type="danger" onClick={unjoinEvent}>
+                            Unregister
+                         </Button>
+                    </div>
+                    <div style = {{
+                        display: 'flex',
+                        justifyContent: 'center'
+                    }}>
+                        {isHost? <Button size="large" shape="round" type="danger" onClick={deleteEvent} isHost>
+                            Delete Event
+                        </Button>:(null)}
+                        <br/>
+                        <br/>
+                        <br/>
+
+                    </div>
+                    <Button size="large" shape="round" type="success" onClick={addToFav}>
+                            Add to favorites
+                    </Button>
+                        
+                    <Button size="large" shape="round" type="success" onClick={unaddToFav}>
+                        Remove from favorites
+                    </Button>
+
+                    
+
                 </React.Fragment>
                 :
                 // For other users 
@@ -134,45 +172,46 @@ function EventInfo(props) {
                        <Row><Col><p>The host of this event is: {Event.createdBy}</p></Col></Row>
                        <Row><Col><p>The list of participants for this event is: {Event.participants}</p></Col></Row>
                    </Container>
+                   <br/>
+                    <br/>
+                    <br/>
+                    <div style = {{
+                        display: 'flex',
+                        justifyContent: 'center'
+                    }}>
+                        <Button size="large" shape="round" type="danger" onClick={joinEvent}>
+                            Join Event
+                        </Button>
+
+                        <Button size="large" shape="round" type="danger" onClick={unjoinEvent}>
+                            Unregister
+                        </Button>
+                    </div>
+                    <br/>
+                    <br/>
+                    <br/>
+
+                    <div style = {{
+                        display: 'flex',
+                        justifyContent: 'center'
+                    }}>
+                        {isHost? <Button size="large" shape="round" type="danger" onClick={deleteEvent} isHost>
+                            Delete Event
+                        </Button>:(null)}
+                        <br/>
+                        <br/>
+                        <br/>
+
+                    </div>
+                    <Button size="large" shape="round" type="success" onClick={addToFav}>
+                            Add to favorites
+                    </Button>
+                        
+                    <Button size="large" shape="round" type="success" onClick={unaddToFav}>
+                        Remove from favorites
+                    </Button>
                </React.Fragment>
             }
-            <br/>
-            <br/>
-            <br/>
-            <div style = {{
-                display: 'flex',
-                justifyContent: 'center'
-            }}>
-                <Button size="large" shape="round" type="danger" onClick={joinEvent}>
-                    Join Event
-                </Button>
-
-                <Button size="large" shape="round" type="danger" onClick={unjoinEvent}>
-                    Unregister
-                </Button>
-            </div>
-            <br/>
-            <br/>
-            <br/>
-            <div style = {{
-                display: 'flex',
-                justifyContent: 'center'
-            }}>
-                {isHost? <Button size="large" shape="round" type="danger" onClick={deleteEvent} isHost>
-                    Delete Event
-                </Button>:(null)}
-                <br/>
-                <br/>
-                <br/>
-
-            </div>
-            <Button size="large" shape="round" type="success" onClick={addToFav}>
-                    Add to favorites
-            </Button>
-                
-            <Button size="large" shape="round" type="success" onClick={unaddToFav}>
-                Remove from favorites
-            </Button>
 
         </div>
 
