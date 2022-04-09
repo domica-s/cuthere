@@ -25,6 +25,7 @@ export default function (props) {
 
     const [chatHistory, setChatHistory] = useState([]);
     const [pinnedComment, setPinnedComment] = useState([]);
+    const [fectched, setFetched] = useState(false);
     const [eventDone, setEventDone] = useState(false)
 
     // Defining Configuration and Parameters
@@ -32,24 +33,28 @@ export default function (props) {
     const eventId = location.pathname.split('/event/')[1]
     const userID = currentUser._id
     const sid = currentUser.sid
-
     // STATUS: WORKING
     useEffect(() => {
-        Axios.get(`http://localhost:8080/api/calendar/route-event/${eventId}`,         
-        {
-            headers: {
-                "x-access-token": currentUser.accessToken
-            }
-        }).then(response => {    
-        setEvent(response.data);
-        setChatHistory(response.data.chatHistory)
-        setPinnedComment(response.data.pinnedComment)
+        const fetchData = async () => {
+            const response = await Axios.get(`http://localhost:8080/api/calendar/route-event/${eventId}`,
+            {
+                headers: {
+                    "x-access-token": currentUser.accessToken
+                }
+            });
+            const responseData = await response.data;
+            await setEvent(responseData);
+            await setChatHistory(responseData.chatHistory);
+            await setPinnedComment(responseData.pinnedComment);
+            if (responseData) setFetched(true);           
 
-        // Set Event Done if > ending date: 
-        var now = moment().toDate().getTime()
-        var event = moment(response.data.end).toDate().getTime()
-        if (now > event)  setEventDone(true)
-        })
+            var now = moment().toDate().getTime();
+            var event = await moment(responseData.end).toDate().getTime();
+            if (event && now > event) setEventDone(true);
+        }
+        if (!fectched) {
+            fetchData();
+        }
     }, [chatHistory, pinnedComment])
     
     // Register Event Front-end --> WORKING

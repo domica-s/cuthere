@@ -44,7 +44,6 @@ function sendReminder(to_email, email_body) {
         subject: subject,
         text: email_body
     };
-    console.log(email_body);
     transporter.sendMail(mailOptions, function(err) {
         if (err) {
             console.log(err);
@@ -110,9 +109,6 @@ router.post('/event/register/:eventID', [authJwt.verifyToken], function (req, re
 
                             if (err) {
                                 res.status(400).send({ message: "error occured: " + err});
-                            }
-                            else if (!emailSent) {
-                                console.log("Email reminder is not sent!");
                             }
                             else{
                                 console.log("Updated The Database Nigga!"); // Please change this
