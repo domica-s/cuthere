@@ -80,6 +80,7 @@ export default function ({isOpen, onClose, onEventAdded}) {
                         <Form.Group className="mb-3">
                             <Form.Label>Category of your event</Form.Label>
                             <Form.Select required name="activityCategory" type="text" value = {activityCategory} onChange={e => setCategory(e.target.value)}>
+                            <option value="">None</option>
                             <option value="Basketball">Basketball</option>
                             <option value="Badminton">Badminton</option>
                             <option value="Soccer">Soccer</option>
