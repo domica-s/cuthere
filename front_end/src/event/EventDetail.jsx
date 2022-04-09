@@ -1,6 +1,7 @@
 import React, { useEffect, useState} from 'react'
 import { useLocation } from 'react-router-dom'
 import {useParams} from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import Axios from 'axios' 
 import { Row, Col } from 'antd';
 import AuthService from "../services/auth.service";
@@ -22,6 +23,7 @@ export default function (props) {
     // --> To do: Fix UI
     const [Event, setEvent] = useState([])
     const location = useLocation();
+    const navigation = useNavigate();
 
     const [chatHistory, setChatHistory] = useState([]);
     const [pinnedComment, setPinnedComment] = useState([]);
@@ -55,6 +57,14 @@ export default function (props) {
         if (!fectched) {
             fetchData();
         }
+
+        const refreshInterval = setInterval(() => {setFetched(false)}, 2000);
+
+        return () => {
+            console.log('clearing interval...');
+            clearInterval(refreshInterval);
+        };
+
     }, [chatHistory, pinnedComment])
     
     // Register Event Front-end --> WORKING
@@ -222,7 +232,7 @@ export default function (props) {
                         chatHistory={chatHistory}
                         pinnedComment = {pinnedComment}
                         pinComment = {pinComment}
-                        unPinComment = {unPinComment}/>
+                        unPinComment = {unPinComment} navigation={navigation}/>
                 </Row>
             </div>
         </React.Fragment>

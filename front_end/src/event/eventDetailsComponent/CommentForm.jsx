@@ -6,9 +6,10 @@ import Form from 'react-bootstrap/Form';
 let commentCounter = 1;
 
 class CommentForm extends React.Component{
-    constructor() {
-        super();
-
+    constructor(props) {
+        super(props);
+        this.props = props;
+        // console.log("navigation shit: " + props.navigation);
         this.state = { 
             commentValue: '',
             commentLine: [{commentId:"", text:"",}],
@@ -68,7 +69,8 @@ class CommentForm extends React.Component{
                     chatHistory = {this.props.chatHistory}
                     pinnedComment = {this.props.pinnedComment}
                     pinComment = {this.pinComment}
-                    unPinComment = {this.unPinComment}/>
+                    unPinComment = {this.unPinComment}
+                    navigation = {this.props.navigation}/>
             </React.Fragment>
             
             </>
@@ -77,7 +79,12 @@ class CommentForm extends React.Component{
 
 
 }
-class CommentBox extends React.Component {  
+class CommentBox extends React.Component {
+    
+    constructor(props){
+        super(props);
+    }
+    
     pinComment = (chat) => {
         this.props.pinComment(chat)
     }
@@ -105,7 +112,7 @@ class CommentBox extends React.Component {
                 {pinnedComment? 
                 <ul className="comments-list">
                     {pinnedComment.map((data) => 
-                        <OneChat chat={data} state={'pinned'} unPinComment= {this.unPinComment}/> 
+                        <OneChat chat={data} state={'pinned'} unPinComment= {this.unPinComment} navigation={this.props.navigation}/> 
                         )}
                 </ul>
                 :
@@ -115,7 +122,7 @@ class CommentBox extends React.Component {
                 {chatHistory ? 
                 <ul className="comments-list"> 
                     {chatHistory.map((data) => 
-                        <OneChat chat={data} state={'unpinned'} pinComment={this.pinComment}/>
+                        <OneChat chat={data} state={'unpinned'} pinComment={this.pinComment} navigation={this.props.navigation}/>
                     )}
                 </ul>
                 :
@@ -134,6 +141,8 @@ class CommentBox extends React.Component {
 class OneChat extends React.Component {
     constructor(props) {
         super(props);
+        // console.log("navigation shit: " + props.navigation);
+        this.onClickUser = this.onClickUser.bind(this);
     }
 
     pinComment = () => {
@@ -144,15 +153,21 @@ class OneChat extends React.Component {
         this.props.unPinComment(this.props.chat)
     }
 
+    onClickUser(sid) {
+        let userLink = '/user/' + sid;
+        console.log('Directing to ' + userLink + '...');
+        this.props.navigation(userLink, { replace: true });
+    }
+
     render() {
         const state = this.props.state
 
         let chat = this.props.chat;
         let content = chat.content;
         let username = chat.name;
-        console.log(chat);
-        console.log(username);
         let chatAt = chat.chatAt;
+        let sid = chat.user;
+
         return (
             <div>
             <div class="container mt-3">
@@ -161,8 +176,8 @@ class OneChat extends React.Component {
             <div class="card p-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="user d-flex flex-row align-items-center">
-                     <img src="https://i.imgur.com/hczKIze.jpg" width="30" class="user-img rounded-circle" />
-                      <span><small class="font-weight-bold text-primary">{username}</small> <small class="font-weight-bold">{content}</small></span> </div> <small>{chatAt}</small>
+                     <img src="https://i.imgur.com/hczKIze.jpg" width="30" class="user-img rounded-circle" onClick={ () => {this.onClickUser(sid)} }/>
+                      <span><small class="font-weight-bold text-primary" onClick={ () => {this.onClickUser(sid)} }>{username}</small> <small class="font-weight-bold">{content}</small></span> </div> <small>{chatAt}</small>
                 </div>
                 <div class="action d-flex justify-content-between mt-2 align-items-center">
                     <div class="reply px-4"> <small>Remove</small> <span class="dots"></span> <small>Reply</small> <span class="dots"></span> <small>Translate</small> </div>
