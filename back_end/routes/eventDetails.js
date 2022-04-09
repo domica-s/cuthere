@@ -273,10 +273,13 @@ router.post('/event/addcomment/:eventID', [authJwt.verifyToken], function (req,r
         if(err) res.status(200).send({message: "Error occured: "+ err})
 
         else {
-            const chatHistory = [...result.chatHistory,comment]
-            console.log(chatHistory)
+            let chatHistory = [...result.chatHistory,comment]
+
+            // Sort the ChatHistory according to date
+            const sortedChatHistory = chatHistory.sort((a,b) => b.chatAt - a.chatAt)
+
             // Update the dB
-            Event.findOneAndUpdate({eventID: eventID}, {$set: {chatHistory: chatHistory}}).exec(function(err, result){
+            Event.findOneAndUpdate({eventID: eventID}, {$set: {chatHistory: sortedChatHistory}}).exec(function(err, result){
                 if(err) res.status(400).send({message:"Error Occured: "+ err})
             })
             
@@ -370,10 +373,14 @@ router.post('/event/pin/:eventID', [authJwt.verifyToken], function (req,response
             chatHistory.remove(comment)
             pinnedComment.push(comment)
 
+            // Sort both arrays
+            const sortedChatHistory = chatHistory.sort((a,b) => b.chatAt - a.chatAt)
+            const sortedPinnedComment = pinnedComment.sort((a,b) => b.chatAt - a.chatAt)
+
             // Update to the database 
             Event.findOneAndUpdate({eventID:eventID}, {$set:{
-                chatHistory: chatHistory,
-                pinnedComment: pinnedComment
+                chatHistory: sortedChatHistory,
+                pinnedComment: sortedPinnedComment
             }}, function (err ,result){ 
                 if (err) response.status(400).send({message:"Error Occured "+ err})
                 else response.status(200).send({message: "The comment has been pinned nigga!", response: result})
@@ -398,10 +405,14 @@ router.post('/event/unpin/:eventID',[authJwt.verifyToken], function (req, respon
             chatHistory.push(comment)
             pinnedComment.remove(comment)
 
+            // Sort both arrays
+            const sortedChatHistory = chatHistory.sort((a,b) => b.chatAt - a.chatAt)
+            const sortedPinnedComment = pinnedComment.sort((a,b) => b.chatAt - a.chatAt)
+
             // Update the database
             Event.findOneAndUpdate({eventID:eventID}, {$set:{
-                chatHistory: chatHistory,
-                pinnedComment: pinnedComment
+                chatHistory: sortedChatHistory,
+                pinnedComment: sortedPinnedComment
             }}, function (err, result){
                 if(err) response.status(400).send({message: "Error Occured: "+ err})
                 else response.status(200).send({message: "The comment has been unpinned Nigga!", response: result})
