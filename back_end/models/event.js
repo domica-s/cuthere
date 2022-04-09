@@ -18,6 +18,13 @@ var eventSchema = mongoose.Schema({
         chatAt: {type: Date}, // DateTime at which the message is created
         userDetails: {type: mongoose.Schema.Types.ObjectId, ref: 'User'} // currentUser which has .sid, ._id, etc... (Sending the mongoose schema as a whole)
     }],
+    pinnedComment: [{ // Validation is done in routes not in model.
+        user: {type: Number},
+        name: {type: String},
+        content: {type: String},
+        chatAt: {type: Date},
+        userDetails: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
+    }],
     createdAt:{type: Date, default: Date.now},
     createdBy:{type: mongoose.Schema.Types.ObjectId, required: false, unique: false, ref: 'User'},
     participants: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}]
