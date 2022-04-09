@@ -291,7 +291,7 @@ function Profile()  {
 						    <div className="col-sm-12">
 							    <div className="card">
 								    <div className="card-body">
-                      <h5 className="d-flex align-items-center mb-3">Friends/ Activities placeholder</h5>
+                      <h5 className="d-flex align-items-center mb-3">Write something about your experience with this user..</h5>
                       {/* START HERE FOR CHANGING ACTIVITIES PLACEHOLDER */}
 
                       <UserRating

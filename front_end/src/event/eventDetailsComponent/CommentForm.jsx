@@ -150,11 +150,13 @@ class OneChat extends React.Component {
         let chat = this.props.chat;
         let content = chat.content;
         let username = chat.name;
+        console.log(chat);
+        console.log(username);
         let chatAt = chat.chatAt;
         return (
             <div>
-            <div class="container mt-5">
-    <div class="row d-flex justify-content-center">
+            <div class="container mt-3">
+    <div class="row d-flex justify-content-center full">
         <div class="col-md-8">
             <div class="card p-3">
                 <div class="d-flex justify-content-between align-items-center">

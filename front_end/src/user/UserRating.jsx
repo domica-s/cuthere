@@ -4,6 +4,7 @@ import React from 'react'
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import authService from "../services/auth.service";
+import './UserRating.css';
 
 const WRITER = authService.getCurrentUser();
 class UserRating extends React.Component{
@@ -131,15 +132,32 @@ class OneReview extends React.Component {
 
         const {user, type, content, reviewAt} = this.props.review // Fix this if wrong
         return (
-            <div className="bg-dark text-success">
-                {type? <p>Positive Review!</p>: <p>Negative Review!</p>}
-                <p>Written by: {user}</p>
-                <p>Review: {content}</p>
-                <p>Posted on: {reviewAt}</p>
-                <hr/>
+
+            <div>
+            <div class="container mt-5">
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-8">
+            <div class="card p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                   
+                    {/* {type? <p>Positive Review!</p>: <p>Negative Review!</p>} */}
+                     <img src="https://i.imgur.com/hczKIze.jpg" width="30" class="user-img rounded-circle" />
+                     
+           
+                      <span><small class="font-weight-bold text-primary">{user}</small> <small class="font-weight-bold">{content}</small></span>  <small>{reviewAt}</small>
+                </div>
+                <div class="action d-flex justify-content-between mt-2 align-items-center">
+                    <div class="reply px-4"> <small>Remove</small> <span class="dots"></span> <small>Reply</small> <span class="dots"></span> <small>Translate</small> </div>
+                    <div class="icons align-items-center"> <i class="fa fa-star text-warning"></i> <i class="fa fa-check-circle-o check-icon"></i> </div>
+                </div>
             </div>
-        );
-    }
+            </div>
+            </div>
+            </div>
+    </div>
+
+        )}
+
 
 }
 
