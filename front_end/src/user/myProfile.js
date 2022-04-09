@@ -16,12 +16,12 @@ var params = require("../params/params");
 
 function Profile()  {
 
-
   const API = params.baseBackURL + "/file/upload";
   const API_DELETE = params.baseBackURL + "/file/delete";
   const API_Query = params.baseBackURL + "/file/";
   const initialUser = authService.getCurrentUser();
 
+  
   const onLoadPic = async(e) => {
     const img = document.querySelector("#profile-pic");
 
@@ -52,7 +52,28 @@ function Profile()  {
       reviewHistory: initialUser.reviewHistory
     };
     const [user, setUser] = useState(INITIAL_STATE);
-    const [reviewHistory, setReviewHistory] = useState(INITIAL_STATE.reviewHistory)
+    const [reviewHistory, setReviewHistory] = useState(initialUser.reviewHistory);
+    const [fectched, setFetched] = useState(false);
+   
+    useEffect(() => {
+      const fetchData = async () => {
+          const currentUser = authService.getCurrentUser();
+          const response = await Axios.get(`http://localhost:8080/user/${currentUser.sid}`,
+          {
+              headers: {
+                  "x-access-token": currentUser.accessToken
+              }
+          });
+          const responseData = await response.data;
+          await setReviewHistory(responseData.reviewHistory);
+          if (responseData) setFetched(true);           
+      }
+      if (!fectched) {
+          fetchData();
+      }
+
+      
+  }, [reviewHistory, user])
 
     useEffect(() => {
         (async () => {
@@ -73,12 +94,9 @@ function Profile()  {
                 interests: userFromDB.interests,
                 friends: userFromDB.friends,
                 college: userFromDB.college, 
-                reviewHistory: userFromDB.reviewHistory
+                reviewHistory: userFromDB.reviewHistory,
               });
-
-              setReviewHistory(userFromDB.reviewHistory)
-
-    
+              setReviewHistory(userFromDB.reviewHistory);
             },
             error => {
              
@@ -92,10 +110,9 @@ function Profile()  {
                 interests: user.interests,
                 friends: user.friends,
                 college: user.college, 
-                reviewHistory: user.reviewHistory
+                reviewHistory: user.reviewHistory,
               });
-
-              setReviewHistory(user.reviewHistory)
+              setReviewHistory(user.reviewHistory);
             })
             // setUser(user.data);
             
@@ -103,7 +120,7 @@ function Profile()  {
             console.log(error);
         }
         })();
-    }, [reviewHistory, user]);
+    }, []);
     
     // Add review to back-end --> The sid in params should be changed to the target SID. 
 
@@ -113,11 +130,13 @@ function Profile()  {
       // Set the request's body
       const body = {
         sid: writer.sid,
+        name:writer.name,
         content: content,
         type: type
        }
 
        // Set the request
+      console.log(initialUser.sid)
       const request = await Axios.post(`http://localhost:8080/user/${initialUser.sid}/comment`, body,        {
         headers: {
             "x-access-token": writer.accessToken // Whose access token is this?
@@ -291,7 +310,7 @@ function Profile()  {
 						    <div className="col-sm-12">
 							    <div className="card">
 								    <div className="card-body">
-                      <h5 className="d-flex align-items-center mb-3">Write something about your experience with this user..</h5>
+                      
                       {/* START HERE FOR CHANGING ACTIVITIES PLACEHOLDER */}
 
                       <UserRating
