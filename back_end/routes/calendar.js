@@ -32,10 +32,43 @@ router.post("/create-event",[authJwt.verifyToken], (req,res)=> {
         event.numberOfParticipants = 1
         event.createdBy = req.body.extendedProps.createdBy
         event.participants = [req.body.extendedProps.createdBy]
-        
-        console.log(event)
+    
         event.save()
-        res.status(200).send({message: "event created successfully"})
+
+        // Add this event to the one who created it 
+        User.findOneAndUpdate({_id: event.createdBy}, {$push:{
+            registeredEvents: {
+                event: event, 
+                registeredAt: Date(Date.now())
+            }
+        }}, function(err, result){
+            if (err) res.status(400).send({message: "Error Occured: "+ err})
+            else {
+                // Get the list of followers for the creator
+                const followers = result.followers
+
+                // Loop through the followers: 
+                for (var f in followers){
+                    const curFollowers = followers[f].toString();
+                    // Update Feed Activities for those curated followers
+                    User.findOneAndUpdate({_id: curFollowers}, {$push:{
+                        feedActivities: {
+                            friend: result.username,
+                            sid: result.sid, 
+                            event: event.title,
+                            eid: eventID, 
+                            timestamp: Date(Date.now()),
+                            type: "Create"
+                        }
+                    }}, function(err, res){
+                        if (err) res.status(400).send({message:"Error Occured: "+ err})
+                        else console.log("Updated your followers!")
+                    })
+                }
+            }
+        })
+        res.status(200).send({message: "Event Created Successfully!"})
+
     }); 
     
 })

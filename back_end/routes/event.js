@@ -257,7 +257,7 @@ router.post("/event", [authJwt.verifyToken], function (req, res, next) {
         });
     
         newEvent.save(next)
-        console.log(newEvent)
+        
         var timeNow = Date(Date.now());
         var entry = {
           $push: {
