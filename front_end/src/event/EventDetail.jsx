@@ -55,6 +55,14 @@ export default function (props) {
         if (!fectched) {
             fetchData();
         }
+
+        const refreshInterval = setInterval(() => {setFetched(false)}, 2000);
+
+        return () => {
+            console.log('clearing interval...');
+            clearInterval(refreshInterval);
+        };
+
     }, [chatHistory, pinnedComment])
     
     // Register Event Front-end --> WORKING
