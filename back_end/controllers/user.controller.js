@@ -246,6 +246,9 @@ exports.leaveUserRating = async (req, res) => {
                           targetUser.negRating = targetUser.negRating + 1;
                         }
 
+                        // Sort the review History
+                        targetUser.reviewHistory.sort((a,b) => b.reviewAt - a.reviewAt)
+                        
                         targetUser.save((err) => {
                           if (err) {
                               return res.status(500).send({message: err});
