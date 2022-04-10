@@ -41,20 +41,22 @@ var userSchema = mongoose.Schema({
         content: {type: String},
         reviewAt: {type: Date, default:Date.now},
     }],
+    profilesInteracted:[{
+        user: {type: Number, ref: 'User'},
+    }],
     createdAt:{type:Date, default:Date.now},
     name:{type:String},
     country:{type:String},
 });
 
-userSchema.post("remove", function(next){
+// userSchema.post("remove", function(next){
 
-    Event.remove({
-        chatHistory: {userDetails: this._id },
-        // createdBy: this._id, // This is dangerous, just try that after fixing the others
-        participants: this._id
+//     console.log("Hook called");
 
-    }, next)
-})
+
+
+//     next();
+// })
 
 var User = mongoose.model("User", userSchema);
 

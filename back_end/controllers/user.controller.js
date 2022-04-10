@@ -204,7 +204,6 @@ exports.leaveUserRating = async (req, res) => {
                           let indexOfOldComment = targetHistory.findIndex(x => x.user === sourceSID);
                           // get rating of oldComment
                           if (targetHistory[indexOfOldComment].type === true) {
-                            console.log('tete');
                             targetUser.posRating = targetUser.posRating - 1;
                           }
                           else {
@@ -228,7 +227,7 @@ exports.leaveUserRating = async (req, res) => {
                               if (err) {
                                   return res.status(500).send({message: err});
                               }
-                              
+
                               // console.log(targetUser.registeredEvents);
                               return res.status(200).send({ response: targetUser, message: 'Your comment has been updated successfully'});
                           })
@@ -252,14 +251,28 @@ exports.leaveUserRating = async (req, res) => {
 
                         // Sort the review History
                         targetUser.reviewHistory.sort((a,b) => b.reviewAt - a.reviewAt)
+
+                        console.log("new comment");
+                        // console.log(sourceUser);
+                        let pushProfile = {"user": targetUser.sid};
+                        // console.log(pushProfile);
+                        // add targetUser id to sourceUser.profilesInteracted;
+                        let newProfilesInteracted = sourceUser.profilesInteracted;
+                        newProfilesInteracted.push(pushProfile);
+                        // console.log(newProfilesInteracted);
+                        sourceUser.profilesInteracted = newProfilesInteracted;
                         
                         targetUser.save((err) => {
                           if (err) {
-                              console.log("Domeki")
+                              // console.log("Domeki")
                               return res.status(500).send({message: err});
                           }
-                          
-                          return res.status(200).send({ response: targetUser, message: 'You have commented successfully'});
+                          sourceUser.save((err) => {
+                            if (err) {
+                              return res.status(500).send({message: err});
+                            }
+                            return res.status(200).send({ response: targetUser, message: 'You have commented successfully'});
+                          })
                       })
                         
                       }
@@ -315,6 +328,16 @@ exports.followUser = (req,res) => {
                 let followingList = sourceUser.following;
                 followerList.push(sourceUser);
                 followingList.push(userToFollow);
+
+                // add targetUser/ userToFollow to profilesInteracted of sourceUser
+                let sourceProfilesInteracted = sourceUser.profilesInteracted;
+                sourceProfilesInteracted.push({"user": userToFollow.sid});
+                sourceUser.profilesInteracted = sourceProfilesInteracted;
+                
+                // add sourceUser to profilesInteracted of userToFollow
+                let targetProfilesInteracted = userToFollow.profilesInteracted;
+                targetProfilesInteracted.push({"user": sourceUser.sid});
+                userToFollow.profilesInteracted = targetProfilesInteracted;
 
                 userToFollow.save((err)=>{
                     if (err) {

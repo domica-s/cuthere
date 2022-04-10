@@ -150,20 +150,52 @@ exports.deleteUser = (req, res) => {
     if (!passwordIsValid) {
       return res.status(401).send({message: "Invalid Password!" });
     }
-
-    User.deleteMany({ sid: sid })
+    
+    User.findOne({ sid: sid})
     .exec((err, user) => {
       if (err) {
         return res.status(500).send({ message: err });
-      }
-  
-      if (!user) {
-        return res.status(404).send({ message: "Target user not found." });
-      }
-      console.log("Admin " + adminReqSID + " has deleted user " + sid);
-      return res.status(200).send({ message: "Successfully deleted user SID:" + sid + "."})
-    })
+      }  
 
+      if (!user) {
+        return res.status(404).send({ message: "User Not found." });
+      }
+
+      let profilesInteracted = user.profilesInteracted;
+      // console.log(profilesInteracted);
+      let targetProfiles = [];
+      profilesInteracted.forEach(element => targetProfiles.push(element.user))
+      // console.log(targetProfiles);
+
+      // update the profiles of other users who was reviewed by this user, or 
+      // this user is in their followers/ following list
+      User.updateMany(
+        { sid: { $in: targetProfiles}}, 
+        { 
+          $pull: { reviewHistory : { user: user.sid }}, 
+          $pull: { followers : user._id},
+          $pull: { following : user._id},
+        })
+      .exec((err, result) => {
+        if (err) {
+          console.log("failed");
+          return res.status(500).send({ message: err });
+        }
+        // console.log(result);
+        User.deleteOne({ sid: sid })
+        .exec((err) => {
+          if (err) {
+            return res.status(500).send({ message: err });
+          }
+      
+          console.log("Admin " + adminReqSID + " has deleted user " + sid);
+          return res.status(200).send({ message: "Successfully deleted user SID:" + sid + "."})
+        })
+      })
+      
+
+
+    })
   });
 
 }
