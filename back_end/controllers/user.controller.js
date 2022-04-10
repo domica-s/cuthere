@@ -224,7 +224,7 @@ exports.leaveUserRating = async (req, res) => {
                               if (err) {
                                   return res.status(500).send({message: err});
                               }
-                              
+
                               // console.log(targetUser.registeredEvents);
                               return res.status(200).send({ response: targetUser, message: 'Your comment has been updated successfully'});
                           })
@@ -250,6 +250,10 @@ exports.leaveUserRating = async (req, res) => {
                           if (err) {
                               return res.status(500).send({message: err});
                           }
+                          console.log("new comment");
+                          console.log(sourceUser);
+                          // add targetUser id to sourceUser.reviewedProfiles;
+                          (sourceUser.reviewedProfiles).push({"user": targetUser.sid});
                           
                           return res.status(200).send({ response: targetUser, message: 'You have commented successfully'});
                       })

@@ -40,6 +40,9 @@ var userSchema = mongoose.Schema({
         content: {type: String},
         reviewAt: {type: Date, default:Date.now},
     }],
+    reviewedProfiles:[{
+        user: {type: Number, ref: 'User'}
+    }],
     createdAt:{type:Date, default:Date.now},
     name:{type:String},
     country:{type:String},
