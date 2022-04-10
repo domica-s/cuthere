@@ -39,12 +39,11 @@ function sendReminder(to_email, email_body) {
     )
 
     var mailOptions = {
-        from: 'noreply.cuther@gmail.com',
+        from: 'noreply.cuthere@gmail.com',
         to: to_email,
         subject: subject,
         text: email_body
     };
-    console.log(email_body);
     transporter.sendMail(mailOptions, function(err) {
         if (err) {
             console.log(err);
@@ -110,9 +109,6 @@ router.post('/event/register/:eventID', [authJwt.verifyToken], function (req, re
 
                             if (err) {
                                 res.status(400).send({ message: "error occured: " + err});
-                            }
-                            else if (!emailSent) {
-                                console.log("Email reminder is not sent!");
                             }
                             else{
                                 console.log("Updated The Database Nigga!"); // Please change this
@@ -247,17 +243,19 @@ router.post('/event/delete/:eventID',[authJwt.verifyToken], function(req,res){
     const eventID = req.params.eventID
     const userID = req.body.id
 
-    Event.findOne({eventID:eventID}).exec(function(err, result){
+    Event.findOne({eventID:eventID}).exec(function(err, result, next){
         if(err) res.status(400).send({message:"Error Occured: "+ err})
 
         else if (result.createdBy != userID) res.status(200).send({message: "You have no authority to delete this event!"})
 
         else {
-            
             Event.findOneAndDelete({eventID:eventID}).exec(function (err, result){
                 if(err) return res.status(400).send({message: "Error Occured: "+ err})
                 else if (result === null) return res.status(200).send({message:"There are no such events"})
-                else {return res.status(200).send({message:"Event is deleted!", status: 'SUCCESS'})} 
+                else {
+                    const doc = new Event(result);
+                    doc.remove();
+                    return res.status(200).send({message:"Event is deleted!", status: 'SUCCESS'})} 
             })
         }
     })
@@ -267,14 +265,19 @@ router.post('/event/delete/:eventID',[authJwt.verifyToken], function(req,res){
 router.post('/event/addcomment/:eventID', [authJwt.verifyToken], function (req,res){
     const eventID = req.params.eventID 
     const comment = req.body.comment
+    console.log(comment)
 
     Event.findOne({eventID: eventID}).exec(function(err,result){
         if(err) res.status(200).send({message: "Error occured: "+ err})
 
         else {
-            const chatHistory = [...result.chatHistory,comment]
+            let chatHistory = [...result.chatHistory,comment]
+
+            // Sort the ChatHistory according to date
+            const sortedChatHistory = chatHistory.sort((a,b) => b.chatAt - a.chatAt)
+
             // Update the dB
-            Event.findOneAndUpdate({eventID: eventID}, {$set: {chatHistory: chatHistory}}).exec(function(err, result){
+            Event.findOneAndUpdate({eventID: eventID}, {$set: {chatHistory: sortedChatHistory}}).exec(function(err, result){
                 if(err) res.status(400).send({message:"Error Occured: "+ err})
             })
             
@@ -351,6 +354,69 @@ router.post('/event/noFav/:eventID', [authJwt.verifyToken], function (req,res){
         }
     })
 
+})
+
+// Pin Commnent --> TESTING
+router.post('/event/pin/:eventID', [authJwt.verifyToken], function (req,response){
+    const eventID = req.params.eventID
+    const comment = req.body.comment  
+
+    Event.findOne({eventID:eventID}).exec(function(err, res){
+        if(err) response.status(400).send({message:"Error occured: "+ err})
+        else {
+            chatHistory = res.chatHistory
+            pinnedComment = res.pinnedComment
+
+            // Perform modification
+            chatHistory.remove(comment)
+            pinnedComment.push(comment)
+
+            // Sort both arrays
+            const sortedChatHistory = chatHistory.sort((a,b) => b.chatAt - a.chatAt)
+            const sortedPinnedComment = pinnedComment.sort((a,b) => b.chatAt - a.chatAt)
+
+            // Update to the database 
+            Event.findOneAndUpdate({eventID:eventID}, {$set:{
+                chatHistory: sortedChatHistory,
+                pinnedComment: sortedPinnedComment
+            }}, function (err ,result){ 
+                if (err) response.status(400).send({message:"Error Occured "+ err})
+                else response.status(200).send({message: "The comment has been pinned nigga!", response: result})
+            })
+        }
+    })
+
+})
+
+// Unpin Comment --> TESTING
+router.post('/event/unpin/:eventID',[authJwt.verifyToken], function (req, response){
+    const eventID = req.params.eventID
+    const comment = req.body.comment 
+
+    Event.findOne({eventID:eventID}).exec(function (err, res){
+        if (err) response.status(400).send({message: "Error Occured: "+ err})
+        else {
+            chatHistory = res.chatHistory
+            pinnedComment = res.pinnedComment
+
+            // Perform Modification 
+            chatHistory.push(comment)
+            pinnedComment.remove(comment)
+
+            // Sort both arrays
+            const sortedChatHistory = chatHistory.sort((a,b) => b.chatAt - a.chatAt)
+            const sortedPinnedComment = pinnedComment.sort((a,b) => b.chatAt - a.chatAt)
+
+            // Update the database
+            Event.findOneAndUpdate({eventID:eventID}, {$set:{
+                chatHistory: sortedChatHistory,
+                pinnedComment: sortedPinnedComment
+            }}, function (err, result){
+                if(err) response.status(400).send({message: "Error Occured: "+ err})
+                else response.status(200).send({message: "The comment has been unpinned Nigga!", response: result})
+            })
+        }
+    })
 })
 
 module.exports = router;

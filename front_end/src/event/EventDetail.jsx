@@ -1,6 +1,7 @@
 import React, { useEffect, useState} from 'react'
 import { useLocation } from 'react-router-dom'
 import {useParams} from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import Axios from 'axios' 
 import { Row, Col } from 'antd';
 import AuthService from "../services/auth.service";
@@ -22,7 +23,11 @@ export default function (props) {
     // --> To do: Fix UI
     const [Event, setEvent] = useState([])
     const location = useLocation();
+    const navigation = useNavigate();
+
     const [chatHistory, setChatHistory] = useState([]);
+    const [pinnedComment, setPinnedComment] = useState([]);
+    const [fectched, setFetched] = useState(false);
     const [eventDone, setEventDone] = useState(false)
 
     // Defining Configuration and Parameters
@@ -30,24 +35,37 @@ export default function (props) {
     const eventId = location.pathname.split('/event/')[1]
     const userID = currentUser._id
     const sid = currentUser.sid
-
     // STATUS: WORKING
     useEffect(() => {
-        Axios.get(`http://localhost:8080/api/calendar/route-event/${eventId}`,         
-        {
-            headers: {
-                "x-access-token": currentUser.accessToken
-            }
-        }).then(response => {    
-        setEvent(response.data);
-        setChatHistory(response.data.chatHistory)
+        const fetchData = async () => {
+            const response = await Axios.get(`http://localhost:8080/api/calendar/route-event/${eventId}`,
+            {
+                headers: {
+                    "x-access-token": currentUser.accessToken
+                }
+            });
+            const responseData = await response.data;
+            await setEvent(responseData);
+            await setChatHistory(responseData.chatHistory);
+            await setPinnedComment(responseData.pinnedComment);
+            if (responseData) setFetched(true);           
 
-        // Set Event Done if > ending date: 
-        var now = moment().toDate().getTime()
-        var event = moment(response.data.end).toDate().getTime()
-        if (now > event)  setEventDone(true)
-        })
-    }, [chatHistory])
+            var now = moment().toDate().getTime();
+            var event = await moment(responseData.end).toDate().getTime();
+            if (event && now > event) setEventDone(true);
+        }
+        if (!fectched) {
+            fetchData();
+        }
+
+        const refreshInterval = setInterval(() => {setFetched(false)}, 2000);
+
+        return () => {
+            console.log('clearing interval...');
+            clearInterval(refreshInterval);
+        };
+
+    }, [chatHistory, pinnedComment])
     
     // Register Event Front-end --> WORKING
     async function joinTheEvent(eventID){
@@ -94,8 +112,10 @@ export default function (props) {
     
     // Add comments Front-End --> WORKING
     async function addComment(eventID, comment){
+
         const updatedComment = { 
             user: sid,
+            name: currentUser.name,
             content: comment,
             chatAt: Date.now(),
             userDetails: currentUser
@@ -131,6 +151,7 @@ export default function (props) {
         console.log(request)
     }
 
+    // Function to unadd from favorites --> WORKING
     async function unaddToFav(eventID){
         const request = await Axios.post(`http://localhost:8080/event/noFav/${eventID}`, {id: userID},         {
             headers: {
@@ -138,6 +159,36 @@ export default function (props) {
             }
         })
         console.log(request)
+    }
+
+    // Function to pin comment --> TESTING
+    async function pinComment(eventID, comment){
+        console.log(eventID, comment)
+        const request = await Axios.post(`http://localhost:8080/event/pin/${eventID}`,{comment: comment},
+            {
+                headers: {
+                    "x-access-token": currentUser.accessToken
+                }
+            } 
+        )
+        console.log(request)
+        setPinnedComment(request.data.response.pinnedComment)
+        setChatHistory(request.data.response.chatHistory)
+    }
+    
+    // Function to unpin comment --> TESTING
+    async function unPinComment(eventID, comment){
+        
+        const request = await Axios.post(`http://localhost:8080/event/unpin/${eventID}`, {comment: comment}, 
+            {
+                headers: {
+                    "x-access-token": currentUser.accessToken
+                }
+            }
+        )
+        console.log(request)
+        setPinnedComment(request.data.response.pinnedComment)
+        setChatHistory(request.data.response.chatHistory)
     }
 
     return (
@@ -174,7 +225,14 @@ export default function (props) {
                         unaddToFav = {unaddToFav}
                         detail = {Event}/>
                     </Col>
-                    <CommentForm detail={Event} addComment={addComment} chatHistory={chatHistory}/>
+
+                    <CommentForm 
+                        detail={Event} 
+                        addComment={addComment} 
+                        chatHistory={chatHistory}
+                        pinnedComment = {pinnedComment}
+                        pinComment = {pinComment}
+                        unPinComment = {unPinComment} navigation={navigation}/>
                 </Row>
             </div>
         </React.Fragment>

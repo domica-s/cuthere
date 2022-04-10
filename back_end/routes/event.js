@@ -42,6 +42,37 @@ router.get("/event/:id", [authJwt.verifyToken], function (req, res) {
     })
 });
 
+router.get("/featured/ctg/:id", [authJwt.verifyToken], function (req, res) {
+  var interest = req.params.id;
+  var capInt = interest.charAt(0).toUpperCase() + interest.slice(1);
+  var event_dic = {};
+
+  Event.find({ activityCategory: capInt })
+    .exec(function (err, event) {
+      if (err) {
+        res.status(400).send({ message: "error occured: " + err });
+      }
+      if (event.length > 0) {
+        for (var i = 0; i < event.length; i++) {
+          event_dic[i] = event[i];
+        }
+        var int_events = {
+          title: capInt + "Event",
+          type: "/" + capInt,
+          event_dic,
+        };
+        res.send(int_events);
+      } else {
+        var int_events = {
+          title: capInt + "Event",
+          type: "/" + capInt,
+          event_dic,
+        };
+        res.send(int_events);
+      }
+    });
+});
+
 router.get("/featured/interest/:sid", [authJwt.verifyToken], function(req,res){
     var event_dic = {};
     var currentUser = req.params.sid;
@@ -226,7 +257,7 @@ router.post("/event", [authJwt.verifyToken], function (req, res, next) {
         });
     
         newEvent.save(next)
-
+        
         var timeNow = Date(Date.now());
         var entry = {
           $push: {

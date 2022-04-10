@@ -140,7 +140,7 @@ class Login extends React.Component {
         
         return (
             <Container>
-                <Row xs="auto" className="justify-content-sm-center">
+                <Row className="justify-content-sm-center">
                     <Col>
                         <img className="mt-4" src={logo} alt="" width="100px"/>
                     </Col>

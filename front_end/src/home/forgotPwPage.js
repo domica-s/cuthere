@@ -11,7 +11,7 @@ import AuthService from "../services/auth.service";
 
 function Logo() {
     return(
-        <Row xs="auto" className="justify-content-sm-center">
+        <Row className="justify-content-sm-center">
             <Col>
                 <img className="mt-4" src={logo} alt="" width="100px"/>
             </Col>

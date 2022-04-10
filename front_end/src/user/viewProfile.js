@@ -39,6 +39,7 @@ function ViewProfile()  {
     college: "", 
     rating: "",
     reviewHistory:[],
+    message: "",
     };
 
     const onLoadPic = async(e) => {
@@ -61,6 +62,29 @@ function ViewProfile()  {
 
   const [user, setUser] = useState(INITIAL_STATE);
   const [reviewHistory, setReviewHistory] = useState(INITIAL_STATE.reviewHistory)
+  const [message, setMessage] = useState(INITIAL_STATE.message);
+  const [fectched, setFetched] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+        const currentUser = authService.getCurrentUser();
+        console.log(sid);
+        const response = await Axios.get(`http://localhost:8080/user/${sid}`,
+        {
+            headers: {
+                "x-access-token": currentUser.accessToken
+            }
+        });
+        const responseData = await response.data;
+        await setReviewHistory(responseData.reviewHistory);
+        if (responseData) setFetched(true);           
+    }
+    if (!fectched) {
+        fetchData();
+    }
+
+    
+}, [reviewHistory, user])
 
   useEffect(() => {
       (async () => {
@@ -99,25 +123,45 @@ function ViewProfile()  {
       }
       })();
   }, []);
-  
+
   async function addReview (writer, content, type){
     // Set the request's body
     const body = {
       sid: writer.sid,
+      name: writer.name,
       content: content,
       type: type
      }
 
      // Set the request
-    const request = await Axios.post(`http://localhost:8080/user/${initialUser.sid}/comment`, body,        {
+    console.log(sid);
+
+    // const request = await Axios.post(`http://localhost:8080/user/${sid}/comment`, body, {
+    //   headers: {
+    //       "x-access-token": writer.accessToken 
+    //   }
+    // })
+
+    await Axios.post(`http://localhost:8080/user/${sid}/comment`, body, {
       headers: {
           "x-access-token": writer.accessToken // Whose access token is this?
       }
     })
-
-    // Store reviewHistory
-    console.log(request.data)
-    setReviewHistory(request.data.response.reviewHistory)
+    .then(res => {
+      // console.log(res.data.message);
+      // console.log(res.data.response);
+      // console.log(res.data.response.reviewHistory);
+      setReviewHistory(res.data.response.reviewHistory);
+    },
+    error => {
+      // console.log(error.response.data.message);
+      setMessage(error.response.data.message);
+    });
+    
+    // console.log(request)
+    // // Store reviewHistory
+    // console.log(request.data)
+    // setReviewHistory(request.data.response.reviewHistory)
 
   }
       return (
@@ -296,6 +340,7 @@ function ViewProfile()  {
                       </div>
                   </div>
               </div>
+              
         </Container>
       );
     }

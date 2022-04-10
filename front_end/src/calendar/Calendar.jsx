@@ -121,54 +121,54 @@ export default function () {
                 
             </Container>
 
-            <div style ={{position: "relative", zIndex: 0}}>
-                <FullCalendar 
-                    ref ={calendarRef}
-                    events = {events}
-                    plugins = {[dayGridPlugin]}
-                    initialView = "dayGridMonth"
-                    eventClick = {(event) => handleEventClick(event)}
-                    eventAdd = {(event) => handleEventAdd(event)}
-                    customButtons={{
-                        yourEventButton: {
-                            text: 'Your Events',
-                            click: () => {
-                                setYourCalendar(true)
-                                const calendarApi = calendarRef.current.getApi()
-                                handleDatesSet(calendarApi.currentDataManager.data.dateProfile.currentRange, true)
+                <div style ={{position: "relative", zIndex: 0}}>
+                    <FullCalendar 
+                        ref ={calendarRef}
+                        events = {events}
+                        plugins = {[dayGridPlugin]}
+                        initialView = "dayGridMonth"
+                        eventClick = {(event) => handleEventClick(event)}
+                        eventAdd = {(event) => handleEventAdd(event)}
+                        customButtons={{
+                            yourEventButton: {
+                                text: 'Your Events',
+                                click: () => {
+                                    setYourCalendar(true)
+                                    const calendarApi = calendarRef.current.getApi()
+                                    handleDatesSet(calendarApi.currentDataManager.data.dateProfile.activeRange, true)
 
-                            }
-                        },
-                        allEventButton: {   
-                            text: 'All Events',
-                            click:() => {
-                                setYourCalendar(false)
-                                const calendarApi = calendarRef.current.getApi()
-                                handleDatesSet(calendarApi.currentDataManager.data.dateProfile.currentRange, false)
-                            }
-                        },
-                        favEventButton: {
-                            text: 'Favourite Events',
-                            click: () => {
-                                setYourCalendar(true)
-                                const calendarApi = calendarRef.current.getApi()
-                                handleDatesSet(calendarApi.currentDataManager.data.dateProfile.currentRange, true, true)
+                                }
+                            },
+                            allEventButton: {   
+                                text: 'All Events',
+                                click:() => {
+                                    setYourCalendar(false)
+                                    const calendarApi = calendarRef.current.getApi()
+                                    handleDatesSet(calendarApi.currentDataManager.data.dateProfile.activeRange, false)
+                                }
+                            },
+                            favEventButton: {
+                                text: 'Favourite Events',
+                                click: () => {
+                                    setYourCalendar(true)
+                                    const calendarApi = calendarRef.current.getApi()
+                                    handleDatesSet(calendarApi.currentDataManager.data.dateProfile.activeRange, true, true)
 
+                                }
                             }
-                        }
-                    }}
-                    headerToolbar = {{
-                        right: 'prev,next today',
-                        left:'title',
-                        center:'favEventButton yourEventButton allEventButton'
+                        }}
+                        headerToolbar = {{
+                            right: 'prev,next today',
+                            left:'title',
+                            center:'favEventButton yourEventButton allEventButton'
 
-                    }}
-                    datesSet= {(date) => handleDatesSet(date)}
-                    
-                    
-                />
-            </div>
-            
+                        }}
+                        datesSet= {(date) => handleDatesSet(date)}
+                        
+                        
+                    />
+                </div>
+
 
             <AddEventModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onEventAdded ={event => onEventAdded(event)} />
         </React.Fragment>

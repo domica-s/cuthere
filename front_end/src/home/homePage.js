@@ -1,6 +1,7 @@
 import React from "react";
 import Button from "react-bootstrap/Button";
 import {Feed} from "./feeds";
+import Banner from "./banner";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import {EventWidget} from "../event/eventPage";
@@ -24,23 +25,26 @@ class Home extends React.Component {
       var sid = currentUser.sid
       return (
         <div>
-          <Row className="mt-2 m-0" style={{ paddingTop: "20px"}}>
+          <Row className="mt-2 m-0" style={{ paddingTop: "20px" }}>
             <Col xl={9} lg={12}>
-              <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
+              <div style={{ paddingTop: "20px",}}>
+                <Banner />
+              </div>
+              <div style={{paddingBottom: "20px" }}>
                 <EventWidget api={this.state.APInewEvents} />
               </div>
               <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
                 <EventWidget api={this.state.APIintEvents + "/" + sid} />
               </div>
               <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
-                <EventWidget api={this.state.APIsortEvents}  />
+                <EventWidget api={this.state.APIsortEvents} />
               </div>
               <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
                 <EventWidget api={this.state.APIdiscEvents + "/" + sid} />
               </div>
             </Col>
-            <Col xl={3} lg={0} >
-              <Feed/>
+            <Col xl={3} lg={0}>
+              <Feed />
             </Col>
           </Row>
         </div>
@@ -48,14 +52,4 @@ class Home extends React.Component {
     }
 }
 
-class About extends React.Component {
-    render() {
-        return (
-            <div className="container"> 
-                About Page 
-            </div>
-        )
-    }
-}
-
-export {Home, About}
+export {Home};

@@ -117,7 +117,7 @@ exports.getUserProfile = (req, res) => {
 //                     //     if (err) {
 //                     //         return res.status(500).send({message: err});
 //                     //     }
-                        
+                  
 //                     //     // console.log(targetUser.registeredEvents);
 //                     //     return res.status(200).send({ sourceSID: sourceSID, message: 'Your comment has been added successfully'});
 //                     // })
@@ -147,6 +147,7 @@ exports.leaveUserRating = async (req, res) => {
     let targetSID = req.params.sid;
     // console.log(targetSID);
     let type = req.body.type; // good or bad rating
+    let writerName = req.body.name
     let content = req.body.content;
     try {
       User.findOne({ sid: targetSID })
@@ -196,7 +197,7 @@ exports.leaveUserRating = async (req, res) => {
                       // if they left a comment before
                       // change old comment to new one
                       if (hasLeftComment) {
-                          let commentObj = {"user": sourceSID, "type": type, "content": content}
+                          let commentObj = {"user": sourceSID, "name": writerName, "type": type, "content": content}
                           // get old comments, find and replace object with user sourceSID
                           let indexOfOldComment = targetHistory.findIndex(x => x.user === sourceSID);
                           // get rating of oldComment
@@ -232,7 +233,7 @@ exports.leaveUserRating = async (req, res) => {
                       // not yet left comment before
                       // create new comment
                       else {
-                        let commentObj = {"user": sourceSID, "type": type, "content": content}
+                        let commentObj = {"user": sourceSID, "name": writerName, "type": type, "content": content}
                         let newTargetHistory = targetHistory;
                         newTargetHistory.push(commentObj);
                         targetUser.reviewHistory = newTargetHistory;
@@ -246,8 +247,12 @@ exports.leaveUserRating = async (req, res) => {
                           targetUser.negRating = targetUser.negRating + 1;
                         }
 
+                        // Sort the review History
+                        targetUser.reviewHistory.sort((a,b) => b.reviewAt - a.reviewAt)
+                        
                         targetUser.save((err) => {
                           if (err) {
+                              console.log("Domeki")
                               return res.status(500).send({message: err});
                           }
                           console.log("new comment");
@@ -261,7 +266,8 @@ exports.leaveUserRating = async (req, res) => {
                       }
                   }
                   else {
-                      return res.status(404).send({ message: "You do not share any similar events with the target user"});
+                    
+                      res.status(404).send({ message: "You do not share any similar events with the target user"});
                   }
               }
               else {

@@ -2,8 +2,11 @@
 
 import React from 'react'
 import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import authService from "../services/auth.service";
+import './UserRating.css';
 
 const WRITER = authService.getCurrentUser();
 class UserRating extends React.Component{
@@ -49,7 +52,7 @@ class UserRating extends React.Component{
 
     // Submit the rating to the database
     submitCommentLine = (e) => {
-        e.preventDefault();
+        // e.preventDefault();
 
         this.setCommentLine();
 
@@ -64,7 +67,7 @@ class UserRating extends React.Component{
     // I don't know what the fuck this does but I think we need this
     enterCommentLine = (e) => {
         if (e.charCode === 13){
-            this.setCommentLine();
+            this.submitCommentLine();
         }
     };
 
@@ -98,16 +101,28 @@ class CommentBox extends React.Component {
         return (
             <React.Fragment>
                 <div className="comments-box">
+                <div className="form-submit">
+                <Card>
+                <Card.Header className="card-header"></Card.Header> 
+                <Card.Body>
                     <Form>
                         <Form.Select required name="activityCategory" type="text" value = {reviewType} onChange={handleSetType}>
                             <option value="true">Positive Review</option>
                             <option value="false">Negative Review</option>
                         </Form.Select>
-
-                        <input onKeyPress = {enterCommentLine} value ={commentValue} id="comments-input" onChange={handleCommentValue} type="text" placeholder="Add a Review..." />
+                        <br />
+                        <Form.Control rows={5} as="textarea" className="unresize" onKeyPress = {enterCommentLine} value ={commentValue} id="comments-input" onChange={handleCommentValue} type="text" placeholder="Add a Review..." />
+                        <div className="mt-2">
                         <Button onClick={submitCommentLine} type="submit" className="comments-button" id={changeCommentButtonStyle()} disabled ={enableCommentButton()}> Post Review </Button>
+                        </div>
                     </Form>
+                </Card.Body>
+                <Card.Header>
+                </Card.Header>
+                    </Card>
+                    </div>
                 </div>
+
                 {reviewHistory ? 
                 <ul classNam="comments-list"> 
                     {reviewHistory.map((data) => <OneReview review={data}/>)}
@@ -122,25 +137,43 @@ class CommentBox extends React.Component {
     }
 }
 
-
 class OneReview extends React.Component {
     constructor(props) {
         super(props);
     }
     render() {
 
-        const {user, type, content, reviewAt} = this.props.review // Fix this if wrong
+        const {user, name, type, content, reviewAt} = this.props.review 
         return (
-            <div className="bg-dark text-success">
-                {type? <p>Positive Review!</p>: <p>Negative Review!</p>}
-                <p>Written by: {user}</p>
-                <p>Review: {content}</p>
-                <p>Posted on: {reviewAt}</p>
-                <hr/>
-            </div>
-        );
-    }
+
+    
+            
+            <div class="container mt-1">
+            <div class="row d-flex justify-content-center">
+
+                    <div class="headings d-flex justify-content-between align-items-center mb-3">
+                        <h5></h5>
+                    </div>
+                    <Card border={type?"success":"danger"} className='p-3'>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="user d-flex flex-row align-items-center"> <img src="https://i.imgur.com/hczKIze.jpg" width="30" class="user-img rounded-circle mr-2" /> 
+                            <span><small class="font-weight-bold text-primary">{name}</small> <small class="font-weight-bold">{content}</small></span> </div> <small>{reviewAt}</small>
+                        </div>
+                        <div class="action d-flex justify-content-between mt-2 align-items-center">
+                            <div class="reply px-4"> <span class="dots"></span> <small>Remove</small> <span class="dots"></span> </div>
+                            <div class="icons align-items-center"> <i class="fa fa-star text-warning"></i> <i class="fa fa-check-circle-o check-icon"></i> </div>
+                        </div>
+                        </Card>
+                    </div>
+                 
+                    </div>
+         
+        
+   
+
+        )}
+
 
 }
 
-export default UserRating
+export default UserRating;

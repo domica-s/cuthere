@@ -36,6 +36,7 @@ var userSchema = mongoose.Schema({
     negRating:{type:Number, default: 0},
     reviewHistory:[{
         user: {type: Number, ref: 'User'},
+        name: {type: String},
         type: {type: Boolean},
         content: {type: String},
         reviewAt: {type: Date, default:Date.now},

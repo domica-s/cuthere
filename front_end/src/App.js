@@ -28,6 +28,7 @@ import logo from './images/logo.jfif';
 import { AdminDashboard } from './admin/adminPage';
 import {UploadImage} from './event/uploadImg';
 import ViewProfile from './user/viewProfile';
+import AboutUs from './home/aboutPage';
 
 
 Modal.setAppElement("#root");
@@ -84,7 +85,7 @@ class App extends React.Component {
           <Routes>
             {currentUser === undefined && <Route path="/" element={<LandingPage/>} />}
             {currentUser !== undefined && <Route path='/' element={<Home/>} />}
-            <Route path='/about' element={<About/>} />
+            <Route path='/about' element={<AboutUs/>} />
             <Route path='/login' element={<LoginWithNavigate/>} />
             {currentUser !== undefined && <Route path='/event' element={<Event/>} />}
             {currentUser !== undefined && <Route path='/featured/:type' element={<Featured/>} />}
@@ -160,10 +161,10 @@ class NavigationBar extends React.Component {
               </Nav>
               {isAuth !== true && 
 
-                <Nav className="ms-auto" > 
-                  <div className='push-login-right'>
+                <Nav className="ms-auto"> 
+                  {/* <div className='push-login-right'> */}
                   <Nav.Link href='/login'><Button >Login</Button></Nav.Link>
-                  </div>
+                  {/* </div> */}
 
                 </Nav>}
             </Navbar.Collapse>
@@ -177,11 +178,13 @@ class NavigationBar extends React.Component {
 
 function FooterBar() {
   return (
-    <footer class="footer mt-auto py-3 bg-light">
-      <div class="container">
-        <span class="text-muted">© CUthere 2022</span>
+  <div className="footer-div">
+    <footer className="footer mt-auto py-3 bg-light">
+      <div className="container">
+        <span className="text-muted">© CUthere 2022</span>
       </div>
     </footer>
+    </div>
   );
 }
 
