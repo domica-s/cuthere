@@ -29,6 +29,8 @@ exports.getUserProfile = (req, res) => {
             birthday: user.birthday,
             country: user.country,
             name: user.name,
+            posRating: user.posRating,
+            negRating: user.negRating,
         });
     });
 }
