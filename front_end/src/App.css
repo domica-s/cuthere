@@ -181,9 +181,21 @@
   .push-login-right{
     display: none;
   }
-  nav div button {
- display: inline;
- width: 15% !important;
-}
+    nav div button {
+  display: inline;
+  width: 15% !important;
+  }
 }
 
+.footer {
+  margin-top: 5%;
+  position:fixed;
+  bottom:0;
+  width:100%;
+  height:60px;   /* Height of the footer */
+  background-color:#6cf;
+}
+
+.footer-div {
+  margin-top: 2rem;
+}
