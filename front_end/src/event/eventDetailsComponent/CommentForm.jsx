@@ -2,8 +2,12 @@ import React from 'react'
 import Button from 'react-bootstrap/Button';
 import './CommentForm.css'
 import Form from 'react-bootstrap/Form';
+import authService from '../../services/auth.service';
+var params = require("../../params/params");
 
 let commentCounter = 1;
+const API_Query = params.baseBackURL + "/file/";
+const currentUser = authService.getCurrentUser();
 
 class CommentForm extends React.Component{
     constructor(props) {
@@ -121,8 +125,8 @@ class CommentBox extends React.Component {
                 {/* Rest of the Chat History */}
                 {chatHistory ? 
                 <ul className="comments-list"> 
-                    {chatHistory.map((data) => 
-                        <OneChat chat={data} state={'unpinned'} pinComment={this.pinComment} navigation={this.props.navigation}/>
+                    {chatHistory.map((data, index) => 
+                        <OneChat chat={data} index={index} state={'unpinned'} pinComment={this.pinComment} navigation={this.props.navigation}/>
                     )}
                 </ul>
                 :
@@ -141,8 +145,25 @@ class CommentBox extends React.Component {
 class OneChat extends React.Component {
     constructor(props) {
         super(props);
-        // console.log("navigation shit: " + props.navigation);
         this.onClickUser = this.onClickUser.bind(this);
+        this.onLoadPic = this.onLoadPic.bind(this);
+    }
+
+    async onLoadPic(sid) {
+        const img = document.querySelector("#user-" + this.props.index);
+        let api = API_Query + 'user-' + sid;
+        const loadResult = await fetch(api, {
+            method: "GET",
+            headers: new Headers({
+                "x-access-token": currentUser.accessToken,
+            })
+        })
+        const resultStatus = await loadResult.clone().status
+        const resultBlob = await loadResult.blob();
+        if (resultStatus === 200) {
+            img.crossOrigin = 'anonymous';
+            img.src = await URL.createObjectURL(resultBlob);            
+        }
     }
 
     pinComment = () => {
@@ -176,7 +197,7 @@ class OneChat extends React.Component {
             <div class="card p-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="user d-flex flex-row align-items-center">
-                     <img src="https://i.imgur.com/hczKIze.jpg" width="30" class="user-img rounded-circle" onClick={ () => {this.onClickUser(sid)} }/>
+                     <img id={"user-"+this.props.index} src="https://i.imgur.com/hczKIze.jpg" width="30" className="user-img rounded-circle" onClick={() => {this.onClickUser(sid)}} onLoad={() => {this.onLoadPic(sid)}}/>
                       <span><small class="font-weight-bold text-primary" onClick={ () => {this.onClickUser(sid)} }>{username}</small> <small class="font-weight-bold">{content}</small></span> </div> <small>{chatAt}</small>
                 </div>
                 <div class="action d-flex justify-content-between mt-2 align-items-center">
