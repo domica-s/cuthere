@@ -243,17 +243,19 @@ router.post('/event/delete/:eventID',[authJwt.verifyToken], function(req,res){
     const eventID = req.params.eventID
     const userID = req.body.id
 
-    Event.findOne({eventID:eventID}).exec(function(err, result){
+    Event.findOne({eventID:eventID}).exec(function(err, result, next){
         if(err) res.status(400).send({message:"Error Occured: "+ err})
 
         else if (result.createdBy != userID) res.status(200).send({message: "You have no authority to delete this event!"})
 
         else {
-            
             Event.findOneAndDelete({eventID:eventID}).exec(function (err, result){
                 if(err) return res.status(400).send({message: "Error Occured: "+ err})
                 else if (result === null) return res.status(200).send({message:"There are no such events"})
-                else {return res.status(200).send({message:"Event is deleted!", status: 'SUCCESS'})} 
+                else {
+                    const doc = new Event(result);
+                    doc.remove();
+                    return res.status(200).send({message:"Event is deleted!", status: 'SUCCESS'})} 
             })
         }
     })

@@ -31,12 +31,16 @@ var eventSchema = mongoose.Schema({
 });
 
 // To fix, check this --> https://stackoverflow.com/questions/42521550/concurrency-issues-when-removing-dependent-documents-with-mongoose-middlewares 
-eventSchema.post('remove', function(next){
+eventSchema.pre('remove', function(res){
     // Remove all the assignment docs that reference the removed event 
-    User.remove({
-        registeredEvents: {event: this._id},
-        starredEvents: this._id
-    }, next)
+    console.log("I am being hooked...");
+    // User.remove({
+    //     registeredEvents: {event: this._id},
+    //     starredEvents: this._id
+    // }, (err) => {
+    //     console.log("Im inside here");
+    //     if (err) console.log('post remove for event error: ' + err);
+    // })
 });
 
 var Event = mongoose.model("Event", eventSchema);
