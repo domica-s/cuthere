@@ -6,6 +6,7 @@ import authService from "../services/auth.service";
 import userService from "../services/user.service";
 import UserRating from "./UserRating";
 import Axios from 'axios' 
+import ProfileComments from "./ProfileComments";
 
 var params = require("../params/params");
 
@@ -312,10 +313,9 @@ function Profile()  {
 								    <div className="card-body">
                       
                       {/* START HERE FOR CHANGING ACTIVITIES PLACEHOLDER */}
-
-                      <UserRating
-                        reviewHistory= {reviewHistory}
-                        addReview = {addReview}
+                      
+                      <ProfileComments
+                        reviewHistory= {user.reviewHistory}
                         />
 
                     </div>
