@@ -29,6 +29,8 @@ exports.getUserProfile = (req, res) => {
             birthday: user.birthday,
             country: user.country,
             name: user.name,
+            posRating: user.posRating,
+            negRating: user.negRating,
         });
     });
 }
@@ -202,10 +204,11 @@ exports.leaveUserRating = async (req, res) => {
                           let indexOfOldComment = targetHistory.findIndex(x => x.user === sourceSID);
                           // get rating of oldComment
                           if (targetHistory[indexOfOldComment].type === true) {
-                            targetUser.rating = targetUser.rating - 1;
+                            console.log('tete');
+                            targetUser.posRating = targetUser.posRating - 1;
                           }
                           else {
-                            targetUser.rating = targetUser.rating + 1;
+                            targetUser.negRating = targetUser.negRating + 1;
                           }
                           // console.log(indexOfOldComment);
                           let newTargetHistory = targetHistory;
