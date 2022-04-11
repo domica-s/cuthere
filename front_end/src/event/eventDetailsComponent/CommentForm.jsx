@@ -106,9 +106,12 @@ class CommentBox extends React.Component {
         return (
             <React.Fragment>
                 <Form>
-                    <div className="comments-box">
-                        <input onKeyPress = {enterCommentLine} value ={commentValue} id="comments-input" onChange={handleCommentValue} type="text" placeholder="Add a comment..." />
-                        <Button onClick={submitCommentLine} type="submit" className="comments-button" id={changeCommentButtonStyle()} disabled ={enableCommentButton()}> Post </Button>
+                <div class="row">
+                <div class="col-lg-4 col-lg-offset-4 center-block col-center">
+                        <Form.Control as="textarea" rows={5} className="unresize" onKeyPress = {enterCommentLine} value ={commentValue} id="comments-input" onChange={handleCommentValue} type="text" placeholder="Add a comment..." />
+                        <br />
+                        <Button onClick={submitCommentLine} type="submit" className="comments-button" id={changeCommentButtonStyle()} disabled ={enableCommentButton()}> Post Comment</Button>
+                    </div>
                     </div>
                 </Form>
 

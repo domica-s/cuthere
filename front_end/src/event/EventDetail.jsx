@@ -14,7 +14,8 @@ import EventInfo from './eventDetailsComponent/EventInfo'
 import CommentForm from './eventDetailsComponent/CommentForm';
 import { DayTableSlicer } from '@fullcalendar/daygrid';
 import { isDateSelectionValid } from '@fullcalendar/react';
-
+import './EventDetail.css'
+import { Card } from 'react-bootstrap';
 export default function (props) { 
 
     // WORKSTREAM / STATUS:
@@ -193,26 +194,20 @@ export default function (props) {
 
     return (
         <React.Fragment>
-            <div className="postPage" style={{
+            {/* <div className="postPage" style={{
                 width: '100%',
                 padding: '3 rem 4 rem'
-            }}>
+            }}> */}
+                   <Card><Card.Header style={{padding:'1rem',fontSize:'2rem'}}>{Event.title}</Card.Header></Card>
 
-                <div style = {{
-                    display: 'flex',
-                    justifyContent: "center"
-                }}>
-                    <h1> {Event.title} </h1>
-                </div>
-
-                <br/> 
+               
 
                 <Row gutter = {[16,16]}>
 
-                    <Col lg={12} xs={24}>
+                    
                         <EventImage detail={Event} eventID={eventId} category={Event.activityCategory}/>
-                    </Col> 
-
+                  
+                    <div>
                     <Col lg={12} xs={24}>
                     <EventInfo 
                         eventDone ={eventDone}
@@ -225,16 +220,18 @@ export default function (props) {
                         unaddToFav = {unaddToFav}
                         detail = {Event}/>
                     </Col>
-
-                    <CommentForm 
-                        detail={Event} 
-                        addComment={addComment} 
-                        chatHistory={chatHistory}
-                        pinnedComment = {pinnedComment}
-                        pinComment = {pinComment}
-                        unPinComment = {unPinComment} navigation={navigation}/>
+                    </div>
+                    <div>
+                        <CommentForm 
+                            detail={Event} 
+                            addComment={addComment} 
+                            chatHistory={chatHistory}
+                            pinnedComment = {pinnedComment}
+                            pinComment = {pinComment}
+                            unPinComment = {unPinComment} navigation={navigation}/>
+                    </div>
                 </Row>
-            </div>
+            {/* </div> */}
         </React.Fragment>
 
     )

@@ -1,7 +1,7 @@
 .card {
     border: none;
     box-shadow: 5px 6px 6px 2px #e9ecef;
-    border-radius: 4px;
+    border-radius: 4px
 }
 
 .dots {
@@ -58,4 +58,19 @@
 .reply small:hover {
     color: green;
     cursor: pointer
+}
+
+.card-header {
+    font-weight: 500;
+}
+
+.unresize {
+    resize: none;
+    width: 100% !important;
+    
+}
+
+.col-center{
+    margin: 0 auto;
+    float: none;
 }
