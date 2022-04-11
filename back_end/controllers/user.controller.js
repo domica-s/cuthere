@@ -292,19 +292,19 @@ exports.recommendedFriendsCollege = (req, res) => {
   let sid = req.body.sid;
   let college = req.body.college;
   // console.log("called1");
-  User.count({ sid: { $ne: req.body.sid }, college: college })
-  .exec((err, count) =>  {
+  User.findOne({ sid: req.body.sid })
+  .exec((err, user) => {
     if (err) {
       res.status(400).send({ message: err });
     }
-    // console.log("called college1");
-    var random = Math.floor(Math.random() * count);
 
-    User.findOne({ sid: req.body.sid })
-    .exec((err, user) => {
+    User.count({ sid: { $ne: req.body.sid }, _id: { $nin: user.following }, college: college })
+    .exec((err, count) =>  {
       if (err) {
         res.status(400).send({ message: err });
       }
+      // console.log("called college1");
+      var random = Math.floor(Math.random() * count);
       // console.log(user.following);
       User.find({ sid: { $ne: sid }, _id: { $nin: user.following }, college: college }, { sid: 1, name: 1, college: 1, interests: 1 }).skip(random).limit(2)
       .exec((err, users) => {
@@ -318,8 +318,7 @@ exports.recommendedFriendsCollege = (req, res) => {
         // console.log(users);
         return res.status(200).send({ fromCollege: users });
       })
-    })
-    
+    })    
   })
 
 }
@@ -335,7 +334,7 @@ exports.recommendedFriendsInterests = async (req, res) => {
       }
       // console.log(sourceUser);
       // console.log(sourceUser.interests);
-      User.count({ sid: { $ne: req.body.sid }, interests: { "$in": sourceUser.interests } })
+      User.count({ sid: { $ne: req.body.sid }, _id: { $nin: sourceUser.following }, interests: { "$in": sourceUser.interests } })
       .exec((err, count) => {
         // console.log(sourceUser.interests);
         // console.log(count);
