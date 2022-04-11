@@ -1,0 +1,31 @@
+@media only screen and (min-width:1400px) {
+    .button-style {
+        margin-top: 0.11rem;
+        margin-bottom: 0.11rem;
+        margin-left: 2.5rem;
+    }
+}
+
+@media only screen and (max-width:1399px) {
+    .button-style {
+        margin-top: 0.11rem;
+        margin-bottom: 0.11rem;
+        margin-left: 1.77rem;
+    }
+}
+
+@media only screen and (max-width:1199px) {
+    .button-style {
+        margin-top: 0.61rem;
+        margin-bottom: 0.61rem;
+        margin-left: 1rem;
+    }
+}
+
+@media only screen and (max-width:991px) {
+    .button-style {
+        margin-top: 0.61rem;
+        margin-bottom: 0.61rem;
+        margin-left: 1.5rem;
+    }
+}
