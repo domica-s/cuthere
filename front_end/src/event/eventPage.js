@@ -193,10 +193,9 @@ class EventWidget extends React.Component{
         };
     }
     componentDidMount(){
-      let currentUser = AuthService.getCurrentUser()
-      if (currentUser === null) {
-      }
-      currentUser !== null && fetch(this.props.api, {
+      let currentUser = AuthService.getCurrentUser();
+      if (currentUser !== null) {
+        fetch(this.props.api, {
           method: "GET",
           headers: new Headers({
             "x-access-token": currentUser.accessToken,
@@ -211,6 +210,7 @@ class EventWidget extends React.Component{
             
           });
         });
+      } 
     }
     render(){
       let events = (this.state.events)? Object.entries(this.state.events): null;
@@ -243,7 +243,7 @@ class EventWidget extends React.Component{
                  </Card.Header>
                  <Card.Body style={{ overflowY: "hidden" }}>
                    <Row className="widget g-4">
-                     {events.length > 0 ? (
+                     {events ? (
                        disp_events.map((data) => (
                          <Col
                            style={{ justifyContent: "center", display: "flex" }}
