@@ -214,7 +214,6 @@ class EventWidget extends React.Component{
     }
     render(){
       let events = (this.state.events)? Object.entries(this.state.events): null;
-      console.log(events);
       let disp_events =  (this.state.events)? Object.entries(this.state.events).slice(0,5): null;
       let title = this.state.title;
       //let type = this.state.type;
