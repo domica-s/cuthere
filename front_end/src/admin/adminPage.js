@@ -4,12 +4,16 @@
 // form (field) prompting user id --> redirect to their profile
 // form (field) prompting event id --> redirect to event detail page 
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {Form, Col, Row, Button, Container, Table} from "react-bootstrap";
 import AdminService from '../services/admin.service';
 import AuthService from '../services/auth.service';
 
 export function AdminDashboard() {
+
+    const myChatHistory = useRef(null);
+    const myPinnedComment = useRef(null);
+    const myCommenters = useRef(null);
 
     const [adminRequest, setAdminRequest] = useState({
         querySID: 0,
@@ -90,7 +94,7 @@ export function AdminDashboard() {
             [userData, eventData] = convertToArrayObject(recentUsers, recentEvents);
         },
         error => {
-            setRecentData({ successful: false, message: error.response.data.message, totalUsers: error.response.data.userCount, totalEvents: error.response.data.eventCount,recentUsers: error.response.data.users, recentEvents: error.response.data.events });
+            setRecentData({ successful: false, message: "Failed to fetch user and events data "});
         })
     }
 
@@ -156,16 +160,26 @@ export function AdminDashboard() {
         const currentUser = AuthService.getCurrentUser();
         let eid = deleteEvent.eid;
 
-        AdminService.deleteEventComment(currentUser, eid, adminRequest.adminPasswordEvent, adminRequest.deleteComment)
-        .then(response => {
-            setEventIdData({ event: "" });
-            setAdminRequest({ queryEventId: eid });
-            loadRecentData();
-            setDeleteEvent({ successfulDeleteEvent: true, messageDeleteEvent: response.data.message });
-        },
-        error => {
-            setDeleteEvent({ successfulDeleteEvent: false, messageDeleteEvent: error.response.data.message });
-        })
+        // check if eid exists in chatHistory/ pinnedComment
+        // console.log(myChatHistory.current.outerHTML);
+        // console.log(myPinnedComment.current);
+
+        if (!myChatHistory.current.outerHTML.includes(eid) && !myPinnedComment.current.outerHTML.includes(eid)) {
+            setDeleteEvent({ successfulDeleteEvent: false, messageDeleteEvent: "Invalid comment _id" });
+        }
+        else {
+
+            AdminService.deleteEventComment(currentUser, eid, adminRequest.adminPasswordEvent, adminRequest.deleteComment)
+            .then(response => {
+                setEventIdData({ event: "" });
+                setAdminRequest({ queryEventId: eid });
+                loadRecentData();
+                setDeleteEvent({ successfulDeleteEvent: true, messageDeleteEvent: response.data.message });
+            },
+            error => {
+                setDeleteEvent({ successfulDeleteEvent: false, messageDeleteEvent: error.response.data.message });
+            })
+        }
     }
     
     const handleDeleteUser = (e) => {
@@ -211,28 +225,40 @@ export function AdminDashboard() {
         const currentUser = AuthService.getCurrentUser();
         let sid = deleteUser.sid;
 
-        AdminService.deleteRating(currentUser, sid, adminRequest.adminPasswordUser, adminRequest.deleteRating)
-        .then(response => {
-            setSidData({ user: "" });
-            setAdminRequest({ querySID: sid });
-            setDeleteUser({ successfulDeleteUser: true, messageDeleteUser: response.data.message });
-            loadRecentData();
-        },
-        error => {
-            setDeleteUser({ successfulDeleteUser: false, messageDeleteUser: error.response.data.message });
-        })
+        // check if sid in list
+        if (!myCommenters.current.outerHTML.includes(sid) && sid.length !== 10) {
+            setDeleteUser({ successfulDeleteUser: false, messageDeleteUser: "Invalid sid" });
+        }
+        else {
+            AdminService.deleteRating(currentUser, sid, adminRequest.adminPasswordUser, adminRequest.deleteRating)
+            .then(response => {
+                setSidData({ user: "" });
+                setAdminRequest({ querySID: sid });
+                setDeleteUser({ successfulDeleteUser: true, messageDeleteUser: response.data.message });
+                loadRecentData();
+            },
+            error => {
+                setDeleteUser({ successfulDeleteUser: false, messageDeleteUser: error.response.data.message });
+            })
+        }
     }
 
     function convertToArrayObject (recentUsers, recentEvents) {
-        let loadedUsers = Object.keys(recentUsers).map((key) => (
-            {"sid": recentUsers[key]["sid"], "username": recentUsers[key]["username"]}
-        ));
 
-        let loadedEvents = Object.keys(recentEvents).map((key) => (
-            {"eventID": recentEvents[key]["eventID"], "title": recentEvents[key]["title"]}
-        ));
+        if (recentUsers && recentEvents) {
+            let loadedUsers = Object.keys(recentUsers).map((key) => (
+                {"sid": recentUsers[key]["sid"], "username": recentUsers[key]["username"]}
+            ));
 
-        return [loadedUsers, loadedEvents];
+            let loadedEvents = Object.keys(recentEvents).map((key) => (
+                {"eventID": recentEvents[key]["eventID"], "title": recentEvents[key]["title"]}
+            ));
+
+            return [loadedUsers, loadedEvents];
+        }
+        else {
+            return [];
+        }
     }
 
 
@@ -278,14 +304,16 @@ export function AdminDashboard() {
                         <p>Interests: <strong>{user.interests}</strong></p>
                         <p>College: <strong>{user.college}</strong></p>
                         <p>About: <strong>{user.about}</strong></p>
-                        <p>Rating: <strong>{user.rating}</strong></p>
-                        <p>Following: <strong>{user.following}</strong></p>
-                        <p>Followers: <strong>{user.followers}</strong></p>
-                        <p>Registered Events: <strong>{JSON.stringify(user.registeredEvents, null, 2)}</strong></p>
-                        <p>Starred Events: <strong>{JSON.stringify(user.starredEvents, null, 2)}</strong></p>
+                        <p>Positive Ratings: <strong>{user.posRating}</strong></p>
+                        <p>Negative Ratings: <strong>{user.negRating}</strong></p>
+                        <pre>Following: <strong>{JSON.stringify(user.following, null, 2)}</strong></pre>
+                        <pre>Followers: <strong>{JSON.stringify(user.followers, null, 2)}</strong></pre>
+                        <pre>Registered Events: <strong>{JSON.stringify(user.registeredEvents, null, 2)}</strong></pre>
+                        <pre>Starred Events: <strong>{JSON.stringify(user.starredEvents, null, 2)}</strong></pre>
+                        <pre>Feed Activities: <strong>{JSON.stringify(user.feedActivities, null, 2)}</strong></pre>
                         <p>Role: <strong>{user.role}</strong></p>
                         <p>Active: <strong>{user.active}</strong></p>
-                        <pre>Review History: <strong>{JSON.stringify(user.reviewHistory, null, 2)}</strong></pre>
+                        <pre ref={myCommenters}>Review History: <strong>{JSON.stringify(user.reviewHistory, null, 2)}</strong></pre>
                         <p>Created at: <strong>{user.createdAt}</strong></p>
                         <Row>
                             <Col>
@@ -412,6 +440,7 @@ export function AdminDashboard() {
                 )}
                 {event && (
                     <div>
+                        {/* {console.log(event)} */}
                         <p>Title: <a href={"/event/" + event.eventID}>{event.title}</a></p>
                         <p>Event ID: <strong>{event.eventID}</strong></p>
                         <p>Status: <strong>{event.status}</strong></p>
@@ -421,8 +450,9 @@ export function AdminDashboard() {
                         <p>Activity Category: <strong>{event.activityCategory}</strong></p>
                         <p>Quota: <strong>{event.quota}</strong></p>
                         <p>Number of Participants: <strong>{event.numberOfParticipants}</strong></p>
-                        <p>Participants: <strong>{event.participants}</strong></p>
-                        <pre>Chat History: {JSON.stringify(event.chatHistory, null, 4)}</pre>
+                        <pre>Participants: <strong>{JSON.stringify(event.participants, null, 4)}</strong></pre>
+                        <pre ref={myChatHistory}>Chat History: <strong>{JSON.stringify(event.chatHistory, null, 4)}</strong></pre>
+                        <pre ref={myPinnedComment}>Pinned Comments: <strong>{JSON.stringify(event.pinnedComment, null, 4)}</strong></pre>
                         <p>Created by: <strong>{String(event.createdBy)}</strong></p>
                         <p>Created At: <strong>{event.createdAt}</strong></p>
                         

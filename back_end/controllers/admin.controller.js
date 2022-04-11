@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const Event = require("../models/event");
 var bcrypt = require("bcryptjs");
+var ObjectId = require('mongoose').Types.ObjectId;
 
 // admin dashboard, query sid and event id
 exports.getSID = (req, res) => {
@@ -233,19 +234,23 @@ exports.changeUserPass = (req, res) => {
 // POST to url --> http://localhost:8080/admin/event/:eventid/removecomment
 // params eventid is target eventid
 // body (JSON) --> { "adminReqSID": adminReqSID, "adminReqPassword": adminReqPassword,
-// "targetCommentSID": targetCommentSID, "commentId": commentId  }
+// "commentId": commentId  }
 // returns success/ fail
 exports.removeEventComments = (req, res) => {
   let targetEventId = req.params.eventid;
   let adminReqSID = req.body.adminReqSID;
   let adminReqPassword = req.body.adminReqPassword;
   let commentId = req.body.commentId;
-  
+
+  if (! ObjectId.isValid(commentId)) {
+    return res.status(404).send({ message: "Invalid ObjectId "});
+  }
+
   // check if request made by admin
   User.findOne({ sid: adminReqSID })
   .exec((err, admin) => {
     if (err) {
-      return res.status(500).send({ message: err });
+      return res.status(501).send({ message: err });
     }
 
     if (!admin) {
@@ -260,43 +265,47 @@ exports.removeEventComments = (req, res) => {
     if (!passwordIsValid) {
       return res.status(401).send({message: "Invalid Admin Password!" });
     }
-
-    Event.findOne({ eventID: targetEventId })
-    .exec((err, event) => {
-      if (err) {
-        return res.status(500).send({ message: err });
-      }
   
-      if (!event) {
-        return res.status(404).send({ message: "Event not found." });
+    let update_comments = {
+      $pull: { chatHistory: { _id: commentId } },
+    }
+
+    let update_pinned_comments = {
+      $pull: { pinnedComment: { _id: commentId } },
+    };
+
+    Event.findOne({ chatHistory: { _id: commentId}})
+    .exec((err, result) => {
+      if (err) {
+        console.log(err);
+        return res.status(505).send({ message: err });
       }
-    
-      // get all comments
-      let allComments = event.chatHistory;
+      // update comments
+      Event.updateMany({ eventID: targetEventId }, update_comments)
+      .exec((err, result1) => {
+        if (err) {
+          // console.log(err);
+          return res.status(505).send({ message: err });
+        }
+        // console.log(result1);
 
-      let commentExists = allComments.some(allComments => String(allComments._id) === commentId)
-      // if targetCommentSID found as one of the commenter
-      if (commentExists) {
-        // get index of comment
-        let indexOfOldComment = allComments.findIndex(x => String(x._id) === commentId);
-        // console.log(indexOfOldComment);
-        let newComments = allComments;
-        newComments.splice(indexOfOldComment, 1);
-        event.chatHistory = newComments;
-
-        event.save((err) => {
+        // update pinned comments
+        Event.updateMany({ eventID: targetEventId }, update_pinned_comments)
+        .exec((err, result2) => {
           if (err) {
-            return res.status(500).send({ message: err });
+            // console.log(err);
+            return res.status(506).send({ message: err });
           }
+          // console.log(result2);
+          if (result1.modifiedCount + result2.modifiedCount === 0) {
+            return res.status(404).send({ message: "Failed to delete that comment "});
+          }
+      
           console.log("Admin " + adminReqSID + " has deleted comment with id " + commentId + " in event " + targetEventId + "\'s page");
           return res.status(200).send({ message: "Successfully removed user comment"});
         })
-      }
-      else {
-        return res.status(404).send({ message: "No comment with that comment._id on the event's page "});
-      }
+      })
     })
-
   })
 }
 
