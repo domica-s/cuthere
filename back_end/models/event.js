@@ -1,5 +1,4 @@
 var mongoose = require("mongoose");
-var User = require("./user");
 
 var eventSchema = mongoose.Schema({
     title:{type: String, required: true},
@@ -32,15 +31,31 @@ var eventSchema = mongoose.Schema({
 
 // To fix, check this --> https://stackoverflow.com/questions/42521550/concurrency-issues-when-removing-dependent-documents-with-mongoose-middlewares 
 eventSchema.pre('remove', function(res){
+    var User = require("./user");
     // Remove all the assignment docs that reference the removed event 
-    console.log("I am being hooked...");
-    // User.remove({
-    //     registeredEvents: {event: this._id},
-    //     starredEvents: this._id
-    // }, (err) => {
-    //     console.log("Im inside here");
-    //     if (err) console.log('post remove for event error: ' + err);
-    // })
+    let update1 = {
+        $pull: { registeredEvents: { event: this._id } },
+    }
+    let update2 = {
+        $pull: {starredEvents: this._id}
+    }
+
+    User.updateMany({}, update1, (err, result) => {
+        if (err) {
+            console.log("mongoDB error: " + err);
+        }
+        else {
+            console.log("Successfully removed from registered event");
+        }
+    })
+    User.updateMany({}, update2, (err, result) => {
+        if (err) {
+            console.log("mongoDB error: " + err);
+        }
+        else {
+            console.log("Successfully removed from starred event");
+        }
+    })    
 });
 
 var Event = mongoose.model("Event", eventSchema);
