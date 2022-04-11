@@ -45,7 +45,7 @@ eventSchema.pre('remove', function(res){
             console.log("mongoDB error: " + err);
         }
         else {
-            console.log("Successfully removed from registered event");
+            // console.log("Successfully removed from registered event");
         }
     })
     User.updateMany({}, update2, (err, result) => {
@@ -53,7 +53,7 @@ eventSchema.pre('remove', function(res){
             console.log("mongoDB error: " + err);
         }
         else {
-            console.log("Successfully removed from starred event");
+            // console.log("Successfully removed from starred event");
         }
     })    
 });

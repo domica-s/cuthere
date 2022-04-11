@@ -104,7 +104,7 @@ exports.deleteEvent = (req, res) => {
       return res.status(401).send({message: "Invalid Password!" });
     }
 
-    Event.deleteMany({ eventID: eid })
+    Event.findOneAndDelete({ eventID: eid })
     .exec((err, event) => {
       if (err) {
         res.status(500).send({ message: err });
@@ -114,6 +114,10 @@ exports.deleteEvent = (req, res) => {
       if (!event) {
         return res.status(404).send({ message: "Event Not found." });
       }
+
+      const doc = new Event(event);
+      doc.remove();
+
       console.log("Admin " + adminReqSID + " has deleted event " + eid);
       return res.status(200).send({ message: "Successfully deleted event " + eid + "."})
     })
@@ -132,26 +136,26 @@ exports.deleteUser = (req, res) => {
   let adminReqPassword = req.body.adminReqPassword;
 
   User.findOne({ sid: adminReqSID })
-  .exec((err, user) => {
+  .exec((err, admin) => {
     if (err) {
       res.status(500).send({ message: err });
       return;
     }
 
-    if (!user) {
-      return res.status(404).send({ message: "User Not found." });
+    if (!admin) {
+      return res.status(404).send({ message: "Admin Not found." });
     }
     
     var passwordIsValid = bcrypt.compareSync(
       adminReqPassword,
-      user.password
+      admin.password
     );
 
     if (!passwordIsValid) {
       return res.status(401).send({message: "Invalid Password!" });
     }
     
-    User.findOne({ sid: sid})
+    User.findOneAndDelete({ sid: sid })
     .exec((err, user) => {
       if (err) {
         return res.status(500).send({ message: err });
@@ -161,40 +165,10 @@ exports.deleteUser = (req, res) => {
         return res.status(404).send({ message: "User Not found." });
       }
 
-      let profilesInteracted = user.profilesInteracted;
-      // console.log(profilesInteracted);
-      let targetProfiles = [];
-      profilesInteracted.forEach(element => targetProfiles.push(element.user))
-      // console.log(targetProfiles);
-
-      // update the profiles of other users who was reviewed by this user, or 
-      // this user is in their followers/ following list
-      User.updateMany(
-        { sid: { $in: targetProfiles}}, 
-        { 
-          $pull: { reviewHistory : { user: user.sid }}, 
-          $pull: { followers : user._id},
-          $pull: { following : user._id},
-        })
-      .exec((err, result) => {
-        if (err) {
-          console.log("failed");
-          return res.status(500).send({ message: err });
-        }
-        // console.log(result);
-        User.deleteOne({ sid: sid })
-        .exec((err) => {
-          if (err) {
-            return res.status(500).send({ message: err });
-          }
-      
-          console.log("Admin " + adminReqSID + " has deleted user " + sid);
-          return res.status(200).send({ message: "Successfully deleted user SID:" + sid + "."})
-        })
-      })
-      
-
-
+      const doc = new User(user);
+      doc.remove();
+      console.log("Admin " + adminReqSID + " has deleted user " + sid);
+      return res.status(200).send({ message: "Successfully deleted user SID:" + sid + "."})
     })
   });
 
