@@ -215,28 +215,35 @@ class Feed extends React.Component {
     UserService.recommendFriends(currentUser)
     .then(successResponse => {
       // console.log("called");
-      console.log(successResponse);
-      let fromCollege = successResponse.fromCollege.data;
-      let fromInterests = successResponse.fromInterests.data;
+      // console.log(successResponse);
+      if (successResponse.fromCollege && successResponse.fromInterests) {
+        let fromCollege = successResponse.fromCollege.data;
+        let fromInterests = successResponse.fromInterests.data;
 
-      let data1 = [];
-      let data2 = [];
-      fromCollege.fromCollege.map((val, index) => {
-        data1[index] = val;
-      })
+        let data1 = [];
+        let data2 = [];
+        fromCollege.fromCollege.map((val, index) => {
+          data1[index] = val;
+        })
 
-      fromInterests.fromInterests.map((val, index) => {
-        data2[index] = val;
-      })
+        fromInterests.fromInterests.map((val, index) => {
+          data2[index] = val;
+        })
 
-      let data = data1.concat(data2);
-      data = [...new Set(data)];
-      data = data.slice(0,4);
-      this.setState({recommendedFriends: data})
+        let data = data1.concat(data2);
+        data = [...new Set(data)];
+        data = data.slice(0,4);
+        this.setState({recommendedFriends: data});
+      }
+      else {
+        console.log("Load recommendation error");
+        this.setState({recommendedFriends: ""});
+      }
     },
     error => {
       // console.log("called err");
-      console.log(error.response.data.message);
+      console.log("Load recommendation error");
+      this.setState({recommendedFriends: ""});
     });
   }
 
