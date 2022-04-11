@@ -9,20 +9,22 @@ import UserService from "../services/user.service";
 import {Form, Button} from 'react-bootstrap';
 var params = require("../params/params");
 const APIfeed = params.baseBackURL + "/feed";
-const currentUser = AuthService.getCurrentUser();
+
 
 function OneFeed(props){
-
+  
+  const currentUser = AuthService.getCurrentUser();
   const API_Query = params.baseBackURL + "/file/";
 
   let data = props.data[1];
+  let sidData = data.sid;
   let user = "user/" + data.sid;
-  let event = "event/" + data.event;
+  let event = "event/" + data.eid;
 
   const onLoadPic = async (e) => {
     const img = document.querySelector("#profile-pic");
-
-    let api = API_Query + "user-" + currentUser.sid;
+    
+    let api = API_Query + "user-" + sidData;
     const loadResult = await fetch(api, {
       method: "GET",
       headers: new Headers({
@@ -36,37 +38,44 @@ function OneFeed(props){
   };
 
   return (
-      <table>
-        <tr className="p-1">
-          <td style={{ width: "90px", textAlign: "center" }}>
-            <img
-              src="https://bootdey.com/img/Content/avatar/avatar6.png"
-              id="profile-pic"
-              alt="profile-pic"
-              className="rounded-circle p-1"
-              width="75"
-              onLoad={onLoadPic}
-            />
-          </td>
-          <td>
-            <div>
-              <a href={user}>
-                <h5>{data.friend}</h5>
-              </a>
-              {data.type == "Register" ? (
-                <p className="mb-0">
-                  is attending  <a href={event}><b>{data.event}</b></a>
-                </p>
-              ) : (
-                <p className="mb-0">
-                  is hosting <a href={event}><b>{data.event}</b></a>
-                </p>
-              )}
-            </div>
-          </td>
-        </tr>
-      </table>
-    );
+    <table>
+      <tr className="p-1">
+        <td style={{ width: "90px", textAlign: "center" }}>
+          <img
+            src="https://bootdey.com/img/Content/avatar/avatar6.png"
+            id="profile-pic"
+            alt="profile-pic"
+            className="rounded-circle p-1"
+            width="75"
+            height="75"
+            onLoad={onLoadPic}
+          />
+        </td>
+        <td>
+          <div>
+            <a href={user}>
+              <h5>{data.friend}</h5>
+            </a>
+            {data.type == "Register" ? (
+              <p className="mb-0">
+                is attending{" "}
+                <a href={event}>
+                  <b>{data.event}</b>
+                </a>
+              </p>
+            ) : (
+              <p className="mb-0">
+                is hosting{" "}
+                <a href={event}>
+                  <b>{data.event}</b>
+                </a>
+              </p>
+            )}
+          </div>
+        </td>
+      </tr>
+    </table>
+  );
 
 }
 
