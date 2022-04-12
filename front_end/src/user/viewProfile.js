@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Component } from "react";
 import AuthService from "../services/auth.service";
-import {Button, Container} from "react-bootstrap";
+import {Button, Container, Card} from "react-bootstrap";
 import "./myProfile.css"
 import authService from "../services/auth.service";
 import userService from "../services/user.service";
@@ -70,6 +70,8 @@ function ViewProfile()  {
   const [negRating, setNegRating] = useState(INITIAL_STATE.negRating);
   const [followers, setFollowers] = useState(0);
   const [following, setFollowing] = useState(0);
+  const [followingList, setFollowingList] = useState([]);
+  const [followersList, setFollowersList] = useState([]);
   
 
   useEffect(() => {
@@ -133,8 +135,8 @@ function ViewProfile()  {
               setFollowers(followers.length);
               setFollowing(following.length);
 
-              // setFollowingList(following);
-              // setFollowersList(followers);
+              setFollowingList(following);
+              setFollowersList(followers);
             },
             error => {
               console.log(error.response.data);
@@ -371,6 +373,22 @@ function ViewProfile()  {
                               </ul>
                           </div>
                       </div>
+                      <Card>
+            <Card.Header>Followers list</Card.Header>
+            <Card.Body>
+
+            {(followers.length != 0) ? 
+                <ul className="comments-list"> 
+                    {followersList.map((data, index) => 
+                        <OneFollower props={data}/>
+                    )}
+                </ul>
+                :
+                (null)}
+                
+            <OneFollower />
+            </Card.Body>
+          </Card>
                   </div>
   
   
@@ -426,6 +444,26 @@ function ViewProfile()  {
               
         </Container>
       );
+    }
+
+    function OneFollower(props){
+      const user = authService.getCurrentUser();
+    
+      if (props.props) {
+        console.log(props.props.name);
+      }
+    
+      const data = props.props;
+      return (
+        <>
+        {data && (
+          <Card>
+            <Card.Header>{data.name || ""}</Card.Header>
+            <Card.Body className="text-secondary">{props.props.sid || ""} </Card.Body>
+          </Card>
+        )}
+        </>
+      ) 
     }
 
   export default ViewProfile;
