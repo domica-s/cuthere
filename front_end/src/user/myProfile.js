@@ -59,6 +59,8 @@ function Profile()  {
     const [fectched, setFetched] = useState(false);
     const [followers, setFollowers] = useState(0);
     const [following, setFollowing] = useState(0);
+    const [followingList, setFollowingList] = useState([]);
+    const [followersList, setFollowersList] = useState([]);
     // const [followerObject, setFollowerObject] = useState('');
    
     useEffect(() => {
@@ -127,11 +129,17 @@ function Profile()  {
 
             userService.getFolls(user, user.sid)
             .then(response => {
+              console.log(response.data)
               let followers = (response.data.followers);
               let following = (response.data.following);
-              // console.log(followers);
+              console.log(followers);
+
               setFollowers(followers.length);
               setFollowing(following.length);
+
+
+              setFollowingList(following);
+              setFollowersList(followers);
               // setFollowerObject(followers);
               // console.log(followerObject);
             },
@@ -173,6 +181,8 @@ function Profile()  {
     //   setReviewHistory(request.data.response.reviewHistory)
 
     // }
+
+    
     return (
       <Container className="myContainer">
         {/* <div className="container">
@@ -318,10 +328,22 @@ function Profile()  {
 						</div>
             
 					</div>
-          {/* <Card>
+          <Card>
             <Card.Header>Followers list</Card.Header>
-            <Card.Body><OneFollower /></Card.Body>
-          </Card> */}
+            <Card.Body>
+
+            {(followers.length != 0) ? 
+                <ul className="comments-list"> 
+                    {followersList.map((data, index) => 
+                        <OneFollower props={data}/>
+                    )}
+                </ul>
+                :
+                (null)}
+                
+            <OneFollower />
+            </Card.Body>
+          </Card>
 				</div>
 
 
@@ -404,37 +426,25 @@ function Profile()  {
 // }
 
 
+// STATUS --> TESTING
+function OneFollower(props){
+  const user = authService.getCurrentUser();
 
-// function OneFollower() {
-//   const user = authService.getCurrentUser();
-//   const [follower, setFollower] = useState('');
-//   userService.getFolls(user, user.sid)
-//   .then(successResponse => {
-//     // console.log("hello");
-//     let followers = (successResponse.data.followers);
-//     console.log(followers);
-//     if (typeof followers !== undefined) {
-//       for (let i=0; i<followers.length; i++) {
-//         setFollower({
-//           name: followers[i].name,
-//           sid: followers[i].sid,
-//         });
-//         console.log(follower[i].name, follower[i].sid)
-//       }
-      
-//     }
-    
+  if (props.props) {
+    console.log(props.props.name);
+  }
 
-//   },
-//   error => {
-//     console.log(error.response.data);
-//   })
-//   return (
-//     <Card>
-//       {/* <Card.Header>{followerName || ""}</Card.Header>
-//       <Card.Body className="text-secondary">{followerSID || ""} </Card.Body> */}
-//     </Card>
-//   )
-// }
+  const data = props.props;
+  return (
+    <>
+    {data && (
+      <Card>
+        <Card.Header>{data.name || ""}</Card.Header>
+        <Card.Body className="text-secondary">{props.props.sid || ""} </Card.Body>
+      </Card>
+    )}
+    </>
+  ) 
+}
 
 export default Profile;
