@@ -223,6 +223,7 @@ function ViewProfile()  {
     error => {
       // console.log(error.response.data.message);
       setMessage(error.response.data.message);
+      alert("You don't have any same events as this guy")
     });
     
     // console.log(request)
