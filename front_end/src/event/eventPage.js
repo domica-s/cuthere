@@ -297,7 +297,7 @@ function EventCard(props){
 
   async function joinTheEvent() {
     const request = await Axios.post(
-      `http://localhost:8080/event/register/${eventId}`,
+      `${params.baseBackURL}/event/register/${eventId}`,
       { id: currentUser._id },
       {
         headers: {

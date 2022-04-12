@@ -36,10 +36,12 @@ export default function (props) {
     const eventId = location.pathname.split('/event/')[1]
     const userID = currentUser._id
     const sid = currentUser.sid
+
+    var params = require("../params/params");
     // STATUS: WORKING
     useEffect(() => {
         const fetchData = async () => {
-            const response = await Axios.get(`http://localhost:8080/api/calendar/route-event/${eventId}`,
+            const response = await Axios.get(`${params.baseBackURL}/api/calendar/route-event/${eventId}`,
             {
                 headers: {
                     "x-access-token": currentUser.accessToken
@@ -70,7 +72,7 @@ export default function (props) {
     
     // Register Event Front-end --> WORKING
     async function joinTheEvent(eventID){
-        const request = await Axios.post(`http://localhost:8080/event/register/${eventID}`,{id: userID},         
+        const request = await Axios.post(`${params.baseBackURL}/event/register/${eventID}`,{id: userID},         
         {
             headers: {
                 "x-access-token": currentUser.accessToken
@@ -81,7 +83,7 @@ export default function (props) {
 
     // Unregister Event Front-End --> WORKING
     async function unregister(eventID){
-        const request = await Axios.post(`http://localhost:8080/event/unregister/${eventID}`, {id: userID},         
+        const request = await Axios.post(`${params.baseBackURL}/event/unregister/${eventID}`, {id: userID},         
         {
             headers: {
                 "x-access-token": currentUser.accessToken
@@ -92,7 +94,7 @@ export default function (props) {
 
     // Delete Event Front-End --> WORKING
     async function deleteEvent(eventID){
-        const request = await Axios.post(`http://localhost:8080/event/delete/${eventID}`,{id: userID},
+        const request = await Axios.post(`${params.baseBackURL}/event/delete/${eventID}`,{id: userID},
         {
             headers: {
                 "x-access-token": currentUser.accessToken
@@ -121,7 +123,7 @@ export default function (props) {
             chatAt: Date.now(),
             userDetails: currentUser
         }
-        const request = await Axios.post(`http://localhost:8080/event/addcomment/${eventID}`,{comment: updatedComment},
+        const request = await Axios.post(`${params.baseBackURL}/event/addcomment/${eventID}`,{comment: updatedComment},
         {
             headers: {
                 "x-access-token": currentUser.accessToken
@@ -133,7 +135,7 @@ export default function (props) {
 
     // Update Event Front-end --> WORKING
     async function updateEvent(eventID, updatedContent){
-        const request = await Axios.post(`http://localhost:8080/event/update/${eventID}`,{id:userID, update: updatedContent}, 
+        const request = await Axios.post(`${params.baseBackURL}/event/update/${eventID}`,{id:userID, update: updatedContent}, 
         {
             headers: {
                 "x-access-token": currentUser.accessToken
@@ -144,7 +146,7 @@ export default function (props) {
     
     // Function to add to favorites --> WORKING
     async function addToFav(eventID){
-        const request = await Axios.post(`http://localhost:8080/event/fav/${eventID}`, {id: userID},         {
+        const request = await Axios.post(`${params.baseBackURL}/event/fav/${eventID}`, {id: userID},         {
             headers: {
                 "x-access-token": currentUser.accessToken
             }
@@ -154,7 +156,7 @@ export default function (props) {
 
     // Function to unadd from favorites --> WORKING
     async function unaddToFav(eventID){
-        const request = await Axios.post(`http://localhost:8080/event/noFav/${eventID}`, {id: userID},         {
+        const request = await Axios.post(`${params.baseBackURL}/event/noFav/${eventID}`, {id: userID},         {
             headers: {
                 "x-access-token": currentUser.accessToken
             }
@@ -165,7 +167,7 @@ export default function (props) {
     // Function to pin comment --> TESTING
     async function pinComment(eventID, comment){
         console.log(eventID, comment)
-        const request = await Axios.post(`http://localhost:8080/event/pin/${eventID}`,{comment: comment},
+        const request = await Axios.post(`${params.baseBackURL}/event/pin/${eventID}`,{comment: comment},
             {
                 headers: {
                     "x-access-token": currentUser.accessToken
@@ -180,7 +182,7 @@ export default function (props) {
     // Function to unpin comment --> TESTING
     async function unPinComment(eventID, comment){
         
-        const request = await Axios.post(`http://localhost:8080/event/unpin/${eventID}`, {comment: comment}, 
+        const request = await Axios.post(`${params.baseBackURL}/event/unpin/${eventID}`, {comment: comment}, 
             {
                 headers: {
                     "x-access-token": currentUser.accessToken
