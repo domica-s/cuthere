@@ -311,9 +311,9 @@ class Feed extends React.Component {
         })
 
         let data = data1.concat(data2);
-        data = [...new Set(data)];
-        data = data.slice(0,4);
-        this.setState({recommendedFriends: data});
+        const unique = [...new Map(data.map(item =>[item['sid'], item])).values()];
+        // console.log(unique);
+        this.setState({recommendedFriends: unique});
       }
       else {
         console.log("Load recommendation error");
