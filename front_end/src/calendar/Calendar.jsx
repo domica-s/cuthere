@@ -14,6 +14,7 @@ import history from "../history";
 import AuthService from "../services/auth.service";
 
 export default function () {
+    var params = require("../params/params");
     const [modalOpen, setModalOpen] = useState(false)
     const [events, setEvents] = useState([])
     const [yourCalendar, setYourCalendar] = useState(false);
@@ -48,7 +49,7 @@ export default function () {
     
     // To handle Event Add --> WORKING
     async function handleEventAdd(data){
-        await axios.post("http://localhost:8080/api/calendar/create-event", data.event,         {
+        await axios.post(params.baseBackURL+"/api/calendar/create-event", data.event,         {
             headers: {
                 "x-access-token": currentUser.accessToken
             }
@@ -60,7 +61,7 @@ export default function () {
 
         // To get all the events to the calendar --> WORKING
         if (!yourCalendar){
-            const response = await axios.get('http://localhost:8080/api/calendar/get-event?start='+moment(data.start).toISOString() +'&end='+moment(data.end).toISOString(),        {
+            const response = await axios.get(params.baseBackURL+'/api/calendar/get-event?start='+moment(data.start).toISOString() +'&end='+moment(data.end).toISOString(),        {
                 headers: {
                     "x-access-token": currentUser.accessToken
                 }
@@ -70,7 +71,7 @@ export default function () {
 
         // To get only your events to the calendar --> WORKING 
         else if (!favorite){
-            const response = await axios.post("http://localhost:8080/api/calendar/my-event?start="+moment(data.start).toISOString()+'&end='+moment(data.end).toISOString(),{user: currentUser},        {
+            const response = await axios.post(params.baseBackURL+"/api/calendar/my-event?start="+moment(data.start).toISOString()+'&end='+moment(data.end).toISOString(),{user: currentUser},        {
                 headers: {
                     "x-access-token": currentUser.accessToken
                 }
@@ -80,7 +81,7 @@ export default function () {
         
         // Get your favorite events --> TESTING
         else {
-            const response = await axios.post("http://localhost:8080/api/calendar/fav-event?start="+moment(data.start).toISOString()+'&end='+moment(data.end).toISOString(), {user: currentUser}, {
+            const response = await axios.post(params.baseBackURL+"/api/calendar/fav-event?start="+moment(data.start).toISOString()+'&end='+moment(data.end).toISOString(), {user: currentUser}, {
                 headers: {
                     "x-access-token": currentUser.accessToken
                 }
@@ -97,7 +98,7 @@ export default function () {
     async function handleEventClick(event){
 
         const id = event.event._def.extendedProps.eventID
-        const response = await axios.get("http://localhost:8080/api/calendar/route-event/"+id,        {
+        const response = await axios.get(params.baseBackURL+"/api/calendar/route-event/"+id,        {
             headers: {
                 "x-access-token": currentUser.accessToken
             }

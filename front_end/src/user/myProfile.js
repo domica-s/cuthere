@@ -61,7 +61,7 @@ function Profile()  {
     useEffect(() => {
       const fetchData = async () => {
           const currentUser = authService.getCurrentUser();
-          const response = await Axios.get(`http://localhost:8080/user/${currentUser.sid}`,
+          const response = await Axios.get(`${params.baseBackURL}/user/${currentUser.sid}`,
           {
               headers: {
                   "x-access-token": currentUser.accessToken
@@ -152,7 +152,7 @@ function Profile()  {
 
        // Set the request
       console.log(initialUser.sid)
-      const request = await Axios.post(`http://localhost:8080/user/${initialUser.sid}/comment`, body,        {
+      const request = await Axios.post(`${params.baseBackURL}/user/${initialUser.sid}/comment`, body,        {
         headers: {
             "x-access-token": writer.accessToken // Whose access token is this?
         }
