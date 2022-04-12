@@ -27,7 +27,7 @@ router.get("/feed/:sid", [authJwt.verifyToken], function(req,res){
         for (var i in data){
           eidCol.push(data[i].eid);
         }
-        Event.find({ eventID: { $in : eidCol}}).exec(function(err, event){
+        Event.find({ eid: { $in : eidCol}}).sort({_id:-1}).exec(function(err, event){
           if(err){
             res.status(400).send({ message: "error occured: " + err });
           }

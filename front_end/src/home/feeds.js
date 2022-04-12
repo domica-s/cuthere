@@ -20,6 +20,31 @@ function OneFeed(props){
   let sidData = data.sid;
   let user = "user/" + data.sid;
   let event = "event/" + data.eid;
+  let timeNow = Date.now();
+  let timestamp = Date.parse(data.timestamp);
+  let elapsed = timeNow-timestamp;
+  let timeRange = "Just now";
+
+  //3 minutes or more
+  if(elapsed / (1000 * 60) > 3){
+    timeRange = Math.round(elapsed / (1000 * 60)) + " m";
+    //an hour or more
+    if(elapsed / (1000 * 3600) > 1){
+    timeRange = Math.round(elapsed / (1000 * 3600)) + " hr";
+      //a day or more
+      if(elapsed / (1000 * 3600 * 24) > 2){
+        timeRange = Math.round(elapsed / (1000 * 3600 * 24)) + " d";
+        //a week or more
+        if(elapsed / (1000 * 3600 * 24 * 7) > 1){
+          timeRange = Math.round(elapsed / (1000 * 3600 * 24 * 7)) + " w";
+          //a month or more
+          if(elapsed / (1000 * 3600 * 24 * 7 * 30) > 1){
+            timeRange = Math.round(elapsed / (1000 * 3600 * 24 * 7 * 30)) + " mo";
+          }
+        }
+      }
+    }
+  }
 
   let dummyPic = "https://bootdey.com/img/Content/avatar/avatar6.png"
   const [img, setImg] = useState(dummyPic);
@@ -33,7 +58,7 @@ function OneFeed(props){
         "x-access-token": currentUser.accessToken,
       }),
     });
-    console.log(res);
+    //console.log(res);
     if (res.status == 200) {
       const imageBlob = await res.blob();
       const imageObjectURL = URL.createObjectURL(imageBlob);
@@ -59,9 +84,14 @@ function OneFeed(props){
         </td>
         <td>
           <div>
-            <a href={user}>
-              <h5>{data.friend}</h5>
-            </a>
+            <span style={{ float: "right" }}>
+                {timeRange}
+              </span>
+            <p>
+              <a href={user}>
+                <h5>{data.friend}</h5>
+              </a>
+            </p>
             {data.type == "Register" ? (
               <p className="mb-0">
                 is attending{" "}
@@ -295,11 +325,11 @@ class Feed extends React.Component {
     UserService.recommendFriends(currentUser)
     .then(successResponse => {
       // console.log("called");
-      // console.log(successResponse);
+      console.log(successResponse);
       if (successResponse.fromCollege && successResponse.fromInterests) {
         let fromCollege = successResponse.fromCollege.data;
         let fromInterests = successResponse.fromInterests.data;
-
+        
         let data1 = [];
         let data2 = [];
         fromCollege.fromCollege.map((val, index) => {
@@ -314,6 +344,22 @@ class Feed extends React.Component {
         const unique = [...new Map(data.map(item =>[item['sid'], item])).values()];
         // console.log(unique);
         this.setState({recommendedFriends: unique});
+        // let dataUnique = [];
+        // let included = {};
+        // let counter = 0;
+        // data.forEach((e) => {
+        //   if (!included[e.Group]) {
+        //     dataUnique[counter] = e;
+        //     included[e.Group] = true;
+        //     counter += 1;
+        //   }
+        // });
+
+        // //data = [...new Set(data)];
+        // //console.log(data)
+        // //console.log(dataUnique);
+        // //data = data.slice(0,4);
+        // this.setState({recommendedFriends: dataUnique});
       }
       else {
         console.log("Load recommendation error");
