@@ -120,6 +120,14 @@ function ViewProfile()  {
             setReviewHistory(userFromDB.reviewHistory);
             // setPosRating(userFromDB.posRating);
             // setNegRating(userFromDB.negRating);
+            userService.getFolls(user, sid)
+            .then(response => {
+              // console.log("hello");
+              console.log(response.data);
+            },
+            error => {
+              console.log(error.response.data);
+            })
 
           },
           error => {

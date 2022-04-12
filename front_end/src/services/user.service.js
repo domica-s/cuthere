@@ -81,6 +81,19 @@ class UserService {
             return {message: "Failed loading recommendations"};
         }
     }
+
+    getFolls(currentUser, targetSID) {
+        let temp_url = "folls";
+        
+        return axios.post(USER_URL + temp_url, {
+            sid: targetSID
+        },
+        {
+            headers: {
+                "x-access-token": currentUser.accessToken
+            }
+        }) 
+    }
 }
 
 export default new UserService();

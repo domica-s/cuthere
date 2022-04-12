@@ -364,3 +364,29 @@ exports.recommendedFriendsInterests = async (req, res) => {
     return res.status(404).send({message: "Failed fetching data"});
   }
 }
+
+// POST request with sid in body
+exports.getFollowersFollowing = (req, res) => {
+  User.findOne({ sid: req.body.sid })
+  .exec((err, sourceUser) => {
+    if (err) {
+      res.status(400).send({ message: err });
+    }
+    // let folls = sourceUser.following.concat(sourceUser.followers);
+    User.find({ _id: { $in: sourceUser.following}}, { sid: 1, name: 1})
+    .exec((err, following) => {
+      if (err) {
+        res.status(400).send({ message: err });
+      }
+
+      User.find({ _id: { $in: sourceUser.followers}}, { sid: 1, name: 1})
+      .exec((err, followers) => {
+        if (err) {
+          res.status(400).send({ message: err });
+        }
+        
+        return res.status(200).send({ following: following, followers: followers, message: "Successfuly retrieved folls"});
+      })
+    })
+  })
+}
