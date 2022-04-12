@@ -107,3 +107,14 @@ body{
 .me-2 {
   margin-right: .5rem!important;
 }
+
+.parent {
+  display: flex;
+  flex-wrap: wrap;
+
+}
+
+.child {
+  flex: 50%; /* or - flex: 0 50% - or - flex-basis: 50% - */
+  /*demo*/
+}

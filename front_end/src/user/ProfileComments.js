@@ -18,7 +18,7 @@ class ProfileComments extends React.Component {
                 <Card.Header>Profile Comments</Card.Header>
             </Card>
              {reviewHistory ? 
-                <ul classNam="comments-list"> 
+                <ul className="comments-list"> 
                     {reviewHistory.map((data) => <OneReview review={data}/>)}
                 </ul>
                 :
@@ -41,20 +41,20 @@ class OneReview extends React.Component {
 
     
             
-            <div class="container mt-1">
-            <div class="row d-flex justify-content-center">
+            <div className="container mt-1">
+            <div className="row d-flex justify-content-center">
 
-                    <div class="headings d-flex justify-content-between align-items-center mb-3">
+                    <div className="headings d-flex justify-content-between align-items-center mb-3">
                         <h5></h5>
                     </div>
                     <Card border={type?"success":"danger"} className='p-3'>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="user d-flex flex-row align-items-center"> <img src="https://i.imgur.com/hczKIze.jpg" width="30" class="user-img rounded-circle mr-2" /> 
-                            <span><small class="font-weight-bold text-primary">{name}</small> <small class="font-weight-bold">{content}</small></span> </div> <small>{reviewAt}</small>
+                        <div className="d-flex justify-content-between align-items-center">
+                            <div className="user d-flex flex-row align-items-center"> <img src="https://i.imgur.com/hczKIze.jpg" width="30" className="user-img rounded-circle mr-2" /> 
+                            <span><small className="font-weight-bold text-primary">{name}</small> <small className="font-weight-bold">{content}</small></span> </div> <small>{reviewAt}</small>
                         </div>
-                        <div class="action d-flex justify-content-between mt-2 align-items-center">
-                            <div class="reply px-4"> <span class="dots"></span> <small>Remove</small> <span class="dots"></span> </div>
-                            <div class="icons align-items-center"> <i class="fa fa-star text-warning"></i> <i class="fa fa-check-circle-o check-icon"></i> </div>
+                        <div className="action d-flex justify-content-between mt-2 align-items-center">
+                            <div className="reply px-4"> <span className="dots"></span> <small>Remove</small> <span className="dots"></span> </div>
+                            <div className="icons align-items-center"> <i className="fa fa-star text-warning"></i> <i className="fa fa-check-circle-o check-icon"></i> </div>
                         </div>
                         </Card>
                     </div>
