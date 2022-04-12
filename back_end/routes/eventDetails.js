@@ -111,7 +111,7 @@ router.post('/event/register/:eventID', [authJwt.verifyToken], function (req, re
                                 res.status(400).send({ message: "error occured: " + err});
                             }
                             else{
-                                console.log("Updated The Database Nigga!"); // Please change this
+                                console.log("Updated The Database !"); // Please change this
                             }
                             var activity = {
                                 $push: {
@@ -181,7 +181,7 @@ router.post('/event/unregister/:eventID', [authJwt.verifyToken], function (req, 
                                 res.status(400).send({ message: "error occured: " + err});
                             }
                             else{
-                                console.log("Updated The Database Nigga!"); // Please change this
+                                console.log("Updated The Database !"); // Please change this
                             }
                             var activity = {
                                 $pull: {
@@ -226,7 +226,7 @@ router.post('/event/update/:eventID', [authJwt.verifyToken], function(req,res){
         else { 
             Event.findOneAndUpdate({eventID:eventID}, {$set:updateParam}).exec(function(err, result){
                 if(err) res.status(400).send({message:"Error occured: "+ err})
-                else res.status(200).send({message:"The database is updated nigga! ", data: result}) // Please change this
+                else res.status(200).send({message:"The database is updated! ", data: result}) // Please change this
             })
         }
     })
@@ -307,13 +307,13 @@ router.post('/event/fav/:eventID', [authJwt.verifyToken], function (req,res){
 
                 // Check if the event is already in your starred list 
                 if (resultUser.starredEvents.includes(resultEvent._id))
-                res.status(200).send({message: "You have already added this event on your starred list nigga!"})
+                res.status(200).send({message: "You have already added this event on your starred list!"})
         
                 else {
                     
                     User.findOneAndUpdate({_id: userID},{$set:{starredEvents: [...resultUser.starredEvents,resultEvent._id]}}).exec(function (err, result){
                         if(err) res.status(400).send({message: "Error Occured: "+ err})
-                        else res.status(200).send({message: "The event has been added to your fav list nigga!", response: result})
+                        else res.status(200).send({message: "The event has been added to your fav list!", response: result})
                     })
                 }
             })
@@ -347,7 +347,7 @@ router.post('/event/noFav/:eventID', [authJwt.verifyToken], function (req,res){
                     // Update the user
                     User.findOneAndUpdate({_id: userID},{$set:{starredEvents:starred}}).exec(function (err, result){
                         if(err) res.status(400).send({message: "Error Occured: "+ err})
-                        else res.status(200).send({message: "The event has been removed to your fav list nigga!", response: result})
+                        else res.status(200).send({message: "The event has been removed to your fav list!", response: result})
                     })
                 }
             })
@@ -381,7 +381,7 @@ router.post('/event/pin/:eventID', [authJwt.verifyToken], function (req,response
                 pinnedComment: sortedPinnedComment
             }}, function (err ,result){ 
                 if (err) response.status(400).send({message:"Error Occured "+ err})
-                else response.status(200).send({message: "The comment has been pinned nigga!", response: result})
+                else response.status(200).send({message: "The comment has been pinned!", response: result})
             })
         }
     })
@@ -413,7 +413,7 @@ router.post('/event/unpin/:eventID',[authJwt.verifyToken], function (req, respon
                 pinnedComment: sortedPinnedComment
             }}, function (err, result){
                 if(err) response.status(400).send({message: "Error Occured: "+ err})
-                else response.status(200).send({message: "The comment has been unpinned Nigga!", response: result})
+                else response.status(200).send({message: "The comment has been unpinned!", response: result})
             })
         }
     })

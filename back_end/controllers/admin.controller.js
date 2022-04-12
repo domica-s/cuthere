@@ -344,21 +344,54 @@ exports.removeUserRating = (req, res) => {
       return res.status(401).send({message: "Invalid Admin Password!" });
     }
     
-    let update_reviews = {
-      $pull: { reviewHistory: { user: commenterSID } },
-    }
 
-    User.findOneAndUpdate({ sid: targetSID }, update_reviews)
-    .exec((err, result) => {
-      if (err) {
-        return res.status(506).send({ message: err });
+    User.findOne({ sid: targetSID })
+    .exec((err, user) => {
+      // console.log(user.reviewHistory);
+      // console.log(commenterSID);
+      let getCommentObj = (user.reviewHistory).find(x => x.user == commenterSID)
+      // console.log(getCommentObj);
+      let update_rating = {
+        $inc: { posRating: -1 },
       }
-      
-      // console.log(result);
-      // update result
-      console.log("Admin " + adminReqSID + " has deleted " + commenterSID + "\'s comment in " + targetSID + "\'s profile");
-      return res.status(200).send({ message: "Successfully removed user comment"});
+
+      if (getCommentObj.type === true) {
+        console.log("type is true");
+      }
+      else {
+          console.log("type is false");
+          update_rating = {
+              $inc: { negRating: -1 },
+          }
+      }
+
+      User.findOneAndUpdate({ sid: targetSID }, update_rating)
+      .exec((err, result) => {
+        if (err) {
+            console.log("mongoDB error in remove rating score: " + err);
+        }
+
+        console.log("Successfully updated pos/neg rating");
+
+        let update_reviews = {
+          $pull: { reviewHistory: { user: commenterSID } },
+        }
+    
+        User.findOneAndUpdate({ sid: targetSID }, update_reviews)
+        .exec((err, result) => {
+          if (err) {
+            return res.status(506).send({ message: err });
+          }
+          
+          // console.log(result);
+          // update result
+          console.log("Admin " + adminReqSID + " has deleted " + commenterSID + "\'s comment in " + targetSID + "\'s profile");
+          return res.status(200).send({ message: "Successfully removed user comment"});
+        })
+      })
     })
+
+    
 
   });
 }

@@ -91,7 +91,7 @@ userSchema.pre('remove', function(res) {
             users.forEach(user => {
                 console.log(user);
                 var getCommentObj = (user.reviewHistory).find(x => x.user === this.sid)
-                console.log(getCommentObj);
+                // console.log(getCommentObj);
                 if (getCommentObj.type === true) {
                     console.log("type is true");
                 }
