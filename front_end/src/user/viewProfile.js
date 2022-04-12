@@ -74,11 +74,12 @@ function ViewProfile()  {
   const [followersList, setFollowersList] = useState([]);
   
 
+
   useEffect(() => {
     const fetchData = async () => {
         const currentUser = authService.getCurrentUser();
         console.log(sid);
-        const response = await Axios.get(`http://localhost:8080/user/${sid}`,
+        const response = await Axios.get(`${params.baseBackURL}/user/${sid}`,
         {
             headers: {
                 "x-access-token": currentUser.accessToken
@@ -157,7 +158,7 @@ function ViewProfile()  {
 
   async function followUser(){
     let userID = initialUser.sid;
-    const request = await Axios.post(`http://localhost:8080/user/follow/${sid}`,{sid: userID},         
+    const request = await Axios.post(`${params.baseBackURL}/user/follow/${sid}`,{sid: userID},         
       {
           headers: {
               "x-access-token": initialUser.accessToken
@@ -175,7 +176,7 @@ function ViewProfile()  {
   async function unfollowUser() {
     let userID = initialUser.sid;
     const request = await Axios.post(
-      `http://localhost:8080/user/unfollow/${sid}`,
+      `${params.baseBackURL}/user/unfollow/${sid}`,
       { sid: userID },
       {
         headers: {
@@ -209,7 +210,7 @@ function ViewProfile()  {
     //   }
     // })
 
-    await Axios.post(`http://localhost:8080/user/${sid}/comment`, body, {
+    await Axios.post(`${params.baseBackURL}/user/${sid}/comment`, body, {
       headers: {
           "x-access-token": writer.accessToken // Whose access token is this?
       }
@@ -225,6 +226,7 @@ function ViewProfile()  {
     error => {
       // console.log(error.response.data.message);
       setMessage(error.response.data.message);
+      alert("You don't have any same events as this guy")
     });
     
     // console.log(request)
