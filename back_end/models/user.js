@@ -63,7 +63,7 @@ userSchema.pre('remove', function(res) {
     }
     
     // delete this user's rating content and impact on rating
-    User.find({ reviewHistory: { user: this.sid } })
+    User.find({ reviewHistory: { $elemMatch: { user: this.sid } } })
     .exec((err, users) => {
         if (err) {
             console.log("mongoDB error in removing users review: " + err);
