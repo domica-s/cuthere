@@ -78,7 +78,7 @@ function ViewProfile()  {
   useEffect(() => {
     const fetchData = async () => {
         const currentUser = authService.getCurrentUser();
-        console.log(sid);
+        // console.log(sid);
         const response = await Axios.get(`${params.baseBackURL}/user/${sid}`,
         {
             headers: {
@@ -86,7 +86,7 @@ function ViewProfile()  {
             }
         });
         const responseData = await response.data;
-        console.log(responseData);
+        // console.log(responseData);
         await setPosRating(responseData.posRating);
         await setNegRating(responseData.negRating);
         await setReviewHistory(responseData.reviewHistory);
@@ -128,16 +128,17 @@ function ViewProfile()  {
             userService.getFolls(user, sid)
             .then(response => {
               // console.log("hello");
-              console.log(response.data);
+              // console.log(response.data);
               let followers = (response.data.followers);
               let following = (response.data.following);
-              console.log(followers);
+              // console.log(followers);
 
               setFollowers(followers.length);
               setFollowing(following.length);
 
               setFollowingList(following);
               setFollowersList(followers);
+              // console.log(following);
             },
             error => {
               console.log(error.response.data);
@@ -375,22 +376,33 @@ function ViewProfile()  {
                               </ul>
                           </div>
                       </div>
-                      <Card>
-            <Card.Header>Followers list</Card.Header>
-            <Card.Body>
+                     
 
-            {(followers.length != 0) ? 
-                <ul className="comments-list"> 
+            {(followers !== 0) ? 
+            <Card>
+            <Card.Header>{user.name}'s Followers</Card.Header>
+            <Card.Body>
+                <div className="comments-list"> 
                     {followersList.map((data, index) => 
                         <OneFollower props={data}/>
                     )}
-                </ul>
+                </div>
+            </Card.Body>
+            </Card>   
                 :
                 (null)}
                 
-            <OneFollower />
+          {(following!== 0) ?
+          <Card>
+            <Card.Header>{user.name}'s Following</Card.Header>
+            <Card.Body>
+            <div className="comments-list">
+            {followingList.map((data) => <OneFollowing props={data} />)}
+            </div>
             </Card.Body>
-          </Card>
+          </Card>:
+          (null)}
+            
                   </div>
   
   
@@ -451,21 +463,43 @@ function ViewProfile()  {
     function OneFollower(props){
       const user = authService.getCurrentUser();
     
-      if (props.props) {
-        console.log(props.props.name);
-      }
+      // if (props.props) {
+      //   console.log(props.props.name);
+      // }
     
       const data = props.props;
+      const link = "/user/" + data.sid;
       return (
         <>
         {data && (
+          <a href={link}>
           <Card>
             <Card.Header>{data.name || ""}</Card.Header>
-            <Card.Body className="text-secondary">{props.props.sid || ""} </Card.Body>
+            <Card.Body className="fw-normal text-muted">{data.sid || ""} </Card.Body>
           </Card>
+          </a>
         )}
         </>
       ) 
     }
+
+
+  function OneFollowing(props) {
+  
+    const data = props.props;
+    const link = '/user/' + data.sid;
+    return(
+      <>
+      {data && (
+        <a href={link}>
+      <Card>
+        <Card.Header>{data.name || ""}</Card.Header>
+        <Card.Body>{data.sid || ""}</Card.Body>
+      </Card>
+      </a>)}
+      
+      </>
+    );
+  }
 
   export default ViewProfile;

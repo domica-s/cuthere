@@ -124,7 +124,7 @@ class CommentBox extends React.Component {
                 </div>
 
                 {reviewHistory ? 
-                <ul classNam="comments-list"> 
+                <ul className="comments-list"> 
                     {reviewHistory.map((data) => <OneReview review={data}/>)}
                 </ul>
                 :

@@ -129,10 +129,10 @@ function Profile()  {
 
             userService.getFolls(user, user.sid)
             .then(response => {
-              console.log(response.data)
+              // console.log(response.data)
               let followers = (response.data.followers);
               let following = (response.data.following);
-              console.log(followers);
+              // console.log(followers);
 
               setFollowers(followers.length);
               setFollowing(following.length);
@@ -328,22 +328,30 @@ function Profile()  {
 						</div>
             
 					</div>
-          <Card>
-            <Card.Header>Followers list</Card.Header>
+          
+           
+            {(followers !== 0)? 
+            <Card>
+            <Card.Header>Your Followers</Card.Header>
             <Card.Body>
-
-            {(followers.length != 0) ? 
-                <ul className="comments-list"> 
+                <div className="comments-list"> 
                     {followersList.map((data, index) => 
                         <OneFollower props={data}/>
                     )}
-                </ul>
-                :
-                (null)}
-                
-            <OneFollower />
+                </div>
             </Card.Body>
-          </Card>
+            </Card>
+                : (null)}
+
+           {(following!==0)?
+           <Card>
+             <Card.Header>Your Following</Card.Header>
+             <Card.Body><div className="comments-list">
+               {followingList.map((data) => <OneFollowing props={data} />)}
+             </div></Card.Body>
+           </Card>:(null)}     
+            
+           
 				</div>
 
 
@@ -408,43 +416,44 @@ function Profile()  {
     );
   }
 
-// function RenderFollowers() {
-//   const user = authService.getCurrentUser();
-//   userService.getFolls(user, user.sid)
-//   .then(successResponse => {
-//     // console.log("hello");
-//     let followers = (successResponse.data.followers);
-//     setFollowerName(followers[i].name);
-
-//   },
-//   error => {
-//     console.log(error.response.data);
-//   })
-//   return (
-
-//   )
-// }
-
-
-// STATUS --> TESTING
 function OneFollower(props){
   const user = authService.getCurrentUser();
 
-  if (props.props) {
-    console.log(props.props.name);
-  }
+  // if (props.props) {
+  //   console.log(props.props.name);
+  // }
 
   const data = props.props;
+  const link = "/user/" + data.sid;
   return (
     <>
     {data && (
+      <a href={link}>
       <Card>
         <Card.Header>{data.name || ""}</Card.Header>
-        <Card.Body className="text-secondary">{props.props.sid || ""} </Card.Body>
+        <Card.Body className="fw-normal text-muted">{props.props.sid || ""} </Card.Body>
       </Card>
+      </a>
     )}
     </>
   ) 
+}
+
+function OneFollowing(props) {
+  // console.log(props.props);
+  const data = props.props;
+  const link = "/user/" + data.sid;
+  return(
+    <>
+    {data &&
+    ( <a href={link}>
+      <Card>
+      <Card.Header>{data.name}</Card.Header>
+      <Card.Body className="fw-normal text-muted">{data.sid}</Card.Body>
+    </Card>
+    </a>)}
+    </>
+  );
 }
 
 export default Profile;
