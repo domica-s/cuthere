@@ -321,7 +321,8 @@ exports.removeUserRating = (req, res) => {
   let adminReqSID = req.body.adminReqSID;
   let adminReqPassword = req.body.adminReqPassword;
   let commenterSID = req.body.commenterSID;
-
+  // console.log(targetSID);
+  // console.log(commenterSID);
   // check if request made by admin
   User.findOne({ sid: adminReqSID })
   .exec((err, admin) => {
@@ -342,41 +343,22 @@ exports.removeUserRating = (req, res) => {
     if (!passwordIsValid) {
       return res.status(401).send({message: "Invalid Admin Password!" });
     }
+    
+    let update_reviews = {
+      $pull: { reviewHistory: { user: commenterSID } },
+    }
 
-    // find if user profile exists (if the corresponding SID exists)
-    User.findOne({ sid: targetSID })
-    .exec((err, targetUser) => {
+    User.findOneAndUpdate({ sid: targetSID }, update_reviews)
+    .exec((err, result) => {
       if (err) {
-        return res.status(500).send({ message: err });
+        return res.status(506).send({ message: err });
       }
-
-      if (!targetUser) {
-        return res.status(404).send({ message: "Target user not found." });
-      }
-
-      // get all comments
-      let allComments = targetUser.reviewHistory;
-      let hasLeftComment = allComments.some(allComments => allComments.user == commenterSID)
-      // if targetCommentSID found as one of the commenter
-      if (hasLeftComment) {
-        // get index of comment
-        let indexOfOldComment = allComments.findIndex(x => x.user == commenterSID);
-        // console.log(indexOfOldComment);
-        let newComments = allComments;
-        newComments.splice(indexOfOldComment, 1);
-        targetUser.reviewHistory = newComments;
-
-        targetUser.save((err) => {
-          if (err) {
-            return res.status(500).send({ message: err });
-          }
-          console.log("Admin " + adminReqSID + " has deleted " + commenterSID + "\'s comment in " + targetSID + "\'s profile");
-          return res.status(200).send({ message: "Successfully removed user comment"});
-        })
-      }
-      else {
-        return res.status(404).send({ message: "That user have not left a comment on the targetUser's profile "});
-      }
+      
+      // console.log(result);
+      // update result
+      console.log("Admin " + adminReqSID + " has deleted " + commenterSID + "\'s comment in " + targetSID + "\'s profile");
+      return res.status(200).send({ message: "Successfully removed user comment"});
     })
+
   });
 }

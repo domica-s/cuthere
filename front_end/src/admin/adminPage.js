@@ -226,7 +226,7 @@ export function AdminDashboard() {
         let sid = deleteUser.sid;
 
         // check if sid in list
-        if (!myCommenters.current.outerHTML.includes(sid) && sid.length !== 10) {
+        if (!myCommenters.current.outerHTML.includes(parseInt(adminRequest.deleteRating))) {
             setDeleteUser({ successfulDeleteUser: false, messageDeleteUser: "Invalid sid" });
         }
         else {

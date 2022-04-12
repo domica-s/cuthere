@@ -46,48 +46,96 @@ var userSchema = mongoose.Schema({
     country:{type:String},
 });
 
-userSchema.pre('remove', function(res){
+userSchema.pre('remove', function(res) {
     var User = require("./user");
     var Event = require("./event");
+    var Token = require("./emailToken");
     // Remove all the assignment docs that reference the removed event 
     // console.log(this);
     // remove user dependencies
-    let update_review = {
-        $pull: { reviewHistory: { user: this.sid } },
-    }
 
     let update_followers = {
         $pull: { followers: this._id}
     }
 
     let update_following = {
-        $pull: {following: this._id}
+        $pull: { following: this._id}
     }
-
-    User.updateMany({}, update_review, (err, result) => {
+    
+    // delete this user's rating content and impact on rating
+    User.find({ reviewHistory: { user: this.sid } })
+    .exec((err, users) => {
         if (err) {
-            console.log("mongoDB error: " + err);
+            console.log("mongoDB error in removing users review: " + err);
+        }
+        if (!users) {
+            console.log("Users not found");
         }
         else {
-            // console.log("Successfully removed from registered event");
+            console.log("Printing users");
+            console.log(users);
+            console.log(this.sid);
+            // loop through users array
+            // for each user, get rating of comment
+            let update_review_content = {
+                $pull: { reviewHistory: { user: this.sid } },
+            }
+            let update_rating = {
+                $inc: { posRating: -1 },
+            }
+
+            users.forEach(user => {
+                console.log(user);
+                var getCommentObj = (user.reviewHistory).find(x => x.user === this.sid)
+                console.log(getCommentObj);
+                if (getCommentObj.type === true) {
+                    console.log("type is true");
+                }
+                else {
+                    console.log("type is false");
+                    update_rating = {
+                        $inc: { negRating: -1 },
+                    }
+                }
+                // update user
+                User.findOneAndUpdate({ sid: user.sid }, update_rating)
+                .exec((err, result) => {
+                    if (err) {
+                        console.log("mongoDB error in remove rating score: " + err);
+                    }
+                    else {
+                        console.log("Successfully updated pos/neg rating");
+                    }
+                })
+            })
+
+            User.updateMany({}, update_review_content)
+            .exec((err, result) => {
+                if (err) {
+                    console.log("mongoDB error in remove rating content: " + err);
+                }
+                else {
+                    console.log("Successfully removed rating contents");
+                }
+            })
         }
     })
 
     User.updateMany({}, update_followers, (err, result) => {
         if (err) {
-            console.log("mongoDB error: " + err);
+            console.log("mongoDB error in update follower: " + err);
         }
         else {
-            // console.log("Successfully removed this from other user's follower list");
+            console.log("Successfully removed this from other user's follower list");
         }
     })
 
     User.updateMany({}, update_following, (err, result) => {
         if (err) {
-            console.log("mongoDB error: " + err);
+            console.log("mongoDB error in update following: " + err);
         }
         else {
-            // console.log("Successfully removed this from other user's following list");
+            console.log("Successfully removed this from other user's following list");
         }
     })
 
@@ -102,7 +150,7 @@ userSchema.pre('remove', function(res){
     }
 
     let update_participants = {
-        $pull: { participants: this.sid },
+        $pull: { participants: this._id },
     }
 
     let update_no_of_participants = {
@@ -111,41 +159,81 @@ userSchema.pre('remove', function(res){
 
     Event.updateMany({}, update_comments, (err, result) => {
         if (err) {
-            console.log("mongoDB error: " + err);
+            console.log("mongoDB error in update event comments: " + err);
         }
         else {
-            // console.log("Successfully removed this user's comments from events");
+            console.log("Successfully removed this user's comments from events");
         }
     })
 
     Event.updateMany({}, update_pinned, (err, result) => {
         if (err) {
-            console.log("mongoDB error: " + err);
+            console.log("mongoDB error in update pinned comments: " + err);
         }
         else {
-            // console.log("Successfully removed this user's pinned comments from events");
+            console.log("Successfully removed this user's pinned comments from events");
+        }
+    })
+    
+    Event.updateMany({ participants: this._id }, update_no_of_participants, (err, result) => {
+        if (err) {
+            console.log("mongoDB error in update no of participants: " + err);
+        }
+        else {
+            console.log("Successfully updated dependent events' noofparticipants ");
         }
     })
 
     Event.updateMany({}, update_participants, (err, result) => {
         if (err) {
-            console.log("mongoDB error: " + err);
+            console.log("mongoDB error in update participants list: " + err);
         }
         else {
-            // console.log("Successfully removed this user's pinned comments from participants lists");
+            console.log("Successfully removed this user from participants lists");
         }
     })
 
-    Event.updateMany({}, update_no_of_participants, (err, result) => {
+    // delete all events created by this user
+    Event.find({ createdBy: this._id })
+    .exec((err, events) => {
         if (err) {
-            console.log("mongoDB error: " + err);
+            console.log("mongoDB error in deleting events created by this user: " + err);
         }
         else {
-            // console.log("Successfully removed this user's pinned comments from participants count");
+            // console.log(events);
+            // return res.status(200).send({message:"Nice"});
+            events.forEach(event => {
+                Event.findOneAndDelete({ eventID: event.eventID })
+                .exec((err, result) => {
+                    if (err) {
+                        console.log("mongoDB error in deleting events created by this user: " + err);
+                    }
+                    if (!result) {
+                        console.log("mongoDB error in deleting events from this user: event not found");
+                    }
+                    else {
+                        const doc = new Event(result);
+                        doc.remove();
+                        console.log("removed user's dependent event");
+                    }
+                })
+            })
+        }
+    })
+
+    // delete all tokens related
+    Token.deleteMany({ _userId: this._id })
+    .exec((err, result) => {
+        if (err) {
+            console.log("mongoDB error in deleting tokens: " + err);
+        }
+        else {
+            console.log("Successfully removed this user's tokens");
         }
     })
 
 });
+
 
 var User = mongoose.model("User", userSchema);
 
