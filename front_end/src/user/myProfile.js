@@ -132,7 +132,7 @@ function Profile()  {
               // console.log(followers);
               setFollowers(followers.length);
               setFollowing(following.length);
-              setFollowerObject(followers);
+              // setFollowerObject(followers);
               // console.log(followerObject);
             },
             error => {
