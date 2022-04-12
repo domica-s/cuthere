@@ -341,22 +341,25 @@ class Feed extends React.Component {
         })
 
         let data = data1.concat(data2);
-        let dataUnique = [];
-        let included = {};
-        let counter = 0;
-        data.forEach((e) => {
-          if (!included[e.Group]) {
-            dataUnique[counter] = e;
-            included[e.Group] = true;
-            counter += 1;
-          }
-        });
+        const unique = [...new Map(data.map(item =>[item['sid'], item])).values()];
+        // console.log(unique);
+        this.setState({recommendedFriends: unique});
+        // let dataUnique = [];
+        // let included = {};
+        // let counter = 0;
+        // data.forEach((e) => {
+        //   if (!included[e.Group]) {
+        //     dataUnique[counter] = e;
+        //     included[e.Group] = true;
+        //     counter += 1;
+        //   }
+        // });
 
-        //data = [...new Set(data)];
-        //console.log(data)
-        //console.log(dataUnique);
-        //data = data.slice(0,4);
-        this.setState({recommendedFriends: dataUnique});
+        // //data = [...new Set(data)];
+        // //console.log(data)
+        // //console.log(dataUnique);
+        // //data = data.slice(0,4);
+        // this.setState({recommendedFriends: dataUnique});
       }
       else {
         console.log("Load recommendation error");

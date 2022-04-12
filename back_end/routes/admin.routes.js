@@ -1,5 +1,8 @@
+const { JsonWebTokenError } = require("jsonwebtoken");
 const controller = require("../controllers/admin.controller");
 const { authJwt, isAdmin } = require("../middlewares");
+
+
 
 module.exports = function(app) {
     app.use(function(req, res, next) {
@@ -19,4 +22,38 @@ module.exports = function(app) {
     app.post("/admin/user/:sid/removerating", [authJwt.verifyToken, authJwt.isAdmin], controller.removeUserRating);
     app.post("/admin/event/:eventid/delete", [authJwt.verifyToken, authJwt.isAdmin], controller.deleteEvent);
     app.post("/admin/event/:eventid/removecomment", [authJwt.verifyToken, authJwt.isAdmin], controller.removeEventComments);
+    // app.post("/admin/deleteall", [authJwt.verifyToken, authJwt.isAdmin], function(req, res) {
+    //   const User = require("../models/user");
+    //   const Event = require("../models/event");
+    //   const Token = require("../models/emailToken");
+
+    //   // Event.deleteMany({})
+    //   // .exec((err, result) => {
+    //   //   if (err) {
+    //   //     return res.status(500).send({ message: err });
+    //   //   }
+    //   //   console.log("Successfully deleted all events");
+    //   // return res.status(200).send({message: "successfully deleted all"});
+    //   // })
+
+    //   // User.deleteMany({})
+    //   // .exec((err, result) => {
+    //   //   if (err) {
+    //   //     return res.status(500).send({ message: err });
+    //   //   }
+    //   //   console.log("Successfully deleted all users");
+    //   // return res.status(200).send({message: "successfully deleted all"});
+    //   // })
+
+    //   // Token.deleteMany({})
+    //   // .exec((err, result) => {
+    //   //   if (err) {
+    //   //     return res.status(500).send({ message: err });
+    //   //   }
+    //   //   console.log("Successfully deleted all tokens");
+    //   //   return res.status(200).send({message: "successfully deleted all"});
+    //   // })
+
+    // })
+  
   };
