@@ -134,7 +134,41 @@ function ViewProfile()  {
       })();
   }, []);
 
-  
+  async function followUser(){
+    let userID = initialUser.sid;
+    const request = await Axios.post(`http://localhost:8080/user/follow/${sid}`,{sid: userID},         
+      {
+          headers: {
+              "x-access-token": initialUser.accessToken
+          }
+      })
+      console.log(request);
+      if (request.status == 202) {
+        alert("You have followed this user");
+      }
+      else if (request.status == 200) {
+        alert("User " + sid + " followed");
+      }
+  }
+
+  async function unfollowUser() {
+    let userID = initialUser.sid;
+    const request = await Axios.post(
+      `http://localhost:8080/user/unfollow/${sid}`,
+      { sid: userID },
+      {
+        headers: {
+          "x-access-token": initialUser.accessToken,
+        },
+      }
+    );
+    console.log(request);
+    if (request.status == 202) {
+      alert("You have not followed this user");
+    } else if (request.status == 200) {
+      alert("User " + sid + " unfollowed");
+    }
+  }
 
   async function addReview (writer, content, type){
     // Set the request's body
@@ -189,7 +223,8 @@ function ViewProfile()  {
                                   <div className="mt-3">
                                       <h4>@{user.username}</h4>
                                       <p className="text-secondary mb-1">{user.about || ""}</p>
-                                      <Button className="btn btn-primary" style={{marginTop:"5px"}}>Follow</Button>
+                                      <Button className="btn btn-primary" style={{marginTop:"5px", marginRight: "5px"}} onClick={followUser}>Follow</Button>
+                                      <Button className="btn btn-primary" style={{marginTop:"5px",marginLeftt: "5px"}} onClick={unfollowUser}>Unfollow</Button>
                                   </div>
                               </div>
                               <hr className="my-4" />
