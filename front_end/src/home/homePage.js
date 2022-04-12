@@ -18,6 +18,7 @@ class Home extends React.Component {
             APIdiscEvents: params.baseBackURL + "/featured/discover",
             APInewEvents: params.baseBackURL + "/featured/new",
             APIsortEvents: params.baseBackURL + "/featured/upcoming",
+            APIstarredEvents: params.baseBackURL + "/featured/starred",
         }
     }
     render() {
@@ -27,14 +28,17 @@ class Home extends React.Component {
         <div>
           <Row className="mt-2 m-0" style={{ paddingTop: "20px" }}>
             <Col xl={9} lg={12}>
-              <div style={{ paddingTop: "20px",}}>
+              <div style={{ paddingTop: "20px" }}>
                 <Banner />
               </div>
-              <div style={{paddingBottom: "20px" }}>
+              <div style={{ paddingBottom: "20px" }}>
                 <EventWidget api={this.state.APInewEvents} />
               </div>
               <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
                 <EventWidget api={this.state.APIintEvents + "/" + sid} />
+              </div>
+              <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
+                <EventWidget api={this.state.APIstarredEvents + "/" + sid} />
               </div>
               <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
                 <EventWidget api={this.state.APIsortEvents} />

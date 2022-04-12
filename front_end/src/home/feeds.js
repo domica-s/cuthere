@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
 import AuthService from "../services/auth.service";
 import Row from "react-bootstrap/Row";
@@ -21,34 +21,40 @@ function OneFeed(props){
   let user = "user/" + data.sid;
   let event = "event/" + data.eid;
 
-  const onLoadPic = async (e) => {
-    const img = document.querySelector("#profile-pic");
-    
+  let dummyPic = "https://bootdey.com/img/Content/avatar/avatar6.png"
+  const [img, setImg] = useState(dummyPic);
+
+  const fetchImage = async () => {
     let api = API_Query + "user-" + sidData;
-    const loadResult = await fetch(api, {
+    console.log(api);
+    const res = await fetch(api, {
       method: "GET",
       headers: new Headers({
         "x-access-token": currentUser.accessToken,
       }),
     });
-
-    const resultBlob = await loadResult.blob();
-    img.crossOrigin = "anonymous";
-    img.src = await URL.createObjectURL(resultBlob);
+    console.log(res);
+    if (res.status == 200) {
+      const imageBlob = await res.blob();
+      const imageObjectURL = URL.createObjectURL(imageBlob);
+      setImg(imageObjectURL);
+    }
   };
+
+  useEffect(() => {
+    fetchImage();
+  }, [dummyPic]);
 
   return (
     <table>
       <tr className="p-1">
         <td style={{ width: "90px", textAlign: "center" }}>
           <img
-            src="https://bootdey.com/img/Content/avatar/avatar6.png"
             id="profile-pic"
-            alt="profile-pic"
+            src={img}
             className="rounded-circle p-1"
             width="75"
             height="75"
-            onLoad={onLoadPic}
           />
         </td>
         <td>
@@ -123,6 +129,80 @@ class OneFeed extends React.Component {
 }
 */
 
+function OneProfile(props){
+  const currentUser = AuthService.getCurrentUser();
+  const API_Query = params.baseBackURL + "/file/";
+
+  let data = props.data;
+    let sid = data[0];
+    let name = data[1];
+    let college = data[2];
+    let interests = data[3];
+    let userLink = "user/" + sid;
+
+  let dummyPic = "https://bootdey.com/img/Content/avatar/avatar6.png";
+  const [img, setImg] = useState(dummyPic);
+
+  const fetchImage = async () => {
+    let api = API_Query + "user-" + sid;
+    console.log(api);
+    const res = await fetch(api, {
+      method: "GET",
+      headers: new Headers({
+        "x-access-token": currentUser.accessToken,
+      }),
+    });
+    if (res.status == 200) {
+      const imageBlob = await res.blob();
+      const imageObjectURL = URL.createObjectURL(imageBlob);
+      setImg(imageObjectURL);
+    }
+  };
+
+  useEffect(() => {
+    fetchImage();
+  }, [dummyPic]);
+
+  return (
+    <>
+      <hr />
+      <table>
+        <tbody>
+          <tr className="p-1">
+            <td style={{ width: "90px", textAlign: "center" }}>
+              <img
+                id="profile-pic"
+                src={img}
+                className="rounded-circle p-1"
+                width="75"
+                height="75"
+              />
+            </td>
+            <td>
+              <div>
+                <a href={userLink}>
+                  <h5>{name}</h5>
+                </a>
+                <p className="mb-0">{college}</p>
+                <p className="mb-0">
+                  {interests.map((val, index) => {
+                    if (index != interests.length - 1) {
+                      return val + ", ";
+                    } else {
+                      return val;
+                    }
+                  }) || ""}
+                </p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </>
+  );
+}
+
+/*
 class OneProfile extends React.Component {
   render() {
     let data = this.props.data;
@@ -173,7 +253,7 @@ class OneProfile extends React.Component {
       </>
     )
   }
-}
+}*/
 
 class Feed extends React.Component {
   constructor(props) {

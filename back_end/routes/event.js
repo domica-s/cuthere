@@ -131,14 +131,51 @@ router.get("/featured/discover/:sid", [authJwt.verifyToken], function (req, res)
           res.send(int_events);
         } else {
           var int_events = {
-            title: "Events you might be interested in",
-            type: "/interest",
+            title: "Explore other interests!",
+            type: "/discover",
             event_dic,
           };
           res.send(int_events);
         }
       });
     })
+});
+
+router.get("/featured/starred/:sid", [authJwt.verifyToken], function (req, res) {
+  var event_dic = {};
+  var currentUser = req.params.sid;
+  User.findOne({ sid: currentUser }).exec(function (err, baseUser) {
+    if (err) {
+      res.status(400).send({ message: "error occured: " + err });
+    } else if (baseUser === null) {
+      res.status(404).send({ message: "User not found" });
+    } else {
+      let data = baseUser.starredEvents;
+      Event.find({ _id: { $in: data } }).exec(function (err, event) {
+        if (err) {
+          res.status(400).send({ message: "error occured: " + err });
+        }
+        if (event.length > 0) {
+          for (var i = 0; i < event.length; i++) {
+            event_dic[i] = event[i];
+          }
+          var int_events = {
+            title: "Favorited Events",
+            type: "/starred",
+            event_dic,
+          };
+          res.send(int_events);
+        } else {
+          var int_events = {
+            title: "Favorited Events",
+            type: "/starred",
+            event_dic,
+          };
+          res.send(int_events);
+        }
+      });
+    }
+  });
 });
 
 router.get("/featured/new", [authJwt.verifyToken], function (req, res) {

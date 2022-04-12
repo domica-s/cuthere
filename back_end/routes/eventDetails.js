@@ -143,7 +143,7 @@ router.post('/event/register/:eventID', [authJwt.verifyToken], function (req, re
                 })
             }
         }
-        else res.status(200).send("You have already registered for this event!")
+        else res.status(202).send("You have already registered for this event!")
     })
 })
 
