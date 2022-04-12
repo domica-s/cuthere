@@ -213,7 +213,7 @@ class EventWidget extends React.Component{
       } 
     }
     render(){
-      let events = (this.state.events)? Object.entries(this.state.events): null;
+      let events = (this.state.events)? Object.entries(this.state.events): {};
       let disp_events =  (this.state.events)? Object.entries(this.state.events).slice(0,5): null;
       let title = this.state.title;
       //let type = this.state.type;
@@ -221,45 +221,54 @@ class EventWidget extends React.Component{
       let nullevents;
 
       if (this.state.type == "/interest") {
-         nullevents = (
-          <h6>State your interests <a href= "/accountSetting">here!</a></h6>
+        nullevents = (
+          <h6>
+            State your interests <a href="/accountSetting">here!</a>
+          </h6>
+        );
+      } else if (this.state.type == "/upcoming") {
+        nullevents = (
+          <h6>
+            Create your own events <a href="/createevent">here!</a>
+          </h6>
+        );
+      } else if (this.state.type == "/starred") {
+        nullevents = (
+          <h6>
+            You have not favorited any events
+          </h6>
         );
       }
-      else if (this.state.type == "/upcoming"){
-         nullevents = (
-          <h6>Create your own events <a href= "/createevent">here!</a></h6>
-        );
-      }
-             return (
-               <Card style={{ maxHeight: "22rem", marginBottom: "0px" }}>
-                 <Card.Header style={{ textAlign: "left" }}>
-                   <a href={path}>
-                     <b>{title}</b>
-                   </a>
-                   <a href={path} style={{ float: "right" }}>
-                     See all
-                   </a>
-                 </Card.Header>
-                 <Card.Body style={{ overflowY: "hidden" }}>
-                   <Row className="widget g-4">
-                     {events ? (
-                       disp_events.map((data) => (
-                         <Col
-                           style={{ justifyContent: "center", display: "flex" }}
-                         >
-                           <EventCard data={data} />
-                         </Col>
-                       ))
-                     ) : (
-                       <div>
-                         <h5>Sorry, we currently have no events for you</h5>
-                         {nullevents}
-                       </div>
-                     )}
-                   </Row>
-                 </Card.Body>
-               </Card>
-             );
+      return (
+        <Card style={{ maxHeight: "22rem", marginBottom: "0px" }}>
+          <Card.Header style={{ textAlign: "left" }}>
+            <a href={path}>
+              <b>{title}</b>
+            </a>
+            <a href={path} style={{ float: "right" }}>
+              See all
+            </a>
+          </Card.Header>
+          <Card.Body style={{ overflowY: "hidden" }}>
+            <Row className="widget g-4">
+              {events.length>0 ? (
+                disp_events.map((data) => (
+                  <Col
+                    style={{ justifyContent: "center", display: "flex" }}
+                  >
+                    <EventCard data={data} />
+                  </Col>
+                ))
+              ) : (
+                <div>
+                  <h5>Sorry, we currently have no events for you</h5>
+                  {nullevents}
+                </div>
+              )}
+            </Row>
+          </Card.Body>
+        </Card>
+      );
     }
 }
 
