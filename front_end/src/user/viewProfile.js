@@ -68,13 +68,13 @@ function ViewProfile()  {
   const [fectched, setFetched] = useState(false);
   const [posRating, setPosRating] = useState(INITIAL_STATE.posRating);
   const [negRating, setNegRating] = useState(INITIAL_STATE.negRating);
-  
+  var params = require("../params/params");
 
   useEffect(() => {
     const fetchData = async () => {
         const currentUser = authService.getCurrentUser();
         console.log(sid);
-        const response = await Axios.get(`http://localhost:8080/user/${sid}`,
+        const response = await Axios.get(`${params.baseBackURL}/user/${sid}`,
         {
             headers: {
                 "x-access-token": currentUser.accessToken
@@ -144,7 +144,7 @@ function ViewProfile()  {
 
   async function followUser(){
     let userID = initialUser.sid;
-    const request = await Axios.post(`http://localhost:8080/user/follow/${sid}`,{sid: userID},         
+    const request = await Axios.post(`${params.baseBackURL}/user/follow/${sid}`,{sid: userID},         
       {
           headers: {
               "x-access-token": initialUser.accessToken
@@ -162,7 +162,7 @@ function ViewProfile()  {
   async function unfollowUser() {
     let userID = initialUser.sid;
     const request = await Axios.post(
-      `http://localhost:8080/user/unfollow/${sid}`,
+      `${params.baseBackURL}/user/unfollow/${sid}`,
       { sid: userID },
       {
         headers: {
@@ -196,7 +196,7 @@ function ViewProfile()  {
     //   }
     // })
 
-    await Axios.post(`http://localhost:8080/user/${sid}/comment`, body, {
+    await Axios.post(`${params.baseBackURL}/user/${sid}/comment`, body, {
       headers: {
           "x-access-token": writer.accessToken // Whose access token is this?
       }

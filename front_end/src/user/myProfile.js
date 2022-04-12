@@ -64,7 +64,7 @@ function Profile()  {
     useEffect(() => {
       const fetchData = async () => {
           const currentUser = authService.getCurrentUser();
-          const response = await Axios.get(`http://localhost:8080/user/${currentUser.sid}`,
+          const response = await Axios.get(`${params.baseBackURL}/user/${currentUser.sid}`,
           {
               headers: {
                   "x-access-token": currentUser.accessToken
@@ -149,6 +149,7 @@ function Profile()  {
 
       // returns --> success, fail1 (user have previously left a comment, update instead)
       //, fail2 (source/target sid not found, no similar events or other errors)
+
     // async function addReview (writer, content, type){
     //   // Set the request's body
     //   const body = {
@@ -165,6 +166,7 @@ function Profile()  {
     //         "x-access-token": writer.accessToken // Whose access token is this?
     //     }
     //   })
+
 
     //   // Store reviewHistory
     //   console.log(request.data)
