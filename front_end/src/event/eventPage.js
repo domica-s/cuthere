@@ -305,6 +305,11 @@ function EventCard(props){
         },
       }
     );
+    if (request.status == 202) {
+      alert("You have already registered for this event");
+    } else if (request.status == 200) {
+      alert("Succesfully registered for this event");
+    }
     console.log(request);
   }
 
