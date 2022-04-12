@@ -106,7 +106,7 @@ exports.leaveUserRating = async (req, res) => {
                             targetUser.posRating = targetUser.posRating - 1;
                           }
                           else {
-                            targetUser.negRating = targetUser.negRating + 1;
+                            targetUser.negRating = targetUser.negRating - 1;
                           }
                           // console.log(indexOfOldComment);
                           let newTargetHistory = targetHistory;
