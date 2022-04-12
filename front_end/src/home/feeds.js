@@ -27,19 +27,19 @@ function OneFeed(props){
 
   //3 minutes or more
   if(elapsed / (1000 * 60) > 3){
-    timeRange = Math.round(elapsed / (1000 * 60)) + "m";
+    timeRange = Math.round(elapsed / (1000 * 60)) + " m";
     //an hour or more
-    if(elapsed / (1000 * 3600) > 3){
-    timeRange = Math.round(elapsed / (1000 * 3600)) + "hr";
+    if(elapsed / (1000 * 3600) > 1){
+    timeRange = Math.round(elapsed / (1000 * 3600)) + " hr";
       //a day or more
       if(elapsed / (1000 * 3600 * 24) > 2){
-        timeRange = Math.round(elapsed / (1000 * 3600 * 24)) + "d";
+        timeRange = Math.round(elapsed / (1000 * 3600 * 24)) + " d";
         //a week or more
         if(elapsed / (1000 * 3600 * 24 * 7) > 1){
-          timeRange = Math.round(elapsed / (1000 * 3600 * 24 * 7)) + "w";
+          timeRange = Math.round(elapsed / (1000 * 3600 * 24 * 7)) + " w";
           //a month or more
           if(elapsed / (1000 * 3600 * 24 * 7 * 30) > 1){
-            timeRange = Math.round(elapsed / (1000 * 3600 * 24 * 7 * 30)) + "mo";
+            timeRange = Math.round(elapsed / (1000 * 3600 * 24 * 7 * 30)) + " mo";
           }
         }
       }
@@ -325,11 +325,11 @@ class Feed extends React.Component {
     UserService.recommendFriends(currentUser)
     .then(successResponse => {
       // console.log("called");
-      // console.log(successResponse);
+      console.log(successResponse);
       if (successResponse.fromCollege && successResponse.fromInterests) {
         let fromCollege = successResponse.fromCollege.data;
         let fromInterests = successResponse.fromInterests.data;
-
+        
         let data1 = [];
         let data2 = [];
         fromCollege.fromCollege.map((val, index) => {
@@ -341,9 +341,22 @@ class Feed extends React.Component {
         })
 
         let data = data1.concat(data2);
-        data = [...new Set(data)];
-        data = data.slice(0,4);
-        this.setState({recommendedFriends: data});
+        let dataUnique = [];
+        let included = {};
+        let counter = 0;
+        data.forEach((e) => {
+          if (!included[e.Group]) {
+            dataUnique[counter] = e;
+            included[e.Group] = true;
+            counter += 1;
+          }
+        });
+
+        //data = [...new Set(data)];
+        //console.log(data)
+        //console.log(dataUnique);
+        //data = data.slice(0,4);
+        this.setState({recommendedFriends: dataUnique});
       }
       else {
         console.log("Load recommendation error");
