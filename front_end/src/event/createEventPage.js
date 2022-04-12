@@ -13,7 +13,7 @@ var params = require("../params/params");
 
 const API = params.baseBackURL + "/event";
 
-const quotaInvalidMsg = "Quota is invalid, please input a positive integer";
+const quotaInvalidMsg = "Quota is invalid, it should be at least 1";
 
 const currentUser = AuthService.getCurrentUser();
 if (currentUser) {
@@ -102,7 +102,7 @@ class CreateEvent extends React.Component {
 
     onChangeQuota(e) {
         let quotaInput = e.target.value;
-        if (quotaInput < 0) {
+        if (quotaInput < 1) {
             this.setState({
                 quotaValidate: false
             });

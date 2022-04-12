@@ -22,8 +22,7 @@ router.post("/upload", [authJwt.verifyToken], upload.single("file"), (req, res) 
     if (req.file === undefined) {
         return res.status(400).send({message: "There is no file uploaded"});
     }
-    const imgUrl = '/file/' + req.file.filename;
-    return res.status(200).send({message: imgUrl});
+    return res.status(200).send({message: "Successfully uploaded the image!"});
 })
 
 // view file using GET http://{server}/file/:filename

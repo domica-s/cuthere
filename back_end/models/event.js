@@ -1,4 +1,17 @@
 var mongoose = require("mongoose");
+const Grid = require('gridfs-stream');
+
+let gfs, gridfsBucket;
+const conn = mongoose.connection;
+conn.once('open', () => {
+    gridfsBucket = new mongoose.mongo.GridFSBucket(conn.db, {
+    bucketName: 'photos'
+  });
+ 
+    gfs = Grid(conn.db, mongoose.mongo);
+    gfs.collection('photos');
+});
+
 
 var eventSchema = mongoose.Schema({
     title:{type: String, required: true},
@@ -56,6 +69,27 @@ eventSchema.pre('remove', function(res){
             // console.log("Successfully removed from starred event");
         }
     })    
+
+    let eventpic_filename = 'event-' + this.eventID;
+    gridfsBucket.find({filename: eventpic_filename}).toArray((err, files) => {
+        if (err) {
+            console.log("mongoDB error: " + err);
+        }
+        else if (!files[0] || files.length === 0) {
+            console.log("This event has no photo uploaded");
+        }
+        else {
+            gridfsBucket.delete(files[0]._id)
+            .then((err, data) => {
+                if (err) {
+                    console.log("photo deletion error: " + err);
+                }
+                else {
+                    console.log("Deleted successfully");
+                }
+            });
+        }
+    });
 });
 
 var Event = mongoose.model("Event", eventSchema);
