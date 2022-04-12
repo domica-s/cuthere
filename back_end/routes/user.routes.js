@@ -11,5 +11,6 @@ router.post("/follow/:sid", [authJwt.verifyToken], controller.followUser);
 router.post("/unfollow/:sid", [authJwt.verifyToken], controller.unfollowUser);
 router.post("/recommendfriends/college", [authJwt.verifyToken], controller.recommendedFriendsCollege);
 router.post("/recommendfriends/interests", [authJwt.verifyToken], controller.recommendedFriendsInterests);
+router.post("/folls", [authJwt.verifyToken], controller.getFollowersFollowing);
 
 module.exports = router;

@@ -19,7 +19,7 @@ function Profile()  {
   const API_DELETE = params.baseBackURL + "/file/delete";
   const API_Query = params.baseBackURL + "/file/";
   const initialUser = authService.getCurrentUser();
-  console.log(initialUser);
+  // console.log(initialUser);
 
   
   const onLoadPic = async(e) => {
@@ -101,7 +101,7 @@ function Profile()  {
                 posRating: userFromDB.posRating,
                 negRating: userFromDB.negRating,
               });
-              console.log(userFromDB.posRating)
+              // console.log(userFromDB.posRating)
               setReviewHistory(userFromDB.reviewHistory);
             },
             error => {
@@ -121,6 +121,15 @@ function Profile()  {
               setReviewHistory(user.reviewHistory);
             })
             // setUser(user.data);
+
+            userService.getFolls(user, user.sid)
+            .then(response => {
+              // console.log("hello");
+              console.log(response.data);
+            },
+            error => {
+              console.log(error.response.data);
+            })
             
         } catch (error) {
             console.log(error);
