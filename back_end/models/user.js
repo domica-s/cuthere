@@ -61,6 +61,10 @@ userSchema.pre('remove', function(res) {
     let update_following = {
         $pull: { following: this._id}
     }
+
+    let update_feeds = {
+        $pull: { feedActivities: { sid: this.sid }}
+    }
     
     // delete this user's rating content and impact on rating
     User.find({ reviewHistory: { user: this.sid } })
@@ -136,6 +140,15 @@ userSchema.pre('remove', function(res) {
         }
         else {
             console.log("Successfully removed this from other user's following list");
+        }
+    })
+
+    User.updateMany({}, update_feeds, (err, result) => {
+        if (err) {
+            console.log("mongoDB error in update feeds: " +  err);
+        }
+        else {
+            console.log("Successfully removed this from other user's feeds");
         }
     })
 
