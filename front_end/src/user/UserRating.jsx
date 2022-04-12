@@ -160,7 +160,7 @@ class OneReview extends React.Component {
                             <span><small class="font-weight-bold text-primary">{name}</small> <small class="font-weight-bold">{content}</small></span> </div> <small>{reviewAt}</small>
                         </div>
                         <div class="action d-flex justify-content-between mt-2 align-items-center">
-                            <div class="reply px-4"> <span class="dots"></span> <small>Remove</small> <span class="dots"></span> </div>
+                            {/* <div class="reply px-4"> <span class="dots"></span> <small>Remove</small> <span class="dots"></span> </div> */}
                             <div class="icons align-items-center"> <i class="fa fa-star text-warning"></i> <i class="fa fa-check-circle-o check-icon"></i> </div>
                         </div>
                         </Card>

@@ -11,6 +11,7 @@ import { Container } from "react-bootstrap";
 // import FloatingLabel from 'react-bootstrap/FloatingLabel'
 
 export default function ({isOpen, onClose, onEventAdded}) {
+
     const [title, setTitle] = useState();
     const [venue, setVenue] = useState();
     const [quota, setQuota] = useState();

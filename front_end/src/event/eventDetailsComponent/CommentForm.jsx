@@ -204,7 +204,7 @@ class OneChat extends React.Component {
                       <span><small class="font-weight-bold text-primary" onClick={ () => {this.onClickUser(sid)} }>{username}</small> <small class="font-weight-bold">{content}</small></span> </div> <small>{chatAt}</small>
                 </div>
                 <div class="action d-flex justify-content-between mt-2 align-items-center">
-                    <div class="reply px-4"> <small>Remove</small> <span class="dots"></span> <small>Reply</small> <span class="dots"></span> <small>Translate</small> </div>
+                    {/* <div class="reply px-4"> <small>Remove</small> <span class="dots"></span> <small>Reply</small> <span class="dots"></span> <small>Translate</small> </div> */}
                     <div class="icons align-items-center"> <i class="fa fa-star text-warning"></i> <i class="fa fa-check-circle-o check-icon"></i> </div>
                     
                     {

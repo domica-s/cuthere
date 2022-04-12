@@ -62,7 +62,29 @@ router.get('/delete/:filename', [authJwt.verifyToken], async (req, res) => {
         })
     } catch (error) {
         console.log(error);
-        res.status(404).send({message: 'not found'})
+        return res.status(404).send({message: 'not found'})
+    }
+})
+
+router.get('/all/delete', [authJwt.verifyToken], async (req, res) => {
+    try {
+        gridfsBucket.find({}).toArray((err, files) => {
+            if (!files[0] || files.length === 0) {
+                return res.status(400).send({message: "There are no files"});
+            }
+            for (i = 0; i < files.length; i++) {
+                gridfsBucket.delete(files[i]._id)
+                .then((err, data) => {
+                    if (err) {
+                        return res.status(400).send({message: err});
+                    }
+                })
+            }
+            return res.status(200).send({message: "All files deleted"});
+        })
+    } catch (error) {
+        console.log(err);
+        return res.status(404).send({message: 'error: ' + err});
     }
 })
 
