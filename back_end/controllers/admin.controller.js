@@ -321,7 +321,8 @@ exports.removeUserRating = (req, res) => {
   let adminReqSID = req.body.adminReqSID;
   let adminReqPassword = req.body.adminReqPassword;
   let commenterSID = req.body.commenterSID;
-
+  // console.log(targetSID);
+  // console.log(commenterSID);
   // check if request made by admin
   User.findOne({ sid: adminReqSID })
   .exec((err, admin) => {
@@ -342,41 +343,55 @@ exports.removeUserRating = (req, res) => {
     if (!passwordIsValid) {
       return res.status(401).send({message: "Invalid Admin Password!" });
     }
+    
 
-    // find if user profile exists (if the corresponding SID exists)
     User.findOne({ sid: targetSID })
-    .exec((err, targetUser) => {
-      if (err) {
-        return res.status(500).send({ message: err });
+    .exec((err, user) => {
+      // console.log(user.reviewHistory);
+      // console.log(commenterSID);
+      let getCommentObj = (user.reviewHistory).find(x => x.user == commenterSID)
+      // console.log(getCommentObj);
+      let update_rating = {
+        $inc: { posRating: -1 },
       }
 
-      if (!targetUser) {
-        return res.status(404).send({ message: "Target user not found." });
+      if (getCommentObj.type === true) {
+        console.log("type is true");
       }
-
-      // get all comments
-      let allComments = targetUser.reviewHistory;
-      let hasLeftComment = allComments.some(allComments => allComments.user == commenterSID)
-      // if targetCommentSID found as one of the commenter
-      if (hasLeftComment) {
-        // get index of comment
-        let indexOfOldComment = allComments.findIndex(x => x.user == commenterSID);
-        // console.log(indexOfOldComment);
-        let newComments = allComments;
-        newComments.splice(indexOfOldComment, 1);
-        targetUser.reviewHistory = newComments;
-
-        targetUser.save((err) => {
-          if (err) {
-            return res.status(500).send({ message: err });
+      else {
+          console.log("type is false");
+          update_rating = {
+              $inc: { negRating: -1 },
           }
+      }
+
+      User.findOneAndUpdate({ sid: targetSID }, update_rating)
+      .exec((err, result) => {
+        if (err) {
+            console.log("mongoDB error in remove rating score: " + err);
+        }
+
+        console.log("Successfully updated pos/neg rating");
+
+        let update_reviews = {
+          $pull: { reviewHistory: { user: commenterSID } },
+        }
+    
+        User.findOneAndUpdate({ sid: targetSID }, update_reviews)
+        .exec((err, result) => {
+          if (err) {
+            return res.status(506).send({ message: err });
+          }
+          
+          // console.log(result);
+          // update result
           console.log("Admin " + adminReqSID + " has deleted " + commenterSID + "\'s comment in " + targetSID + "\'s profile");
           return res.status(200).send({ message: "Successfully removed user comment"});
         })
-      }
-      else {
-        return res.status(404).send({ message: "That user have not left a comment on the targetUser's profile "});
-      }
+      })
     })
+
+    
+
   });
 }

@@ -86,22 +86,26 @@ class App extends React.Component {
             {currentUser === undefined && <Route path="/" element={<LandingPage/>} />}
             {currentUser !== undefined && <Route path='/' element={<Home/>} />}
             <Route path='/about' element={<AboutUs/>} />
-            <Route path='/login' element={<LoginWithNavigate/>} />
+            {/* <Route path='/login' element={<LoginWithNavigate/>} /> */}
+            {currentUser === undefined && <Route path="/login" element={<LoginWithNavigate/>} />}
             {currentUser !== undefined && <Route path='/event' element={<Event/>} />}
             {currentUser !== undefined && <Route path='/featured/:type' element={<Featured/>} />}
-            <Route path='/signup' element={<SignUpWithNavigate/>} />
-            <Route path='/logout' element={<this.handleLogout/>} />
+            {/* <Route path='/signup' element={<SignUpWithNavigate/>} /> */}
+            {currentUser === undefined && <Route path="/signup" element={<SignUpWithNavigate/>} />}
+            {/* <Route path='/logout' element={<this.handleLogout/>} /> */}
+            {currentUser === undefined && <Route path="/logout" element={<this.handleLogout/>} />}
             {currentUser !== undefined && <Route path='/profile' element={<Profile/>} />}
-            <Route path='/forgotpw' element={<ForgotPw/>} />
+            {/* <Route path='/forgotpw' element={<ForgotPw/>} /> */}
+            {currentUser === undefined && <Route path="/forgotpw" element={<ForgotPw/>} />}
             <Route path='/api/auth/passwordreset/:sid/:token' element={<PasswordReset/>} />
             <Route path='/api/auth/confirmation/:sid/:token' element={<ConfirmEmail/>} />
             {currentUser !== undefined && <Route path='/calendar' element={<Calendar/>} />}
-            
             {currentUser !== undefined && <Route path='/event/:id' element={<EventDetail/>} />}
             {currentUser !== undefined && <Route path='/createEvent' element={<CreateEvent/>} />}
             {currentUser !== undefined && <Route path='/accountSetting' element={<AccountSetting/>} />}
-            {isAdmin && <Route path='/admin' element={<AdminDashboard/>} />}
-            <Route path='/upload' element={<UploadImage/>} />
+            {currentUser !== undefined && isAdmin && <Route path='/admin' element={<AdminDashboard/>} />}
+            {/* <Route path='/upload' element={<UploadImage/>} /> */}
+            {currentUser !== undefined && <Route path='/upload' element = {<UploadImage />} />}
             {currentUser !== undefined && <Route path='/user/:sid' element = {<ViewProfile />} />}
             <Route path='/help' element={<Help/>} />
             <Route path='/*' element={<NoMatch/>} />
