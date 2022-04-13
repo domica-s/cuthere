@@ -44,7 +44,7 @@ function ChangePicture () {
             .then(successResponse => {
               
               userFromDB = successResponse.data;
-              console.log(userFromDB.interests);
+              // console.log(userFromDB.interests);
               setUser({
                 username: userFromDB.username,
                 email: userFromDB.email,
@@ -165,7 +165,7 @@ function GeneralInformation() {
             .then(successResponse => {
               
               userFromDB = successResponse.data;
-              console.log(userFromDB.interests);
+              // console.log(userFromDB.interests);
               setUser({
                 username: userFromDB.username,
                 email: userFromDB.email,
@@ -199,15 +199,15 @@ function GeneralInformation() {
     }, []);
 
     const handleInput = (e) => {
-        console.log(e.target.name, " : ", e.target.value);
+        // console.log(e.target.name, " : ", e.target.value);
         setUser({ ...user, [e.target.name]: e.target.value });
     };
 
     const handleInterests =(e, action) => {
       const value = e.map(x=>x.value)
-      console.log(value);
+      // console.log(value);
       setUser({...user, [action.name]: value});
-      console.log(action);
+      // console.log(action);
     }
 
     const handleGeneral = async (e) => {
@@ -221,7 +221,7 @@ function GeneralInformation() {
           .then(successResponse => {
             
             updatedUser = successResponse.data;
-            console.log(updatedUser);
+            // console.log(updatedUser);
             setUser({
               username: updatedUser.username,
               email: updatedUser.email,
@@ -259,7 +259,7 @@ function GeneralInformation() {
 
 
     
-    console.log(user.interests);
+    // console.log(user.interests);
     const defaultSelectData = [];
     if (typeof user.interests != 'undefined') {
       user.interests.map((data, index) => {
@@ -644,7 +644,7 @@ function ChangePassword() {
             reEnterPassword: ""
 
             })
-            console.log(user);
+            // console.log(user);
           
             
         } catch (error) {
@@ -654,7 +654,7 @@ function ChangePassword() {
     }, []);
 
     const handleInput = (e) => {
-        console.log(e.target.name, " : ", e.target.value);
+        // console.log(e.target.name, " : ", e.target.value);
         setUser({ ...user, [e.target.name]: e.target.value });
     };
 

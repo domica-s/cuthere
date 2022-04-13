@@ -26,7 +26,7 @@ router.post("/create-event",[authJwt.verifyToken], (req,res)=> {
         event.venue = req.body.extendedProps.venue
         event.eventID = eID
         event.status = 'Open'
-        console.log(req.body.extendedProps.activityCategory)
+        // console.log(req.body.extendedProps.activityCategory)
         event.activityCategory = req.body.extendedProps.activityCategory
         event.quota = req.body.extendedProps.quota
         event.numberOfParticipants = 1
@@ -107,7 +107,7 @@ router.post("/fav-event", [authJwt.verifyToken], (req, res) => {
     User.findOne({_id: user._id}).exec(async function(err, userResult){
         let fav = userResult.starredEvents
         const stringFav = fav.map(x => x.toString()) // String
-        console.log(stringFav)
+        // console.log(stringFav)
 
         const events = await Event.find({
             _id: {$in: stringFav},

@@ -60,10 +60,10 @@ function EventInfo(props) {
     const endDate =endString.slice(0,10);
     const startTime = startString.slice(11,16);
     const endTime = endString.slice(11,16);
-    console.log(endTime);
-    console.log(startTime);
-    console.log(startString);
-    console.log(startDate);
+    // console.log(endTime);
+    // console.log(startTime);
+    // console.log(startString);
+    // console.log(startDate);
 
   return (
     <React.Fragment>

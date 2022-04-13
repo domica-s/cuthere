@@ -61,7 +61,8 @@ class CommentForm extends React.Component{
     }
 
     render() {
-
+        // console.log(this.props.createdBy);
+        // console.log(currentUser._id);
         return(
             <>
             <React.Fragment>
@@ -181,7 +182,7 @@ class OneChat extends React.Component {
 
     onClickUser(sid) {
         let userLink = '/user/' + sid;
-        console.log('Directing to ' + userLink + '...');
+        // console.log('Directing to ' + userLink + '...');
         this.props.navigation(userLink, { replace: true });
     }
 
@@ -194,7 +195,7 @@ class OneChat extends React.Component {
         let username = chat.name;
         let chatAt = chat.chatAt;
         let sid = chat.user;
-
+        // console.log(isHost);
         return (
             <div>
             <div class="container mt-3">

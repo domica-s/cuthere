@@ -42,11 +42,11 @@ class SignUp extends React.Component {
 
   onChangeInterests(e) {
     const value = e.map(x => x.value);
-    console.log(value);
+    // console.log(value);
     this.setState({
       interests : value,
     })
-    console.log(this.state.interests)
+    // console.log(this.state.interests)
   }
 
   onChangeUsername(e) {
@@ -91,7 +91,7 @@ class SignUp extends React.Component {
 
   handleRegister(e) {
     e.preventDefault();
-    console.log(this.state.interests);
+    // console.log(this.state.interests);
     this.setState({
       message: "",
       successful: false

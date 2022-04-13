@@ -84,7 +84,7 @@ router.post('/event/register/:eventID', [authJwt.verifyToken], function (req, re
                         var timeNow = Date(Date.now());
                         var eventName = doc.title;
                         var eventTime = doc.start.toString();
-                        console.log(eventName, eventTime);
+                        // console.log(eventName, eventTime);
                         var entry = {
                             $push: { registeredEvents:{
                                 event: doc,
@@ -92,8 +92,8 @@ router.post('/event/register/:eventID', [authJwt.verifyToken], function (req, re
                             }}
                         }
                         User.findOneAndUpdate({_id: userID}, entry, (err, ress)=>{
-                            console.log("The one who registered", ress);
-                            console.log(doc);
+                            // console.log("The one who registered", ress);
+                            // console.log(doc);
                             var followers = ress.followers;
 
                             // send reminder
@@ -265,7 +265,7 @@ router.post('/event/delete/:eventID',[authJwt.verifyToken], function(req,res){
 router.post('/event/addcomment/:eventID', [authJwt.verifyToken], function (req,res){
     const eventID = req.params.eventID 
     const comment = req.body.comment
-    console.log(comment)
+    // console.log(comment)
 
     Event.findOne({eventID: eventID}).exec(function(err,result){
         if(err) res.status(200).send({message: "Error occured: "+ err})

@@ -51,7 +51,7 @@ function OneFeed(props){
 
   const fetchImage = async () => {
     let api = API_Query + "user-" + sidData;
-    console.log(api);
+    // console.log(api);
     const res = await fetch(api, {
       method: "GET",
       headers: new Headers({
@@ -175,7 +175,7 @@ function OneProfile(props){
 
   const fetchImage = async () => {
     let api = API_Query + "user-" + sid;
-    console.log(api);
+    // console.log(api);
     const res = await fetch(api, {
       method: "GET",
       headers: new Headers({
@@ -325,7 +325,7 @@ class Feed extends React.Component {
     UserService.recommendFriends(currentUser)
     .then(successResponse => {
       // console.log("called");
-      console.log(successResponse);
+      // console.log(successResponse);
       if (successResponse.fromCollege && successResponse.fromInterests) {
         let fromCollege = successResponse.fromCollege.data;
         let fromInterests = successResponse.fromInterests.data;

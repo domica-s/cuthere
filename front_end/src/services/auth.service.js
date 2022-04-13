@@ -48,7 +48,7 @@ class AuthService {
     let sid = currentUser.sid;
     // get oldPassword and newPassword from form fields, check forgotPassword for reference
     // get sid from access token
-    console.log(sid, oldPassword, newPassword, newRepassword);
+    // console.log(sid, oldPassword, newPassword, newRepassword);
     return axios.post(API_URL + temp_url, {
       sid,
       oldPassword,

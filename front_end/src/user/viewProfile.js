@@ -165,7 +165,7 @@ function ViewProfile()  {
               "x-access-token": initialUser.accessToken
           }
       })
-      console.log(request);
+      // console.log(request);
       if (request.status == 202) {
         alert("You have followed this user");
       }
@@ -185,7 +185,7 @@ function ViewProfile()  {
         },
       }
     );
-    console.log(request);
+    // console.log(request);
     if (request.status == 202) {
       alert("You have not followed this user");
     } else if (request.status == 200) {
@@ -203,7 +203,7 @@ function ViewProfile()  {
      }
 
      // Set the request
-    console.log(sid);
+    // console.log(sid);
 
     // const request = await Axios.post(`http://localhost:8080/user/${sid}/comment`, body, {
     //   headers: {

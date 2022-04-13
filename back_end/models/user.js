@@ -76,9 +76,9 @@ userSchema.pre('remove', function(res) {
             console.log("Users not found");
         }
         else {
-            console.log("Printing users");
-            console.log(users);
-            console.log(this.sid);
+            // console.log("Printing users");
+            // console.log(users);
+            // console.log(this.sid);
             // loop through users array
             // for each user, get rating of comment
             let update_review_content = {
@@ -89,14 +89,14 @@ userSchema.pre('remove', function(res) {
             }
 
             users.forEach(user => {
-                console.log(user);
+                // console.log(user);
                 var getCommentObj = (user.reviewHistory).find(x => x.user === this.sid)
                 // console.log(getCommentObj);
                 if (getCommentObj.type === true) {
-                    console.log("type is true");
+                    // console.log("type is true");
                 }
                 else {
-                    console.log("type is false");
+                    // console.log("type is false");
                     update_rating = {
                         $inc: { negRating: -1 },
                     }
@@ -108,7 +108,7 @@ userSchema.pre('remove', function(res) {
                         console.log("mongoDB error in remove rating score: " + err);
                     }
                     else {
-                        console.log("Successfully updated pos/neg rating");
+                        // console.log("Successfully updated pos/neg rating");
                     }
                 })
             })
@@ -119,7 +119,7 @@ userSchema.pre('remove', function(res) {
                     console.log("mongoDB error in remove rating content: " + err);
                 }
                 else {
-                    console.log("Successfully removed rating contents");
+                    // console.log("Successfully removed rating contents");
                 }
             })
         }
@@ -130,7 +130,7 @@ userSchema.pre('remove', function(res) {
             console.log("mongoDB error in update follower: " + err);
         }
         else {
-            console.log("Successfully removed this from other user's follower list");
+            // console.log("Successfully removed this from other user's follower list");
         }
     })
 
@@ -139,7 +139,7 @@ userSchema.pre('remove', function(res) {
             console.log("mongoDB error in update following: " + err);
         }
         else {
-            console.log("Successfully removed this from other user's following list");
+            // console.log("Successfully removed this from other user's following list");
         }
     })
 
@@ -148,7 +148,7 @@ userSchema.pre('remove', function(res) {
             console.log("mongoDB error in update feeds: " +  err);
         }
         else {
-            console.log("Successfully removed this from other user's feeds");
+            // console.log("Successfully removed this from other user's feeds");
         }
     })
 
@@ -175,7 +175,7 @@ userSchema.pre('remove', function(res) {
             console.log("mongoDB error in update event comments: " + err);
         }
         else {
-            console.log("Successfully removed this user's comments from events");
+            // console.log("Successfully removed this user's comments from events");
         }
     })
 
@@ -184,7 +184,7 @@ userSchema.pre('remove', function(res) {
             console.log("mongoDB error in update pinned comments: " + err);
         }
         else {
-            console.log("Successfully removed this user's pinned comments from events");
+            // console.log("Successfully removed this user's pinned comments from events");
         }
     })
     
@@ -193,7 +193,7 @@ userSchema.pre('remove', function(res) {
             console.log("mongoDB error in update no of participants: " + err);
         }
         else {
-            console.log("Successfully updated dependent events' noofparticipants ");
+            // console.log("Successfully updated dependent events' noofparticipants ");
         }
     })
 
@@ -202,7 +202,7 @@ userSchema.pre('remove', function(res) {
             console.log("mongoDB error in update participants list: " + err);
         }
         else {
-            console.log("Successfully removed this user from participants lists");
+            // console.log("Successfully removed this user from participants lists");
         }
     })
 
@@ -227,7 +227,7 @@ userSchema.pre('remove', function(res) {
                     else {
                         const doc = new Event(result);
                         doc.remove();
-                        console.log("removed user's dependent event");
+                        // console.log("removed user's dependent event");
                     }
                 })
             })
@@ -241,7 +241,7 @@ userSchema.pre('remove', function(res) {
             console.log("mongoDB error in deleting tokens: " + err);
         }
         else {
-            console.log("Successfully removed this user's tokens");
+            // console.log("Successfully removed this user's tokens");
         }
     })
 

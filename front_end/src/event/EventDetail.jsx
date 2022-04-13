@@ -64,7 +64,7 @@ export default function (props) {
         const refreshInterval = setInterval(() => {setFetched(false)}, 2000);
 
         return () => {
-            console.log('clearing interval...');
+            // console.log('clearing interval...');
             clearInterval(refreshInterval);
         };
 
@@ -78,7 +78,7 @@ export default function (props) {
                 "x-access-token": currentUser.accessToken
             }
         })
-        console.log(request)
+        // console.log(request)
     }
 
     // Unregister Event Front-End --> WORKING
@@ -89,7 +89,7 @@ export default function (props) {
                 "x-access-token": currentUser.accessToken
             }
         })
-        console.log(request)
+        // console.log(request)
     }
 
     // Delete Event Front-End --> WORKING
@@ -101,9 +101,9 @@ export default function (props) {
             }
         })
         // Re-routing to all events page
-        console.log(request);
+        // console.log(request);
         if (request.status = 'SUCCESS'){
-            console.log(request);
+            // console.log(request);
             history.push({
                 state: request,
                 pathname: '/event',
@@ -141,7 +141,7 @@ export default function (props) {
                 "x-access-token": currentUser.accessToken
             }
         })
-        console.log(request)
+        // console.log(request)
     }
     
     // Function to add to favorites --> WORKING
@@ -151,7 +151,7 @@ export default function (props) {
                 "x-access-token": currentUser.accessToken
             }
         })
-        console.log(request)
+        // console.log(request)
     }
 
     // Function to unadd from favorites --> WORKING
@@ -161,12 +161,12 @@ export default function (props) {
                 "x-access-token": currentUser.accessToken
             }
         })
-        console.log(request)
+        // console.log(request)
     }
 
     // Function to pin comment --> TESTING
     async function pinComment(eventID, comment){
-        console.log(eventID, comment)
+        // console.log(eventID, comment)
         const request = await Axios.post(`${params.baseBackURL}/event/pin/${eventID}`,{comment: comment},
             {
                 headers: {
@@ -174,7 +174,7 @@ export default function (props) {
                 }
             } 
         )
-        console.log(request)
+        // console.log(request)
         setPinnedComment(request.data.response.pinnedComment)
         setChatHistory(request.data.response.chatHistory)
     }
@@ -189,7 +189,7 @@ export default function (props) {
                 }
             }
         )
-        console.log(request)
+        // console.log(request)
         setPinnedComment(request.data.response.pinnedComment)
         setChatHistory(request.data.response.chatHistory)
     }
@@ -230,7 +230,9 @@ export default function (props) {
                             chatHistory={chatHistory}
                             pinnedComment = {pinnedComment}
                             pinComment = {pinComment}
-                            unPinComment = {unPinComment} navigation={navigation}/>
+                            unPinComment = {unPinComment} navigation={navigation}
+                            createdBy = {Event.createdBy}/>
+                            
                     </div>
                 </Row>
             {/* </div> */}

@@ -26,7 +26,7 @@ function Featured(){
         strType = strType.replace("ctg-", "");
         api = params.baseBackURL + "/featured/ctg/" + strType;
       }
-      console.log(api)
+      // console.log(api)
       currentUser !== null && fetch(api, {
           method: "GET",
           headers: new Headers({
@@ -44,7 +44,7 @@ function Featured(){
 
     const {events} = data;
     const disp_events = Object.entries(events)
-    console.log(disp_events)
+    // console.log(disp_events)
 
     return (
       <Container className="mb-5">

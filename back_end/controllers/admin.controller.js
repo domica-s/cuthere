@@ -356,10 +356,10 @@ exports.removeUserRating = (req, res) => {
       }
 
       if (getCommentObj.type === true) {
-        console.log("type is true");
+        // console.log("type is true");
       }
       else {
-          console.log("type is false");
+          // console.log("type is false");
           update_rating = {
               $inc: { negRating: -1 },
           }
@@ -371,7 +371,7 @@ exports.removeUserRating = (req, res) => {
             console.log("mongoDB error in remove rating score: " + err);
         }
 
-        console.log("Successfully updated pos/neg rating");
+        // console.log("Successfully updated pos/neg rating");
 
         let update_reviews = {
           $pull: { reviewHistory: { user: commenterSID } },
