@@ -99,7 +99,7 @@ class Event extends React.Component {
 
     submitFilter = (e) => {
       e.preventDefault()
-      console.log(this.state.filterTerm) 
+      // console.log(this.state.filterTerm) 
     }
 
     render() {
@@ -122,7 +122,7 @@ class Event extends React.Component {
                   <option value="Soccer">Soccer</option>
                   <option value="Hiking">Hiking</option>
                   <option value="Volleyball">Volleyball</option>
-                  <option value="Board Games">Board Games</option>
+                  <option value="Boardgame">Board Games</option>
                   <option value="Tennis">Tennis</option>
                   <option value="Running">Running</option>
                   <option value="Gaming">Gaming</option>
@@ -130,7 +130,7 @@ class Event extends React.Component {
                   <option value="Drinking">Drinking</option>
                   <option value="Study">Study</option>
                   <option value="Movies">Movies</option>
-                  <option value="Frat Parties">Frat Parties</option>
+                  <option value="FratParty">Frat Parties</option>
                   <option value="Athletics">Athletics</option>
                   <option value="Arts">Arts</option>
                   <option value="Cooking">Cooking</option>
@@ -310,7 +310,7 @@ function EventCard(props){
     } else if (request.status == 200) {
       alert("Succesfully registered for this event");
     }
-    console.log(request);
+    // console.log(request);
   }
 
   const onLoadPic = async (e) => {
