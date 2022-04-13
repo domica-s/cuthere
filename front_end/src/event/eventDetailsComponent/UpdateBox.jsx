@@ -96,10 +96,24 @@ class UpdateBox extends React.Component {
                                 <div className="form-group col-5 col-md-5 ">
                                 <label className="form-label">Category</label>
                                 <Form.Select name="activityCategory" format={type} placeholder="New category.." value = {updateValue} onChange={e => handleUpdateValue(e)}> 
-                                    <option value="Outdoor">Outdoor</option>
-                                    <option value="Indoor">Indoor</option>
-                                    <option value="Offline">Offline</option>
-                                    <option value="Online">Online</option>
+                                    <option value="">None</option>
+                                    <option value="Basketball">Basketball</option>
+                                    <option value="Badminton">Badminton</option>
+                                    <option value="Soccer">Soccer</option>
+                                    <option value="Hiking">Hiking</option>
+                                    <option value="Volleyball">Volleyball</option>
+                                    <option value="Boardgame">Board Games</option>
+                                    <option value="Tennis">Tennis</option>
+                                    <option value="Running">Running</option>
+                                    <option value="Gaming">Gaming</option>
+                                    <option value="Swimming">Swimming</option>
+                                    <option value="Drinking">Drinking</option>
+                                    <option value="Study">Study</option>
+                                    <option value="Movies">Movies</option>
+                                    <option value="FratParty">Frat Parties</option>
+                                    <option value="Athletics">Athletics</option>
+                                    <option value="Arts">Arts</option>
+                                    <option value="Cooking">Cooking</option>
                                 </Form.Select> 
                                 </div>// Category --> WORKING
                             : 
