@@ -19,7 +19,7 @@ function Featured(){
     useEffect(() => {
       var strType = type;
       let api = params.baseBackURL + "/featured/" + type;
-      if(type == "discover" || type == "interest"){
+      if(type == "discover" || type == "interest" || type == "starred"){
         api = api + "/" + currentUser.sid;
       }
       else if(type.includes('ctg')){
