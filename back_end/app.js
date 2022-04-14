@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(
     cors({
-      origin: "http://localhost:3000", // <-- location of the react app were connecting to
+      origin: "http://54.196.204.174:3000", // <-- location of the react app were connecting to
       credentials: true,
     })
 );
