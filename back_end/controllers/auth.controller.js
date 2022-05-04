@@ -1,3 +1,8 @@
+// The program for the backend of authorization functions
+// PROGRAMMER: Domica and Bryan Wilson
+// This controller file is used to handle the functionalities related to authorization
+// Revised on 5/5/2022
+
 const config = require("../config/auth.config");
 const User = require("../models/user");
 var jwt = require("jsonwebtoken");
@@ -10,13 +15,18 @@ var params = require("../params/params");
 
 
 function sendEmail(res, email_type, to_email, email_body) {
-  // email_type
+            /*
+      This function is used to sendEmail for signup / verify link / forgot password
+      Requirements: pass email_type - 0 for signup, 1 for resend verification link, and 2 for forget password, to_email as the receiver address and email_body as the content
+    */
+
+
   // 0 for signup, 1 for resend verif link (sign up), 2 for forgot password
   let subject;
   let resMsgSuccess = "A verification email has been sent to " + to_email + ".";
   let resMsgFail = "Technical Issue! Please contact our moderators.";
   
-  // console.log(email_body);
+
 
   if (email_type === 0) {
     subject = "Verify your CUthere account";
@@ -47,7 +57,7 @@ function sendEmail(res, email_type, to_email, email_body) {
     text: email_body
   };
 
-  // delete this when deploy
+
   console.log(email_body);
 
   transporter.sendMail(mailOptions, function (err) {
@@ -60,6 +70,10 @@ function sendEmail(res, email_type, to_email, email_body) {
 }
 
 exports.signup = (req, res) => {
+              /*
+      This function is used to signup
+      Requirements (body): pass the 1) password as password, 2) repeat password as repassword, 3) username as username, 4) sid as sid, 5) email as email, 6) interests as interests and 7)college as college in the body
+    */
 
     const salt = bcrypt.genSaltSync(10);
     const password = req.body.password;
@@ -75,14 +89,12 @@ exports.signup = (req, res) => {
         sid: req.body.sid,
         email:req.body.sid + "@link.cuhk.edu.hk",
         mobileNumber:0,
-        // profilePicture:"",
         interests:req.body.interests,
         college: req.body.college,
         about:"",
         rating:"",
         following: [],
         followers: [],
-        //friends:"",
         registeredEvents: [],
         role: "User",
         country: "",
@@ -110,6 +122,10 @@ exports.signup = (req, res) => {
 };
 
 exports.signin = (req, res) => {
+                /*
+      This function is used to signin
+      Requirements (body): pass the 1) sid as sid, 2) password as password
+    */
   User.findOne({
     sid: req.body.sid
   })
@@ -169,6 +185,10 @@ exports.signin = (req, res) => {
 
 // GET request, with URL params sid -- http://localhost:8080/api/auth/forgotpassword/:sid
 exports.forgotPasswordRequest = (req, res) => {
+                /*
+      This function is used when user clicks on forget password
+      Requirements (param): pass sid as sid in the params
+    */
   User.findOne({
     sid: req.params.sid
   })
@@ -199,13 +219,14 @@ exports.forgotPasswordRequest = (req, res) => {
   });
 } 
 
-// POST request, with URL params sid, token -- http://localhost:8080/api/auth/passwordreset/:sid/:token
-// body {password: { newPassword: String}, repassword: { newRePassword: String}}
 exports.resetPassword = (req, res) => {
+                /*
+      This function is used when user wants to reset their password
+      Requirements (body): pass the 1) new password as newPassword, 2) repeat password as newRePassword
+      Requirements (params): pass the 1) user sid as sid and 2) tokens as token in the params
+      */
   let password = req.body.password.newPassword;
-  // console.log(password);
   let repassword = req.body.repassword.newRePassword;
-  // console.log(repassword);
 
   if (password !== repassword) {
     return res.status(404).send({ message: "Password and RePassword does not match"});
@@ -237,7 +258,7 @@ exports.resetPassword = (req, res) => {
         return res.status(400).send({
           message: "Your password reset link may have expired. Please request a new link via the login page. "});
       }
-      // console.log("Token found");
+
       let newPassword = req.body.password.newPassword;
       const salt = bcrypt.genSaltSync(10);
 
@@ -248,7 +269,7 @@ exports.resetPassword = (req, res) => {
           return res.status(500).send({message: err});
         }
         else {
-          // console.log("Change password success");
+
           return res.status(200).send({
             message: 'Your password has been successfully changed'});
         }
@@ -259,12 +280,17 @@ exports.resetPassword = (req, res) => {
 
 // Secured POST request, with URL
 // body oldPassword, newPassword, newRepassword, sid
-exports.changePassword = (req, res) => {
+exports.changePassword = (req, res) => { 
+                  /*
+      This function is used when user wants to reset their password
+      Requirements (body): pass the 1) new password as newPassword, 2) repeat password as newRePassword, 3) old password as oldPassword, and 4) user's sid as sid in the body
+      Requirements (params): pass the user sid as sid in the params    
+      */
 
   let password = req.body.newPassword;
-  // console.log(password);
+
   let repassword = req.body.newRepassword;
-  // console.log(repassword);
+
 
   let oldPassword = req.body.oldPassword;
 
@@ -314,6 +340,10 @@ exports.changePassword = (req, res) => {
 }
 
 exports.verifyEmail = (req, res) => {
+                    /*
+      This function is used when user wants to verify their email
+      Requirements (params): pass the user sid as sid and tokens as token in the params
+      */
   Token.findOne({ token: req.params.token, for: "verifemail" }, function (err, token) {
     if (!token) {
       res.status(400).send({
@@ -352,8 +382,12 @@ exports.verifyEmail = (req, res) => {
 }
 
 exports.resendVerificationLink = (req, res) => {
-  // req.params.sid /:sid --> get sid from link
-  // console.log(req.params.sid);
+                    /*
+      This function is used when user wants to resend their verification link
+      Requirements (params): pass the user sid as sid in the params    
+      */
+
+
   User.findOne({ sid: req.params.sid }, function (err, user) {
       // user is not found into database
       if (!user){
@@ -388,6 +422,11 @@ exports.resendVerificationLink = (req, res) => {
 }
 
 exports.updateProfile =  (req, res) => {
+                    /*
+      This function is used when user wants to update their profile
+      Requirements (body): pass the 1) user sid as sid, 2) mobile number as mobileNumber, 3) interests as interests, 4) about as about, 5) name as name, and 6) country as country in the body
+      */
+     
   User.findOne({ sid: req.body.sid }, function (err, user) {
     // user is not found into database
     if (!user){
