@@ -1,12 +1,20 @@
+// The program for the backend of admin functions
+// PROGRAMMER: Domica
+// This controller file is used to handle the functionalities of the admin functions
+// Revised on 5/5/2022
+
 const User = require("../models/user");
 const Event = require("../models/event");
 var bcrypt = require("bcryptjs");
 var ObjectId = require('mongoose').Types.ObjectId;
 
-// admin dashboard, query sid and event id
+
 exports.getSID = (req, res) => {
-    // pass sid in params
-    // authenticated route (admin only)
+  /*
+  This function gets a specific user through querying the SID
+  Requirements: Pass SID in params as admin
+  */
+
     let reqSID = req.params.sid;
     User.findOne({
         sid: reqSID
@@ -26,8 +34,10 @@ exports.getSID = (req, res) => {
 }
 
 exports.getEventId = (req, res) => {
-    // pass eventId in params
-    // authenticated route (admin only)
+    /*
+    This function gets a specific Event through querying the EventID
+    Requirements: Pass EventID in params as admin
+    */
     let reqEventId = req.params.eventid;
     Event.findOne({
         eventID: reqEventId
@@ -46,6 +56,9 @@ exports.getEventId = (req, res) => {
 }
 
 exports.loadRecentUsersAndEvents = (req, res) => {
+      /*
+      This function loads recent users and events
+    */
     User.find({}, {username: 1, sid: 1}).sort({createdAt:-1})
     .exec((err, user) => {
         if (err) {
@@ -74,16 +87,17 @@ exports.loadRecentUsersAndEvents = (req, res) => {
 
 }
 
-// admin rights on event visit
-// ban events (delete profile)
-// click button -> enter password (front end) from Dashboard
-// POST method, "/event/:eventid/delete", body contents -> adminReqSID, password (of admin id)
 exports.deleteEvent = (req, res) => {
+        /*
+      This function deletes a specific event through a button click
+      Requirements (Body): pass admin's sid ass adminReqSID in the body and admin's password as adminReqPassword in the body
+      Requirements (Params)): pass the to be deleted event's id as eventid in params
+    */
   
   let eid = req.params.eventid;
   let adminReqSID = req.body.adminReqSID;
   let adminReqPassword = req.body.adminReqPassword;
-  // console.log(adminReqSID, adminReqPassword, eid);
+
 
   User.findOne({ sid: adminReqSID })
   .exec((err, user) => {
@@ -127,11 +141,13 @@ exports.deleteEvent = (req, res) => {
 
 }
 
-// admin rights on profile visit
-// ban user (delete profile)'
-// click button -> enter password (front end) from Dashboard
+
 exports.deleteUser = (req, res) => {
-  
+        /*
+      This function deletes a specific users from a button click 
+      Requirements (Body): pass admin's sid ass adminReqSID in the body and admin's password as adminReqPassword in the body
+      Requirements (Params)): pass the to be deleted user's sid as sid in the params
+    */
   let sid = req.params.sid;
   let adminReqSID = req.body.adminReqSID;
   let adminReqPassword = req.body.adminReqPassword;
@@ -176,7 +192,11 @@ exports.deleteUser = (req, res) => {
 }
 
 exports.changeUserPass = (req, res) => {
-  
+          /*
+      This function changes password of a specific user
+      Requirements (Body): pass 1) Admin's sid as adminReqSID, 2) admin's password as adminReqPassword, and 3) new password as newUserPass in body
+      Requirements (Params)): pass the to sid of the user whose password is to be changed as sid in the params
+    */
   let sid = req.params.sid;
   let adminReqSID = req.body.adminReqSID;
   let adminReqPassword = req.body.adminReqPassword;
@@ -229,14 +249,13 @@ exports.changeUserPass = (req, res) => {
 
 }
 
-// delete comments in event
-// how to use?
-// POST to url --> http://localhost:8080/admin/event/:eventid/removecomment
-// params eventid is target eventid
-// body (JSON) --> { "adminReqSID": adminReqSID, "adminReqPassword": adminReqPassword,
-// "commentId": commentId  }
-// returns success/ fail
+
 exports.removeEventComments = (req, res) => {
+          /*
+      This function removes a specific comment in the event
+      Requirements (Body): pass the 1) admin's SID as adminReqSID, 2) admin's password as adminReqPassword, and 3) the id of the comment to be changed as commentId in the body
+      Requirements (Params)): pass the to be event id of the to be deleted comment as eventid in the params
+    */
   let targetEventId = req.params.eventid;
   let adminReqSID = req.body.adminReqSID;
   let adminReqPassword = req.body.adminReqPassword;
@@ -284,19 +303,19 @@ exports.removeEventComments = (req, res) => {
       Event.updateMany({ eventID: targetEventId }, update_comments)
       .exec((err, result1) => {
         if (err) {
-          // console.log(err);
+
           return res.status(505).send({ message: err });
         }
-        // console.log(result1);
+
 
         // update pinned comments
         Event.updateMany({ eventID: targetEventId }, update_pinned_comments)
         .exec((err, result2) => {
           if (err) {
-            // console.log(err);
+
             return res.status(506).send({ message: err });
           }
-          // console.log(result2);
+
           if (result1.modifiedCount + result2.modifiedCount === 0) {
             return res.status(404).send({ message: "Failed to delete that comment "});
           }
@@ -309,20 +328,18 @@ exports.removeEventComments = (req, res) => {
   })
 }
 
-// remove reviews of a user profile
-// how to use?
-// POST to url --> http://localhost:8080/admin/user/:sid/removerating
-// params sid is target sid
-// body (JSON) --> { "adminReqSID": adminReqSID, "adminReqPassword": adminReqPassword,
-// "commenterSID": commenterSID}
-// returns success/ fail
+
 exports.removeUserRating = (req, res) => {
+            /*
+      This function removes a review from the user profile
+      Requirements (Body): pass the 1) admin's SID as adminReqSID, 2) admin's password as adminReqPassword, and 3) the sid of the commentor to be changed as commentorSID in the body
+      Requirements (Params)): pass the sid of the commented user as sid in the params
+    */
   let targetSID = req.params.sid;
   let adminReqSID = req.body.adminReqSID;
   let adminReqPassword = req.body.adminReqPassword;
   let commenterSID = req.body.commenterSID;
-  // console.log(targetSID);
-  // console.log(commenterSID);
+
   // check if request made by admin
   User.findOne({ sid: adminReqSID })
   .exec((err, admin) => {
@@ -347,19 +364,18 @@ exports.removeUserRating = (req, res) => {
 
     User.findOne({ sid: targetSID })
     .exec((err, user) => {
-      // console.log(user.reviewHistory);
-      // console.log(commenterSID);
+
       let getCommentObj = (user.reviewHistory).find(x => x.user == commenterSID)
-      // console.log(getCommentObj);
+
       let update_rating = {
         $inc: { posRating: -1 },
       }
 
       if (getCommentObj.type === true) {
-        // console.log("type is true");
+  
       }
       else {
-          // console.log("type is false");
+
           update_rating = {
               $inc: { negRating: -1 },
           }
@@ -371,8 +387,6 @@ exports.removeUserRating = (req, res) => {
             console.log("mongoDB error in remove rating score: " + err);
         }
 
-        // console.log("Successfully updated pos/neg rating");
-
         let update_reviews = {
           $pull: { reviewHistory: { user: commenterSID } },
         }
@@ -383,7 +397,6 @@ exports.removeUserRating = (req, res) => {
             return res.status(506).send({ message: err });
           }
           
-          // console.log(result);
           // update result
           console.log("Admin " + adminReqSID + " has deleted " + commenterSID + "\'s comment in " + targetSID + "\'s profile");
           return res.status(200).send({ message: "Successfully removed user comment"});
