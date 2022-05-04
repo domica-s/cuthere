@@ -1,3 +1,7 @@
+// The code is the front-end implementation when the 'create event' button in the calendar is pressed
+// PROGRAMMER: Philip
+// Revised on 5/5/2022
+
 import React, {useState} from 'react'; 
 import Modal from 'react-modal';
 import Datetime from 'react-datetime';
@@ -20,6 +24,10 @@ export default function ({isOpen, onClose, onEventAdded}) {
     const [end, setEnd] = useState(new Date());
 
     const onSubmit = (event) => {
+        /*
+      This function is triggered when the user pressed the submit button
+      Requirement(parameter): The parameter event is an object of event to be passed into this function
+    */
         event.preventDefault();
       
         onEventAdded({

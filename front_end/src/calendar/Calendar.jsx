@@ -54,6 +54,10 @@ export default function () {
     
     // To handle Event Add --> WORKING
     async function handleEventAdd(data){
+        /*
+      This function is triggered when the user pressed the submit button
+      Requirement(parameters): The data is object containing data about the event
+    */
         await axios.post(params.baseBackURL+"/api/calendar/create-event", data.event,         {
             headers: {
                 "x-access-token": currentUser.accessToken
@@ -63,8 +67,12 @@ export default function () {
 
 
     async function handleDatesSet(data, yourCalendar = false, favorite = false){
+                /*
+      This function is triggered when the a calendar view is set (i.e., Dates are set)
+      Requirement(parameters): 1) Data is object containing the data about the event, 2) yourCalendar is to mark whether to filter based on 'my events', 3) Favorite is to mark whether to filter based on 'favorited-events'
+    */
 
-        // To get all the events to the calendar --> WORKING
+        // To get all the events to the calendar
         if (!yourCalendar){
             const response = await axios.get(params.baseBackURL+'/api/calendar/get-event?start='+moment(data.start).toISOString() +'&end='+moment(data.end).toISOString(),        {
                 headers: {
@@ -74,7 +82,7 @@ export default function () {
             setEvents(response.data)
         }
 
-        // To get only your events to the calendar --> WORKING 
+        // To get only your events to the calendar 
         else if (!favorite){
             const response = await axios.post(params.baseBackURL+"/api/calendar/my-event?start="+moment(data.start).toISOString()+'&end='+moment(data.end).toISOString(),{user: currentUser},        {
                 headers: {
@@ -84,7 +92,7 @@ export default function () {
             setEvents(response.data)
         }
         
-        // Get your favorite events --> TESTING
+        // Get your favorite events
         else {
             const response = await axios.post(params.baseBackURL+"/api/calendar/fav-event?start="+moment(data.start).toISOString()+'&end='+moment(data.end).toISOString(), {user: currentUser}, {
                 headers: {
@@ -98,9 +106,12 @@ export default function () {
     }
 
 
-    // To route to a specific event detail page --> WORKING
 
     async function handleEventClick(event){
+        /*
+      This function is triggered when a specific event in the calendar is clicked
+      Requirement(parameters): 1) Event is the object containing data about the event
+    */
 
         const id = event.event._def.extendedProps.eventID
         const response = await axios.get(params.baseBackURL+"/api/calendar/route-event/"+id,        {
