@@ -1,3 +1,7 @@
+// The code is the model for the User
+// PROGRAMMER: Philip and Domica
+// Revised on 5/5/2022
+
 var bcrypt = require("bcryptjs");
 var mongoose = require("mongoose");
 var Event = require("./event");

@@ -1,3 +1,7 @@
+// The code is the model for the event
+// PROGRAMMER: Philip and Ethan
+// Revised on 5/5/2022
+
 var mongoose = require("mongoose");
 const Grid = require('gridfs-stream');
 

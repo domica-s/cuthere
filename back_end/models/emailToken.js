@@ -1,3 +1,7 @@
+// The code is the model for the emailToken
+// PROGRAMMER: Domica
+// Revised on 5/5/2022
+
 const mongoose = require("mongoose");
 
 const tokenSchema = new mongoose.Schema({
