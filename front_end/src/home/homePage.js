@@ -1,3 +1,8 @@
+// The program for the frontend of home page after user login successfully
+// PROGRAMMER: Bryan Wilson Kheng && Domica Santoso
+// The program is called when the user routes to / after login successfully
+// Revised on 5/5/2022
+
 import React from "react";
 import Button from "react-bootstrap/Button";
 import {Feed} from "./feeds";

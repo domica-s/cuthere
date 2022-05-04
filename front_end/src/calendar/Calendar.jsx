@@ -1,3 +1,8 @@
+// The program for the frontend of the Calendar 
+// Programmer: Philip Tarrantino Limas
+// The program is called when the user clicks on the calendar
+// Revised on 5/5/2022
+
 import React, {useState, useRef, useEffect} from 'react';
 import FullCalendar, { preventSelection } from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'

@@ -1,3 +1,8 @@
+// The program for the frontend of password reset of user
+// PROGRAMMER: Domica Santoso
+// The program is called when the user clicks on reset password
+// Revised on 5/5/2022
+
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { Container, Row, Col, Logo, Form, Button, FloatingLabel } from "react-bootstrap";

@@ -1,3 +1,9 @@
+// The program for the frontend of the feature page 
+// PROGRAMMER: Domica Santoso
+// The program is called to show the featured activities for the user
+// Revised on 5/5/2022
+
+
 import React, {useEffect, useState} from "react";
 import { useParams } from "react-router-dom";
 

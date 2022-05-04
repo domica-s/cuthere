@@ -1,3 +1,9 @@
+// The program for the frontend for user to do account settings
+// PROGRAMMER: Pierson Tarrantino Limas
+// The program is called whem the user clicks on account settings
+// Revised on 5/5/2022
+
+
 import React from "react";
 import {Container, Tabs, Tab, Form, Button} from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';

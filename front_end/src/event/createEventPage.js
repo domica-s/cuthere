@@ -1,3 +1,9 @@
+// The program for the frontend create event page
+// PROGRAMMER: ETHAN LEE
+// The program is called when the user routes to /createEvent
+// Revised on 5/5/2022
+
+
 import React from "react";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -21,6 +27,7 @@ if (currentUser) {
 }
 
 function Logo() {
+    // returns the logo of CUthere
     return(
         <Row className="justify-content-sm-center">
             <Col>
@@ -31,6 +38,7 @@ function Logo() {
 }
 
 function Description() {
+    // returns the description of CUthere
     return (
         <Container>
             <h2>Create Your Own Events</h2>
@@ -44,6 +52,7 @@ function Description() {
 
 class CreateEvent extends React.Component {
 
+    // The class component of the create event form
     constructor(props) {
         super(props);
         this.handleCreate = this.handleCreate.bind(this);

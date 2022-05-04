@@ -1,3 +1,9 @@
+// The program for the frontend of the landing page of CUthere
+// PROGRAMMER: Bryan Wilson Kheng
+// The program is called when the user routes to /
+// Revised on 5/5/2022
+
+
 import React from "react";
 import { Button, Container, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";

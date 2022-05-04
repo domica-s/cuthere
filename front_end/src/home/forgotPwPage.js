@@ -1,3 +1,8 @@
+// The program for the frontend of forget password page
+// PROGRAMMER: Ethan Lee
+// The program is called when the user clicks on forget password
+// Revised on 5/5/2022
+
 import React from "react";
 import { Container } from "react-bootstrap";
 import Col from 'react-bootstrap/Col';

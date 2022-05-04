@@ -1,3 +1,9 @@
+// The program for testing the upload image to mongoDB function in frontend
+// PROGRAMMER: ETHAN LEE
+// This program is for testing purpose only
+// Revised on 5/5/2022
+
+
 import React from "react";
 // import { useParams } from "react-router-dom";
 import Container from "react-bootstrap/Container";
