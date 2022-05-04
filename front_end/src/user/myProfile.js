@@ -1,3 +1,8 @@
+// The program for the frontend of the user profile
+// PROGRAMMER: Pierson Tarrantino Limas
+// The program is called when the user clicks on their own profile
+// Revised on 5/5/2022
+
 import React, { useState, useEffect } from "react";
 import {Container, Card} from "react-bootstrap";
 import "./myProfile.css"

@@ -1,3 +1,8 @@
+// The program for managing the routes of the frontend
+// PROGRAMMER: CUthere team
+// The program is called by index.js
+// Revised on 5/5/2022
+
 import './App.css';
 import {BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import {Home, About} from './home/homePage'
@@ -21,10 +26,8 @@ import {Help} from './home/helpPage';
 import EventDetail from './event/EventDetail';
 import {AccountSetting} from './user/accountSetting';
 import { Image } from 'react-bootstrap';
-import UserIcon from './images/userProfile.png';
 import LandingPage from './home/LandingPage';
 import { PasswordReset } from './home/passwordReset';
-import logo from './images/logo.jfif';
 import { AdminDashboard } from './admin/adminPage';
 import {UploadImage} from './event/uploadImg';
 import ViewProfile from './user/viewProfile';

@@ -1,3 +1,8 @@
+// The program for the frontend of user login
+// PROGRAMMER: Domica Santoso
+// The program is called when the user routes to /login (clicks on login button
+// Revised on 5/5/2022
+
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import logo from '../images/logo.jfif';

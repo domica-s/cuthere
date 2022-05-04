@@ -1,3 +1,9 @@
+// The program for the frontend of event details
+// PROGRAMMER: PHILIP TARARANTINO LIMAS
+// This program is called when the user clicks into the event, and the details of the event will be shown
+// Revised on 5/5/2022
+
+
 import React, { useEffect, useState} from 'react'
 import { useLocation } from 'react-router-dom'
 import {useParams} from "react-router-dom";
@@ -64,7 +70,6 @@ export default function (props) {
         const refreshInterval = setInterval(() => {setFetched(false)}, 2000);
 
         return () => {
-            // console.log('clearing interval...');
             clearInterval(refreshInterval);
         };
 
@@ -78,7 +83,6 @@ export default function (props) {
                 "x-access-token": currentUser.accessToken
             }
         })
-        // console.log(request)
     }
 
     // Unregister Event Front-End --> WORKING
@@ -89,7 +93,6 @@ export default function (props) {
                 "x-access-token": currentUser.accessToken
             }
         })
-        // console.log(request)
     }
 
     // Delete Event Front-End --> WORKING
@@ -101,9 +104,7 @@ export default function (props) {
             }
         })
         // Re-routing to all events page
-        // console.log(request);
         if (request.status = 'SUCCESS'){
-            // console.log(request);
             history.push({
                 state: request,
                 pathname: '/event',
@@ -141,7 +142,6 @@ export default function (props) {
                 "x-access-token": currentUser.accessToken
             }
         })
-        // console.log(request)
     }
     
     // Function to add to favorites --> WORKING
@@ -151,7 +151,6 @@ export default function (props) {
                 "x-access-token": currentUser.accessToken
             }
         })
-        // console.log(request)
     }
 
     // Function to unadd from favorites --> WORKING
@@ -161,7 +160,6 @@ export default function (props) {
                 "x-access-token": currentUser.accessToken
             }
         })
-        // console.log(request)
     }
 
     // Function to pin comment --> TESTING
@@ -174,7 +172,6 @@ export default function (props) {
                 }
             } 
         )
-        // console.log(request)
         setPinnedComment(request.data.response.pinnedComment)
         setChatHistory(request.data.response.chatHistory)
     }
@@ -189,7 +186,6 @@ export default function (props) {
                 }
             }
         )
-        // console.log(request)
         setPinnedComment(request.data.response.pinnedComment)
         setChatHistory(request.data.response.chatHistory)
     }
@@ -235,7 +231,6 @@ export default function (props) {
                             
                     </div>
                 </Row>
-            {/* </div> */}
         </React.Fragment>
 
     )

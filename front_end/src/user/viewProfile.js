@@ -1,3 +1,9 @@
+// The program for the frontend of other user's profile
+// PROGRAMMER: Pierson Tarrantino Limas
+// The program is called when one user clicks on another user --> direct to that user's profile
+// Revised on 5/5/2022
+
+
 import React, { useState, useEffect, Component } from "react";
 import AuthService from "../services/auth.service";
 import {Button, Container, Card} from "react-bootstrap";

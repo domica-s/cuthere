@@ -1,3 +1,9 @@
+// The program for the frontend of signup page of CUthere
+// PROGRAMMER: Domica Santoso
+// The program is called when the user clicks on signup button on the landing page
+// Revised on 5/5/2022
+
+
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import logo from '../images/logo.jfif';

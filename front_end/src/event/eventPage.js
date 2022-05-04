@@ -1,3 +1,8 @@
+// The program for the frontend of events
+// PROGRAMMER: Bryan Wilson Kheng
+// The program is called when the user routes to /event
+// Revised on 5/5/2022
+
 import React, { useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Row from 'react-bootstrap/Row';

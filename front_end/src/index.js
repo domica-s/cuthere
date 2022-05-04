@@ -1,3 +1,7 @@
+// The program is the root of the react dom tree
+// Programmer: Domica Santoso
+// Revised on 5/5/2022
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';

@@ -1,3 +1,8 @@
+// The program for the frontend of the about page of CUthere
+// PROGRAMMER: Ethan Lee
+// The program is called when the user clicks on the About page
+// Revised on 5/5/2022
+
 import React from "react";
 import {Button, Container} from "react-bootstrap";
 import {Row, Col} from 'react-bootstrap';

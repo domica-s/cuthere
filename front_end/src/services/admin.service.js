@@ -1,3 +1,8 @@
+// The program is for the admin service functions
+// PROGRAMMER: Domica Santoso
+// The program is called from the admin user page
+// Revised on 5/5/2022
+
 import axios from "axios";
 var params = require("../params/params");
 

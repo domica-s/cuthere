@@ -1,8 +1,11 @@
+// The program for the frontend of the admin dashboard
+// PROGRAMMER: Domica Santoso
 // Dashboard
 // show total number of events and registered users
 // show recent events and registered users
 // form (field) prompting user id --> redirect to their profile
 // form (field) prompting event id --> redirect to event detail page 
+// Revised on 5/5/2022
 
 import React, { useEffect, useState, useRef } from "react";
 import {Form, Col, Row, Button, Container, Table} from "react-bootstrap";
