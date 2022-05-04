@@ -1,3 +1,7 @@
+// The code is the backbone for the routes
+// PROGRAMMER: Domica
+// Revised on 5/5/2022
+
 var express = require("express");
 
 var router = express.Router();

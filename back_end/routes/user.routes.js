@@ -1,3 +1,7 @@
+// The code is to manage the user's routes
+// PROGRAMMER: Domica
+// Revised on 5/5/2022 
+
 var express = require("express");
 var User = require("../models/user");
 const { authJwt } = require("../middlewares");

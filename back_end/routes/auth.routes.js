@@ -1,3 +1,7 @@
+// The code is the routes for the authorization functionalities
+// PROGRAMMER: Domica
+// Revised on 5/5/2022
+
 const { verifySignUp } = require("../middlewares");
 const controller = require("../controllers/auth.controller");
 const { authJwt } = require("../middlewares");

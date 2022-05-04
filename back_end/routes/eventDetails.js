@@ -1,3 +1,7 @@
+// The code is the routes for implementation for an event detail's related functionalities
+// PROGRAMMER: Philip
+// Revised on 5/5/2022
+
 var express = require("express");
 var mongoose = require("mongoose");
 
@@ -15,7 +19,7 @@ const nodemailer = require('nodemailer');
 const sendgridTransport = require("nodemailer-sendgrid-transport");
 var params = require("../params/params");
 
-// STATUS --> WORKING
+
 function checkRegistered(user_id, participants){
     const stringParticipants = participants.map( x => x.toString()) 
 
@@ -24,11 +28,14 @@ function checkRegistered(user_id, participants){
 
 }
 
-// Email reminder
+
 function sendReminder(to_email, email_body) {
+                    /*
+      This function is used to send reminder to the participants of an event
+      Requirements (parameters): to_email is the receiver's email and email_body is the content of the email
+    */
+
     let subject = "Reminder for registered event";
-    // let resMsgSuccess = "A reminder email has been sent to " + to_email;
-    // let resMsgFail = "Technical Issue! Please contact our moderators.";
 
     var transporter = nodemailer.createTransport(
         sendgridTransport({
@@ -56,6 +63,11 @@ function sendReminder(to_email, email_body) {
 
 // Register Events --> WORKING
 router.post('/event/register/:eventID', [authJwt.verifyToken], function (req, res){
+                        /*
+      This function is used to register an event
+      Requirements (params): Include the event id as eventID in the params
+      Requirement(body): Include 1) The user's object id as id in the body
+    */
 
     // Acquire parameters
     const eventID = req.params.eventID
@@ -84,7 +96,7 @@ router.post('/event/register/:eventID', [authJwt.verifyToken], function (req, re
                         var timeNow = Date(Date.now());
                         var eventName = doc.title;
                         var eventTime = doc.start.toString();
-                        // console.log(eventName, eventTime);
+
                         var entry = {
                             $push: { registeredEvents:{
                                 event: doc,
@@ -92,8 +104,6 @@ router.post('/event/register/:eventID', [authJwt.verifyToken], function (req, re
                             }}
                         }
                         User.findOneAndUpdate({_id: userID}, entry, (err, ress)=>{
-                            // console.log("The one who registered", ress);
-                            // console.log(doc);
                             var followers = ress.followers;
 
                             // send reminder
@@ -111,7 +121,7 @@ router.post('/event/register/:eventID', [authJwt.verifyToken], function (req, re
                                 res.status(400).send({ message: "error occured: " + err});
                             }
                             else{
-                                console.log("Updated The Database !"); // Please change this
+                                console.log("Updated The Database !"); 
                             }
                             var activity = {
                                 $push: {
@@ -147,8 +157,13 @@ router.post('/event/register/:eventID', [authJwt.verifyToken], function (req, re
     })
 })
 
-// Unregister Events --> WORKING
+
 router.post('/event/unregister/:eventID', [authJwt.verifyToken], function (req, res){
+        /*
+      This function is used to unregister from an event
+      Requirements (params): include the event's id as eventID in the params
+      Requirements (body): include 1) User's object id as id in the body
+    */
 
     // Acquire parameters
     const eventID = req.params.eventID
@@ -210,8 +225,13 @@ router.post('/event/unregister/:eventID', [authJwt.verifyToken], function (req, 
     })
 })
 
-// Update the event --> TESTING
+
 router.post('/event/update/:eventID', [authJwt.verifyToken], function(req,res){
+                        /*
+      This function is used to update a specific element of an event
+      Requirements (params): include the event's id as eventID in the params
+      Requirements (Body): include the user's object id as id and update parameter as update in the body
+    */
     
     //Acquire Parameters
     const eventID = req.params.eventID 
@@ -226,19 +246,21 @@ router.post('/event/update/:eventID', [authJwt.verifyToken], function(req,res){
         else { 
             Event.findOneAndUpdate({eventID:eventID}, {$set:updateParam}).exec(function(err, result){
                 if(err) res.status(400).send({message:"Error occured: "+ err})
-                else res.status(200).send({message:"The database is updated! ", data: result}) // Please change this
+                else res.status(200).send({message:"The database is updated! ", data: result}) 
             })
         }
     })
 })
 
 
-// Delete Events --> WORKING
-//TODO: update registeredEvents of participants + feedActivity
-    // --> Delete the registeredEvents from the User
-    // --> Delete the feedActivities from the User
-    // --> Delete the starredEvents from the user
+
 router.post('/event/delete/:eventID',[authJwt.verifyToken], function(req,res){
+        /*
+      This function is used to delete an event
+      Requirements (params): include the event's id as eventID in the params
+      Requirements (Body): include the user's object id as id in the body
+    */
+
     // Acquire Parameters
     const eventID = req.params.eventID
     const userID = req.body.id
@@ -261,11 +283,17 @@ router.post('/event/delete/:eventID',[authJwt.verifyToken], function(req,res){
     })
 })
 
-// Add comments to Events --> WORKING
+
 router.post('/event/addcomment/:eventID', [authJwt.verifyToken], function (req,res){
+                            /*
+      This function is used to add comments to an event 
+      Requirements (params): include the event's id as eventID in the params
+      Requirements (Body): include the user's object id as id and comment object as comment in the body
+    */
+
     const eventID = req.params.eventID 
     const comment = req.body.comment
-    // console.log(comment)
+
 
     Event.findOne({eventID: eventID}).exec(function(err,result){
         if(err) res.status(200).send({message: "Error occured: "+ err})
@@ -293,8 +321,14 @@ router.post('/event/addcomment/:eventID', [authJwt.verifyToken], function (req,r
     })
 })
 
-// Add Events to Favorites --> WORKING
+
 router.post('/event/fav/:eventID', [authJwt.verifyToken], function (req,res){
+        /*
+      This function is used to set an event as one of the user's favorite events
+      Requirements (params): include the event's id as eventID in the params
+      Requirements (Body): include the user's object id as id in the body
+    */
+
     const eventID = req.params.eventID
     const userID = req.body.id 
 
@@ -321,8 +355,14 @@ router.post('/event/fav/:eventID', [authJwt.verifyToken], function (req,res){
     })
 })
 
-// Remove from favorite --> WORKING
+
 router.post('/event/noFav/:eventID', [authJwt.verifyToken], function (req,res){
+            /*
+      This function is used to remove an event from one of the user's favorite events
+      Requirements (params): include the event's id as eventID in the params
+      Requirements (Body): include the user's object id as id in the body
+    */
+
     const eventID = req.params.eventID
     const userID = req.body.id 
     User.findOne({_id: userID}).exec(function (err, resultUser){
@@ -356,8 +396,14 @@ router.post('/event/noFav/:eventID', [authJwt.verifyToken], function (req,res){
 
 })
 
-// Pin Commnent --> TESTING
+
 router.post('/event/pin/:eventID', [authJwt.verifyToken], function (req,response){
+                /*
+      This function is used to pin a comment 
+      Requirements (params): include the event's id as eventID in the params
+      Requirements (Body): include the comment as comment in the body
+    */
+   
     const eventID = req.params.eventID
     const comment = req.body.comment  
 
@@ -388,8 +434,14 @@ router.post('/event/pin/:eventID', [authJwt.verifyToken], function (req,response
 
 })
 
-// Unpin Comment --> TESTING
+
 router.post('/event/unpin/:eventID',[authJwt.verifyToken], function (req, response){
+                    /*
+      This function is used to unpin a comment 
+      Requirements (params): include the event's id as eventID in the params
+      Requirements (Body): include the comment as comment in the body
+    */
+
     const eventID = req.params.eventID
     const comment = req.body.comment 
 

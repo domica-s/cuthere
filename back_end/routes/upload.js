@@ -1,3 +1,7 @@
+// The code is the routes for implementation / functionalities related to uploading a file image
+// PROGRAMMER: Ethan
+// Revised on 5/5/2022
+
 const upload = require('../middlewares/upload');
 const express = require('express');
 const router = express.Router();
@@ -19,6 +23,11 @@ conn.once('open', () => {
 
 // upload using POST http://{server}/file/upload
 router.post("/upload", [authJwt.verifyToken], upload.single("file"), (req, res) => {
+                          /*
+      This function is used to upload a file
+      Requirements(file): Include the file in the request
+    */
+
     if (req.file === undefined) {
         return res.status(400).send({message: "There is no file uploaded"});
     }
@@ -27,6 +36,11 @@ router.post("/upload", [authJwt.verifyToken], upload.single("file"), (req, res) 
 
 // view file using GET http://{server}/file/:filename
 router.get('/:filename', [authJwt.verifyToken], async (req, res) => {
+                          /*
+      This function is used to view a specific file
+      Requirements (params): Include the filename as filename in the params
+    */
+
     try{
         gridfsBucket.find({filename: req.params.filename}).toArray((err, files) => {
             if (!files[0] || files.length === 0){
@@ -46,6 +60,11 @@ router.get('/:filename', [authJwt.verifyToken], async (req, res) => {
 })
 
 router.get('/delete/:filename', [authJwt.verifyToken], async (req, res) => {
+                          /*
+      This function is used to delete a certain file
+      Requirements (params): Include the filename as filename in the params
+    */
+
     try {
         gridfsBucket.find({filename: req.params.filename}).toArray((err, files) => {
             if (!files[0] || files.length === 0){
@@ -66,6 +85,10 @@ router.get('/delete/:filename', [authJwt.verifyToken], async (req, res) => {
 })
 
 router.get('/all/delete', [authJwt.verifyToken], async (req, res) => {
+                          /*
+      This function is used to delete all files
+    */
+   
     try {
         gridfsBucket.find({}).toArray((err, files) => {
             if (!files[0] || files.length === 0) {

@@ -1,3 +1,7 @@
+// The code is the routes for the admin functionalities
+// PROGRAMMER: Domica
+// Revised on 5/5/2022
+
 const { JsonWebTokenError } = require("jsonwebtoken");
 const controller = require("../controllers/admin.controller");
 const { authJwt, isAdmin } = require("../middlewares");

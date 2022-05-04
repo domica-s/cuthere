@@ -1,3 +1,7 @@
+// The code is the backbone for the back-end of the project
+// PROGRAMMER: Philip, Ethan, Pierson, Domica, and Bryan
+// Revised on 5/5/2022
+
 var express = require("express");
 var path = require("path");
 var mongoose = require("mongoose");

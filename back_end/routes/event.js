@@ -1,3 +1,7 @@
+// The code is the routes for implementation for event related functionalities
+// PROGRAMMER: Philip, Bryan, and Ethan
+// Revised on 5/5/2022
+
 var express = require("express");
 var mongoose = require("mongoose");
 
@@ -12,8 +16,11 @@ const { authJwt } = require("../middlewares");
 const { update } = require("../models/event");
 const { DATABASECONNECTION } = require("../params/params");
 
-// List all events
+
 router.get("/allevents", [authJwt.verifyToken], function (req, res) {
+                /*
+      This function is used to list all events
+    */
 
     var event_dic = {}
 
@@ -28,8 +35,12 @@ router.get("/allevents", [authJwt.verifyToken], function (req, res) {
     })
 })
 
-// List one event details
+
 router.get("/event/:id", [authJwt.verifyToken], function (req, res) {
+                /*
+      This function is used to list one event's details
+      Requirements (Params): pass the event's id as id in the params
+    */
 
     var event_id = req.params.id;
     
@@ -43,6 +54,11 @@ router.get("/event/:id", [authJwt.verifyToken], function (req, res) {
 });
 
 router.get("/featured/ctg/:id", [authJwt.verifyToken], function (req, res) {
+                  /*
+      This function is used to list featured events based on category
+      Requirements (Params): pass the user's id as id in the params
+    */
+
   var interest = req.params.id;
   var capInt = interest.charAt(0).toUpperCase() + interest.slice(1);
   var event_dic = {};
@@ -74,6 +90,11 @@ router.get("/featured/ctg/:id", [authJwt.verifyToken], function (req, res) {
 });
 
 router.get("/featured/interest/:sid", [authJwt.verifyToken], function(req,res){
+                  /*
+      This function is used to list featured events based on interest
+      Requirements (Params): pass the user's sid as id in the params
+    */
+
     var event_dic = {};
     var currentUser = req.params.sid;
     User.findOne({sid: currentUser}).exec(function(err, baseUser){
@@ -109,6 +130,11 @@ router.get("/featured/interest/:sid", [authJwt.verifyToken], function(req,res){
 })
 
 router.get("/featured/discover/:sid", [authJwt.verifyToken], function (req, res) {
+                    /*
+      This function is used to list featured events for the discover tab
+      Requirements (Params): pass the user's sid as id in the params
+    */
+
   var event_dic = {};
   var currentUser = req.params.sid;
     User.findOne({sid: currentUser}).exec(function(err, baseUser){
@@ -142,6 +168,11 @@ router.get("/featured/discover/:sid", [authJwt.verifyToken], function (req, res)
 });
 
 router.get("/featured/starred/:sid", [authJwt.verifyToken], function (req, res) {
+                    /*
+      This function is used to list Starred featured events
+      Requirements (Params): pass the user's id as id in the params
+    */
+
   var event_dic = {};
   var currentUser = req.params.sid;
   User.findOne({ sid: currentUser }).exec(function (err, baseUser) {
@@ -179,6 +210,10 @@ router.get("/featured/starred/:sid", [authJwt.verifyToken], function (req, res) 
 });
 
 router.get("/featured/new", [authJwt.verifyToken], function (req, res) {
+                    /*
+      This function is used to list the new featured events 
+    */
+
   var event_dic = {};
 
   Event.find({}).sort({
@@ -206,6 +241,9 @@ router.get("/featured/new", [authJwt.verifyToken], function (req, res) {
 });
 
 router.get("/featured/upcoming", [authJwt.verifyToken], function (req, res) {
+                    /*
+      This function is used to list upcoming featured events
+    */
   var event_dic = {};
 
   Event.find({}).sort({
@@ -239,6 +277,11 @@ router.get("/featured/upcoming", [authJwt.verifyToken], function (req, res) {
 });
 
 router.post("/myevents", [authJwt.verifyToken], function(req, res){ 
+                    /*
+      This function is used to list all events of the specific users
+      Requirements (body): pass the currentuser's sid as _sid in the body
+    */
+
     var event_dic = {};
     Event.find({ createdBy:req.body._sid }).exec(function(err, event){
         if(err){
@@ -259,6 +302,10 @@ router.post("/myevents", [authJwt.verifyToken], function(req, res){
 
 // To create the event
 router.post("/event", [authJwt.verifyToken], function (req, res, next) {
+                      /*
+      This function is used to create event
+      Requirements (body): pass 1) creator's id as _id, 2) event title as title, 3) location as location, 4) start date as start, 5) end date as end , 6) quota as quota, 7) category as category in the body
+    */
     var creator = req.body._id
     var title =  req.body.title
     var location = req.body.location
@@ -342,6 +389,11 @@ router.post("/event", [authJwt.verifyToken], function (req, res, next) {
 });
 
 router.post("/event/chat/:id", [authJwt.verifyToken], function(req, res) {
+         /*
+      This function is used to add comment in an event
+      Requirements (params): pass the event id as id in the params
+      Requirmeents (body): pass 1) The user's sid as sid, 2) user's id as _id, 3) the content of the message as content in the body
+    */
 
     var event_id = req.params.id;
     var sid = req.body.sid;
@@ -369,6 +421,11 @@ router.post("/event/chat/:id", [authJwt.verifyToken], function(req, res) {
 });
 
 router.post("/update", async function (req, res){
+                      /*
+      This function is used to update a specific element of an event
+      Requirements (body): pass the 1) title as title, 2) location as location, 3)date as date, 4) quota as quota, 5) category as category in the body
+    */
+
     // Get the Event to be updated
     event_to_be_updated = await Event.find({ eventID:req.body.id});
 

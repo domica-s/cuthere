@@ -1,3 +1,7 @@
+// The code is the routes for implementation for calendar-related functionalities
+// PROGRAMMER: Philip
+// Revised on 5/5/2022
+
 const router = require("express").Router();
 const Event = require("../models/event")
 const moment = require("moment")
@@ -5,6 +9,10 @@ const { authJwt } = require("../middlewares");
 const User = require("../models/user");
 
 router.post("/create-event",[authJwt.verifyToken], (req,res)=> {
+              /*
+      This function is used to create a specific event
+      Requirements (Body): pass 1) Start date as start, 2) End date as end, 3) event id as eID, 4) venue as .extendedProps.venue, 5) category as extendedProps.activityCategory, 6) quota as extendedProps.quota, 7) Creator id as extendedProps.createdBy in the body
+    */
 
     const event = Event(req.body);
 
@@ -26,7 +34,6 @@ router.post("/create-event",[authJwt.verifyToken], (req,res)=> {
         event.venue = req.body.extendedProps.venue
         event.eventID = eID
         event.status = 'Open'
-        // console.log(req.body.extendedProps.activityCategory)
         event.activityCategory = req.body.extendedProps.activityCategory
         event.quota = req.body.extendedProps.quota
         event.numberOfParticipants = 1
@@ -73,8 +80,12 @@ router.post("/create-event",[authJwt.verifyToken], (req,res)=> {
     
 })
 
-// Filter Function - All Events
+
 router.get("/get-event",[authJwt.verifyToken], async(req,res)=> {
+              /*
+      This function is called to filter all events in the calendar
+      Requirements (Query): pass 1) Event start date as start, and 2) Event ending date as end in the query
+    */
     const events = await Event.find({
         start: {$gte: moment(req.query.start).toDate()}, 
         end: {$lte: moment(req.query.end).toDate()},
@@ -83,8 +94,13 @@ router.get("/get-event",[authJwt.verifyToken], async(req,res)=> {
     res.send(events);
 });
 
-// Filter Function - My events 
+
 router.post("/my-event", [authJwt.verifyToken], async(req, res) => { 
+                  /*
+      This function is called to filter a specific user's event in the calendar
+      Requirements (Query): pass 1) Event start date as start, and 2) Event ending date as end in the query
+      Requirements (Body): pass the user object as user in the body
+    */
 
     user = req.body.user 
 
@@ -97,18 +113,18 @@ router.post("/my-event", [authJwt.verifyToken], async(req, res) => {
     res.send(events)
 });
 
-// Filter Function - Favorite Events
 router.post("/fav-event", [authJwt.verifyToken], (req, res) => { 
+                      /*
+      This function is called to filter the favorite events of a specific user in the calendar
+      Requirements (Query): pass 1) Event start date as start, and 2) Event ending date as end in the query
+      Requirements (Body): pass the user object as user in the body
+    */
 
-    user = req.body.user 
-    
-
+    user = req.body.user
     // Get the User from db 
     User.findOne({_id: user._id}).exec(async function(err, userResult){
         let fav = userResult.starredEvents
         const stringFav = fav.map(x => x.toString()) // String
-        // console.log(stringFav)
-
         const events = await Event.find({
             _id: {$in: stringFav},
             start: {$gte: moment(req.query.start).toDate()}, 
@@ -120,29 +136,13 @@ router.post("/fav-event", [authJwt.verifyToken], (req, res) => {
 
     })
     
-
-    
-    // await User.find({_id: user._id}).exec(function (err,result){
-    //     // Send the events where start and end date is as the format follows:
-    //     let fav = result.starredEvents // Array of objects
-    //     console.log(result)
-    //     // let events = []
-    //     // for (i =0; i<fav.length ; i++){
-    //     //     // Check if start and End date match the condition 
-    //     //     if (fav[i].start == {$gte: moment(req.query.start).toDate()} && fav[i].end == {$lte: moment(req.query.end).toDate()}) {
-    //     //         // append event to the list
-    //     //         events.append(fav[i])
-    //     //     }
-    //     // }
-    //     // res.send(events)
-    // })
-    
 });
 
-
-// To route to an events detail page
 router.get("/route-event/:id", [authJwt.verifyToken], async(req,res)=> {
-
+                      /*
+      This function is called to route a clicked event in the calendar to the specific event's page
+      Requirements (Prams): pass the eventId as id in the params
+    */
     Event.findOne({eventID: req.params.id}, (err, result)=> {
         if (err) {
             res.status(400).send({ message: "error occured: "+ err})

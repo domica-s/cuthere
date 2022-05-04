@@ -1,3 +1,7 @@
+// The code is the routes for functionalities related to the feed
+// PROGRAMMER: Bryan
+// Revised on 5/5/2022
+
 var express = require("express");
 var mongoose = require("mongoose");
 
@@ -13,6 +17,10 @@ const { update } = require("../models/event");
 const { DATABASECONNECTION } = require("../params/params");
 
 router.get("/feed/:sid", [authJwt.verifyToken], function(req,res){
+                      /*
+      This function is used to get the feed of a certain user
+      Requirements (params): Include the user's sid as sid in the params
+    */
     var currentUser = req.params.sid;
     User.findOne({ sid: currentUser }).exec(function (err, baseUser) {
       if (err) {
@@ -45,53 +53,3 @@ router.get("/feed/:sid", [authJwt.verifyToken], function(req,res){
 })
 
 module.exports = router;
-
-/*
-            Event.findById(eventId, function(err, resEvent){
-                if(err){
-                    res.status(400).send({ message: "error occured: " + err });
-                }
-                else if(resEvent == null){
-                    //console.log("Event not found");
-                    cont = true;
-                }
-                else{
-                    //event_tmp = Object.assign({}, resEvent);
-                    //event_tmp = JSON.parse(JSON.stringify(resEvent));
-                    event_tmp = resEvent;
-                    console.log("Event found: ", event_tmp);
-                }
-            })
-            
-            User.findById(userId, function(err, resUser){
-                if(err){
-                    res.status(400).send({ message: "error occured: " + err });
-                }
-                else if(resUser == null){
-                    //console.log("User not found");
-                    cont = true;
-                }
-                else{
-                    //user_tmp = Object.assign({}, resUser);
-                    user_tmp = resUser;
-                    //console.log("User found: ", user_tmp);
-                }
-            })
-            returnData[0] = event_tmp;
-            returnData[1] = user_tmp;
-            returnData[2] = timeId;*//*
-        for (var i in data){
-          let userId = data[i].friend;
-          let eventId = data[i].eid;
-          console.log(eventId);
-          let timeId = data[i].timestamp;
-
-          //comment out the 3 line below to try
-          returnData[0] = userId;
-          returnData[1] = eventId;
-          returnData[2] = timeId;
-          console.log(returnData);
-          if (!cont) {
-            jsonData[counter] = returnData;
-            counter += 1;
-          }*/
