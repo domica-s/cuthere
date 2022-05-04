@@ -1,7 +1,16 @@
+// The program for the backend of several user functions
+// PROGRAMMER: Domica, Bryan, Philip, Pierson, Ethan
+// This controller file is used to handle the functionalities related to user
+// Revised on 5/5/2022
+
 const User = require("../models/user");
 
 // get user profile details
 exports.getUserProfile = (req, res) => {
+                /*
+      This function is used to get specific user profile details
+      Requirements (params): pass the user sid as sid in the params
+      */
     User.findOne({sid:req.params.sid}).exec(function(err, user){
         if (err) {
             return res.status(500).send({ message: err });
@@ -43,11 +52,18 @@ exports.getUserProfile = (req, res) => {
 // returns --> success
 //, fail (source/target sid not found, no similar events or other errors)
 exports.leaveUserRating = async (req, res) => {
+                /*
+      This function is used to leave user rating
+      Requirements (body): pass the 1) user sid as sid, 2) rating type as type, and 3) rating contents as content in the body
+      Requirements (params): pass the target user sid as sid in the params
+    */
+
     let sourceSID = req.body.sid;
-    // console.log(sourceSID);
+
     let targetSID = req.params.sid;
-    // console.log(targetSID);
+
     let type = req.body.type; // good or bad rating
+
     let writerName = req.body.name
     let content = req.body.content;
     try {
@@ -183,6 +199,11 @@ exports.leaveUserRating = async (req, res) => {
 }
 
 exports.followUser = (req,res) => {
+                /*
+      This function is used to follow a specific user
+      Requirements (params): pass the following user SID as sid in the params  
+      Requirements (body): pass the 1) follower user SID as sid in the body
+    */
     let followerID = req.body.sid;
     let followingID = req.params.sid;
 
@@ -203,7 +224,7 @@ exports.followUser = (req,res) => {
             let followerList = userToFollow.followers;
             for (let i = 0; i < followerList.length; i++) {
                 let follower_id = followerList[i];
-                //console.log(sourceUser._id.toString(), follower_id.toString());
+
                 //compare string representation of objectId
                 if (sourceUser._id.toString() == follower_id.toString()) {
                   followed = true;
@@ -237,6 +258,12 @@ exports.followUser = (req,res) => {
 }
 
 exports.unfollowUser = (req, res) => {
+                  /*
+      This function is used to unfollow a specific user
+      Requirements (params): pass the following user SID as sid in the params  
+      Requirements (body): pass the 1) follower user SID as sid in the body
+    */
+
   let followerID = req.body.sid;
   let followingID = req.params.sid;
 
@@ -257,7 +284,7 @@ exports.unfollowUser = (req, res) => {
       let followerList = userToUnfollow.followers;
       for (let i = 0; i < followerList.length; i++) {
         let follower_id = followerList[i];
-        //console.log(sourceUser._id.toString(), follower_id.toString());
+
         //compare string representation of objectId
         if (sourceUser._id.toString() == follower_id.toString()) {
           followed = true;
@@ -287,8 +314,12 @@ exports.unfollowUser = (req, res) => {
   });
 };
 
-// POST request with college in body
+
 exports.recommendedFriendsCollege = (req, res) => {
+                  /*
+      This function is used to see the college of a user's recommended friends
+      Requirements (body): pass the 1) college as college, 2) follower user SID as sid in the body
+    */
   let sid = req.body.sid;
   let college = req.body.college;
   // console.log("called1");
@@ -303,9 +334,9 @@ exports.recommendedFriendsCollege = (req, res) => {
       if (err) {
         res.status(400).send({ message: err });
       }
-      // console.log("called college1");
+
       var random = Math.floor(Math.random() * count);
-      // console.log(user.following);
+
       User.find({ sid: { $ne: sid }, _id: { $nin: user.following }, college: college }, { sid: 1, name: 1, college: 1, interests: 1 }).skip(random).limit(2)
       .exec((err, users) => {
         if (err) {
@@ -314,8 +345,7 @@ exports.recommendedFriendsCollege = (req, res) => {
         if (!users) {
           return res.status(404).send({ message: "No users found" });
         }
-        // console.log("called college2");
-        // console.log(users);
+
         return res.status(200).send({ fromCollege: users });
       })
     })    
@@ -323,27 +353,27 @@ exports.recommendedFriendsCollege = (req, res) => {
 
 }
 
-// POST request with sid in body
+
 exports.recommendedFriendsInterests = async (req, res) => {
+                    /*
+      This function is used to see recommended friends based on interests
+      Requirements (body): user SID as sid in the body
+    */
   try {
-    // console.log("called2");
     await User.findOne({ sid: req.body.sid })
     .exec((err, sourceUser) => {
       if (err) {
         res.status(400).send({ message: err });
       }
-      // console.log(sourceUser);
-      // console.log(sourceUser.interests);
+
       User.count({ sid: { $ne: req.body.sid }, _id: { $nin: sourceUser.following }, interests: { "$in": sourceUser.interests } })
       .exec((err, count) => {
-        // console.log(sourceUser.interests);
-        // console.log(count);
+
         if (err) {
           res.status(400).send({ message: err });
         }
-        // console.log("called interests1");
+
         var random = Math.floor(Math.random() * count);
-        // console.log(sourceUser.following);
 
         User.find({ sid: { $ne: req.body.sid }, _id: { $nin: sourceUser.following }, interests: { "$in": sourceUser.interests} }, { sid: 1, name: 1, college: 1, interests: 1 }).skip(random).limit(4)
         .exec((err, users) => {
@@ -353,8 +383,7 @@ exports.recommendedFriendsInterests = async (req, res) => {
           if (!users) {
             return res.status(404).send({ message: "No users found" });
           }
-          // console.log("called interests2");
-          // console.log(users);
+
           return res.status(200).send({ fromInterests: users });
         })
       })
@@ -367,12 +396,17 @@ exports.recommendedFriendsInterests = async (req, res) => {
 
 // POST request with sid in body
 exports.getFollowersFollowing = (req, res) => {
+                    /*
+      This function is used to get a followers' following
+      Requirements (body): pass the user sid as sid in the body
+    */
+
   User.findOne({ sid: req.body.sid })
   .exec((err, sourceUser) => {
     if (err) {
       res.status(400).send({ message: err });
     }
-    // let folls = sourceUser.following.concat(sourceUser.followers);
+
     User.find({ _id: { $in: sourceUser.following}}, { sid: 1, name: 1})
     .exec((err, following) => {
       if (err) {
