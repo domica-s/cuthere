@@ -1,3 +1,7 @@
+// The codes are used for middlewares for uploading files
+// PROGRAMMER: Ethan and Philip
+// Revised on 5/5/2022
+
 const multer = require('multer');
 const {GridFsStorage} = require('multer-gridfs-storage');
 const params = require("../params/params");
