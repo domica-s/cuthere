@@ -48,8 +48,12 @@ var eventSchema = mongoose.Schema({
 
 // To fix, check this --> https://stackoverflow.com/questions/42521550/concurrency-issues-when-removing-dependent-documents-with-mongoose-middlewares 
 eventSchema.pre('remove', function(res){
+                  /*
+      This function is used to remove all the assignment docs that reference the remove event
+    */
+
     var User = require("./user");
-    // Remove all the assignment docs that reference the removed event 
+
     let update1 = {
         $pull: { registeredEvents: { event: this._id } },
     }

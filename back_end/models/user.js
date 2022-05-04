@@ -51,11 +51,15 @@ var userSchema = mongoose.Schema({
 });
 
 userSchema.pre('remove', function(res) {
+                      /*
+      This function is used to remove all the assignment docs that reference the remove User / Any dependencies
+    */
+
     var User = require("./user");
     var Event = require("./event");
     var Token = require("./emailToken");
     // Remove all the assignment docs that reference the removed event 
-    // console.log(this);
+
     // remove user dependencies
 
     let update_followers = {
@@ -80,9 +84,6 @@ userSchema.pre('remove', function(res) {
             console.log("Users not found");
         }
         else {
-            // console.log("Printing users");
-            // console.log(users);
-            // console.log(this.sid);
             // loop through users array
             // for each user, get rating of comment
             let update_review_content = {
@@ -93,14 +94,14 @@ userSchema.pre('remove', function(res) {
             }
 
             users.forEach(user => {
-                // console.log(user);
+
                 var getCommentObj = (user.reviewHistory).find(x => x.user === this.sid)
-                // console.log(getCommentObj);
+
                 if (getCommentObj.type === true) {
-                    // console.log("type is true");
+
                 }
                 else {
-                    // console.log("type is false");
+
                     update_rating = {
                         $inc: { negRating: -1 },
                     }
@@ -217,8 +218,6 @@ userSchema.pre('remove', function(res) {
             console.log("mongoDB error in deleting events created by this user: " + err);
         }
         else {
-            // console.log(events);
-            // return res.status(200).send({message:"Nice"});
             events.forEach(event => {
                 Event.findOneAndDelete({ eventID: event.eventID })
                 .exec((err, result) => {
@@ -231,7 +230,6 @@ userSchema.pre('remove', function(res) {
                     else {
                         const doc = new Event(result);
                         doc.remove();
-                        // console.log("removed user's dependent event");
                     }
                 })
             })
