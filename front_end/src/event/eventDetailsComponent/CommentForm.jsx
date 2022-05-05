@@ -1,3 +1,8 @@
+// This code is the front-end functionality and implementation for the comment form and the thread
+// Programmer: Philip Tarrantino Limas
+// The codes are rendered when the user goes into a specific event details page
+// Revised on 6/5/2022
+
 import React from 'react'
 import Button from 'react-bootstrap/Button';
 import './CommentForm.css'
@@ -23,13 +28,19 @@ class CommentForm extends React.Component{
 
 
     handleCommentValue = (e) => {
-
+                            /*
+      This function is used to call the setState function to the set the commentValue of this class component
+      Requirements (parameters): e is to be passed which contains the value to be set
+    */
         this.setState({
             commentValue: e.target.value,
         });
     };
 
     setCommentLine = () => {
+            /*
+      This function is used to call the setState function to set the commentLine of this class component after setting the comment value
+    */
         this.setState({
             commentLine: [
                 ...this.state.commentLine,
@@ -41,22 +52,39 @@ class CommentForm extends React.Component{
     }
 
     submitCommentLine = (e) => {
+                    /*
+      This function is used to submit the comment line to the back-end to be stored and displayed as a comment 
+      Requirements (parameter): e is to be passed which contains the value of the comment line
+    */
         this.setCommentLine();
 
         this.props.addComment(this.props.detail.eventID, this.state.commentValue)
     };
 
     enterCommentLine = (e) => {
+            /*
+      This function is used to determine whether the user has entered the 'enter' key in their keyboard which suggests that they want to submit their comment
+      Requirements (parameter): e is to be passed which contains the value of the comment line
+    */
+
         if (e.charCode === 13){
             this.submitCommentLine();
         }
     };
 
     pinComment = (comment) => {
+            /*
+      This function is used to pin the comments to which the information is sent to the back-end to be processed and displayed as a pinned comment
+      Requirements (comment): This is the comment details / specific comment to be passed to the back-end which needs to be pinned
+    */
         this.props.pinComment(this.props.detail.eventID, comment)
     }
 
     unPinComment = (comment) => {
+                    /*
+      This function is used to unpin the comments to which the information is sent to the back-end to be processed and displayed as a normal comment
+      Requirements (comment): This is the comment details / specific comment to be passed to the back-end which needs to be un-pinned
+    */
         this.props.unPinComment(this.props.detail.eventID, comment)
     }
 

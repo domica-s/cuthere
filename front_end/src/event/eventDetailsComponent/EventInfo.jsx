@@ -1,3 +1,8 @@
+// This code is the front-end functionality and implementation a specific event detials page
+// Programmer: Philip Tarrantino Limas
+// The codes are rendered when the user opens a specific event
+// Revised on 6/5/2022
+
 import React, {useEffect, useState} from 'react'
 import {Descriptions} from 'antd';
 import AuthService from '../../services/auth.service';
@@ -21,36 +26,55 @@ function EventInfo(props) {
         setEvent(props.detail)
     }, [props.detail])
 
-
-    // function to join the event
     const joinEvent = () => {
+          /*
+      This function is called to register the user to the event in the back-end
+      This function is called when the user clicks on the register event button in the specific event page
+    */
         props.joinEvent(props.detail.eventID)
     }
 
-    // function to unregisger from event
+
     const unjoinEvent = () => {
+                /*
+      This function is called to unregister the user from the event in the back-end
+      This function is called when the user clicks on the unregister event button in the specific event page
+    */
         props.unjoinEvent(props.detail.eventID)
     }
 
-    // Function to delete the event
+
     const deleteEvent = () => {
+          /*
+      This function is called to delete the specific event in the back-end 
+      This function is called when the user clicks on the delete event button in the specific event page
+    */
         props.deleteEvent(props.detail.eventID)
     }
 
     const updateEvent = (content) => {
+          /*
+      This function is called to update specific elements of an  event in the back-end
+      Requirements (parameters): Content is the updated data to be changed in the back-end
+      This function is called when the user clicks on the update button on a specific element in the specific event page
+    */
         const updatedContent = JSON.parse(content)
-        // Add moment to dates
-
-        // Send to backend
         props.updateEvent(props.detail.eventID, updatedContent)
     }
     
-    // Function to add to favorite
     const addToFav = () => {
+                /*
+      This function is called to add the specific event to the user's favorite event
+      This function is called when the user clicks on the favorite event button on a specific event page
+    */
         props.addToFav(props.detail.eventID)
     }
 
     const unaddToFav = () => {
+          /*
+      This function is called to remove the specific event from the user's favorite event
+      This function is called when the user clicks on the un-favorite event button on a specific event page
+    */
         props.unaddToFav(props.detail.eventID)
     }
 
@@ -60,10 +84,6 @@ function EventInfo(props) {
     const endDate =endString.slice(0,10);
     const startTime = startString.slice(11,16);
     const endTime = endString.slice(11,16);
-    // console.log(endTime);
-    // console.log(startTime);
-    // console.log(startString);
-    // console.log(startDate);
 
   return (
     <React.Fragment>

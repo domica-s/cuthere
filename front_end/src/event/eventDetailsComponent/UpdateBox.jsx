@@ -1,3 +1,8 @@
+// This code is the front-end functionality and implementation of the update box
+// Programmer: Philip Tarrantino Limas
+// The codes are rendered when the user opens a specific event
+// Revised on 6/5/2022
+
 import React from 'react'
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
@@ -15,27 +20,46 @@ class UpdateForm extends React.Component{
         this.state = { 
             updateValue: '',
             updateDate: new Date()
-        }; // May need to increase this part
+        }; 
     }
 
     handleUpdateValue = (e) => {
-
+                            /*
+      This function is used to call the setState function to the set the update value you want to update the specific element with 
+      Requirements (parameters): e is to be passed which contains the value to be set
+      This function will be called whenever there is a change in the updatebox
+    */
         this.setState({
             updateValue: e.target.value,
         });
     };
     
     handleUpdateDate = (date) => {
+        /*
+      This function is used to call the setState function to the set the update value for dates 
+      Requirements (parameters): date is to be passed which contains the date you would like to set
+      This function will be called whenever there is a change in the update date element
+    */
         this.setState({
             updateDate: date
         })
     }
 
     setUpdateLabel = (format) => {
+                /*
+      This function is used to call the setState function to the set the update value depending on the format type
+      Requirements (parameters): format is the data type to be changed - if it's a date then updateDate, else updateValue
+      This function will be called whenever there is a change in the update element
+    */
+
         (format==="date")? this.setState({updateDate:new Date()}): this.setState({updateValue:""})
     }
 
     submitUpdateLine = (e) => {
+                            /*
+      This function is used to submit the update content to the back-end to be updated and the change to be displayed
+      Requirements (parameter): e is to be passed which contains the value of the update line
+    */
         e.preventDefault();
         this.setUpdateLabel();
 
@@ -48,6 +72,10 @@ class UpdateForm extends React.Component{
     };
 
     enterUpdateLine = (e, format) => {
+            /*
+      This function is used to determine whether the user has entered the 'enter' key in their keyboard which suggests that they want to submit their updated content
+      Requirements (parameter): e is to be passed which contains the value of the keypress
+    */
         if (e.charCode === 13){
             this.setUpdateLabel(format);
         }
@@ -115,24 +143,24 @@ class UpdateBox extends React.Component {
                                     <option value="Arts">Arts</option>
                                     <option value="Cooking">Cooking</option>
                                 </Form.Select> 
-                                </div>// Category --> WORKING
+                                </div>
                             : 
                         (type=="number")? 
                         <div className="form-group col-5 col-md-5 ">
                         <label className="form-label">Quota</label>
                         <Form.Control name="quota" format={type} placeholder="New quota.." value={updateValue} onChange={e => handleUpdateValue(e)}/>
-                        </div> // Quota --> WORKING
+                        </div> 
                             :
                             (label == 'start')?
                             <div className="form-group col-5 col-md-5 ">
                             <label>Start Date</label>
                             <Datetime format={type} value ={updateValue} onChange ={date => handleUpdateDate(date)} /> 
-                            </div>// Date --> NOT WORKING
+                            </div>
                             :
                             <div className="form-group col-5 col-md-5 ">
                             <label>End Date</label>
                             <Datetime format={type} value ={updateValue} onChange ={date => handleUpdateDate(date)} /> 
-                            </div>// Date --> NOT WORKING
+                            </div>
                 }       <div className="form-group col-6 col-md-2">
                         <Button onClick={submitUpdateLine} type="submit" size='sm' className="update-button button-style" id={changeUpdateButtonStyle()} disabled ={enableUpdateButton()} format={type}> Update </Button>
                         </div>
