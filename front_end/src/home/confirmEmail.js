@@ -2,8 +2,6 @@
 // PROGRAMMER: Domica Santoso
 // The program is called when the user clicks on the verification link
 // Revised on 5/5/2022
-
-
 import React, { useEffect, useState } from "react";
 import { baseBackURL } from "../params/params";
 import { useParams } from "react-router-dom";

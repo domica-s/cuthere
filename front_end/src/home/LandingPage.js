@@ -10,7 +10,9 @@ import { Link } from "react-router-dom";
 import "./LandingStyles.css";
 
 function LandingPage() {
-
+                              /*
+        This is a functional component which renders the landing page when the user opens the web app
+    */
   return (
     <div className="main">
       <Container>

@@ -17,16 +17,6 @@ const properties = {
   arrows: true,
 };
 
-/*
-style={{
-            backgroundPosition: "center",
-            backgroundImage: `url(${slideImages[0]})`,
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            width: "100%",
-            }}
-*/
-
 const Banner = () => {
     let path1 = "featured/ctg-basketball";
     let path2 = "featured/ctg-running";

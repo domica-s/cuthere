@@ -15,12 +15,17 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import AuthService from "../services/auth.service";
 
 function LoginWithNavigate() {
+                        /*
+      This is a functional component to render the login with navigate section
+    */
     let navigate = useNavigate();
     return <Login navigate={navigate} />
 }
 
 class Login extends React.Component {
-
+                    /*
+      This is a class component which handles the rendering and functionalities related to the login
+    */
     constructor(props) {
         super(props);
         this.handleLogin = this.handleLogin.bind(this);
@@ -42,19 +47,33 @@ class Login extends React.Component {
     }
 
     onChangeSID(e) {
+                /*
+      This function is called to set the SID in the login component
+      Requirement(parameter): e is the whole thing to be passed about the form
+      This function is called directly when the user types anything on the SID section on the login page
+    */
         this.setState({
           sid: e.target.value
         });
     }
 
     onChangePassword(e) {
+                        /*
+      This function is called to set the password in the login component
+      Requirement(parameter): e is the whole thing to be passed about the form
+      This function is called directly when the user types anything on the password section on the login page
+    */
         this.setState({
             password: e.target.value
         });
     }
 
     handleLogin(e) {
-
+                    /*
+      This function is called to login to the web application
+      Requirement(parameter): e is the whole thing to be passed about the form
+      This function is called directly when the user presses the login button
+    */
         e.preventDefault();
 
         this.setState({
@@ -99,6 +118,11 @@ class Login extends React.Component {
     }
 
     handleForgetPw(e) {
+                        /*
+      This function is called to handle routing  to the handle password page
+      Requirement(parameter): e is the whole thing to be passed about the form
+      This function is called directly when the user presses the forget password link in the login page / component
+    */
         e.preventDefault();
         this.setState({
             message: "",
@@ -110,7 +134,11 @@ class Login extends React.Component {
 
 
     handleSignUp(e) {
-        // e.preventDefault();
+                        /*
+      This function is called to handle routing  to the sign up page
+      Requirement(parameter): e is the whole thing to be passed about the form
+      This function is called directly when the user presses the sign up link in the login page / component
+    */
         this.setState({
             message: "",
             loading: true
@@ -120,6 +148,11 @@ class Login extends React.Component {
     }
 
     handleReVerification(e) {
+                                /*
+      This function is called to handle sending the re-verification when the user requests to send the verification
+      Requirement(parameter): e is the whole thing to be passed about the form
+      This function is called directly when the user presses the resend verification button in the login page / component
+    */
         e.preventDefault();
         AuthService.resendVerification(this.state.sid).then(
             response => {

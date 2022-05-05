@@ -1,5 +1,5 @@
 // The program for the frontend of password reset of user
-// PROGRAMMER: Domica Santoso
+// PROGRAMMER: Pierson and Domica
 // The program is called when the user clicks on reset password
 // Revised on 5/5/2022
 
@@ -10,6 +10,9 @@ import logo from '../images/logo.jfif';
 import AuthService from "../services/auth.service";
 
 function PasswordReset() {
+                                    /*
+        This is a functional component related to the rendering and functionalities of resetting the password
+    */
     const [userRequest, setUserRequest] = useState({
         successful: false,
         message: "",
@@ -19,10 +22,12 @@ function PasswordReset() {
     const [newRePassword, setNewRePassword] = useState("");
 
     const handleResetPassword = (e, sid, token) => {
-        // send POST request to http://localhost:8080/api/auth/passwordreset/:sid/:token
-        // with newPassword in body
-        // const { sid, token } = useParams();
-        // const { successful, message, newPassword } = userRequest;
+            /*
+      This function is called to handle the reset password and sending the functionalities to be handled in the back-end
+      Requirement(params): sid of the user who wants the password changed is passed as sid, token for auth is passed as token in the params 
+      Requirement (body): The new password of the user is to be passed in the body
+      This function is called directly when the user presses the reset password button
+    */
         e.preventDefault()
         let newPW = {newPassword};
         let newRePW = {newRePassword}

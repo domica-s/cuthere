@@ -1,3 +1,8 @@
+// The program for the frontend of signing up
+// PROGRAMMER: Pierson
+// The program is called when the user goes to the sign up page
+// Revised on 5/5/2022
+
 import React from "react";
 import logo from '../logo.jfif';
 import Form from 'react-bootstrap/Form';
@@ -10,6 +15,9 @@ import { useNavigate } from "react-router-dom";
 
 
 function SignUp() {
+                                        /*
+        This is a functional component related to rendering and functionalities of signing up
+    */
     let navigate = useNavigate(); 
 
     const signInChange = () => {

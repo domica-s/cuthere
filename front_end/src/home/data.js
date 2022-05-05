@@ -1,3 +1,6 @@
+// The program to handle the different value for the interest options / category for the user
+// PROGRAMMER: Pierson Tarrantino Limas
+// Revised on 5/5/2022
 export const interestOptions = [
     { value: "Basketball", label: "Basketball" },
     { value: "Badminton", label: "Badminton" },

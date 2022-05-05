@@ -1,5 +1,5 @@
 // The program for the frontend of forget password page
-// PROGRAMMER: Ethan Lee
+// PROGRAMMER: Ethan Lee and Pierson
 // The program is called when the user clicks on forget password
 // Revised on 5/5/2022
 
@@ -15,6 +15,9 @@ import AuthService from "../services/auth.service";
 
 
 function Logo() {
+                            /*
+        This is a functional component to render the logo
+    */
     return(
         <Row className="justify-content-sm-center">
             <Col>
@@ -25,6 +28,9 @@ function Logo() {
 }
 
 function Desciption() {
+                                /*
+        This is a functional component to render the description
+    */
     return (
         <Container>
             <h2>Password Recovery</h2>
@@ -38,6 +44,9 @@ function Desciption() {
 }
 
 class ForgotPw extends React.Component {
+                /*
+        This is a class component to render the forget password section and also handle the functionalities associated to it
+    */
     constructor(props) {
         super(props);
         this.handleForgetPw = this.handleForgetPw.bind(this);
@@ -50,12 +59,22 @@ class ForgotPw extends React.Component {
     }
 
     onChangeSID(e) {
+            /*
+      This function is called to set the SID input
+      Requirement(parameter): e is the whole thing to be passed about the form
+      This function is called directly when the user changes / add content in the SID bar
+    */
         this.setState({
           sid: e.target.value
         });
     }
 
     handleForgetPw(e) {
+                    /*
+      This function is called to route the functionalities to handle the forget password to the back-end
+      Requirement(parameter): e is the whole thing to be passed about the form
+      This function is called directly when the user clicks on the forget password button
+    */
         e.preventDefault();
 
         this.setState({

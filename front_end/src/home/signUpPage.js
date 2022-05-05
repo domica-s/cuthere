@@ -1,9 +1,7 @@
 // The program for the frontend of signup page of CUthere
-// PROGRAMMER: Domica Santoso
+// PROGRAMMER: Pierson
 // The program is called when the user clicks on signup button on the landing page
 // Revised on 5/5/2022
-
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import logo from '../images/logo.jfif';
@@ -23,7 +21,9 @@ function SignUpWithNavigate() {
 }
 
 class SignUp extends React.Component {
-  
+                                          /*
+        This is a class component related to the backbone of the sign up module / component 
+    */
   constructor(props) {
       super(props);
       this.handleRegister = this.handleRegister.bind(this);
@@ -47,45 +47,78 @@ class SignUp extends React.Component {
   }
 
   onChangeInterests(e) {
+                                            /*
+        This function is used to set the value for the interest the user would like to change 
+        Requirements(parameter): e is the whole thing related to the form passed 
+        This function is called when the user clicks on any of the option for the interest change
+    */
     const value = e.map(x => x.value);
-    // console.log(value);
     this.setState({
       interests : value,
     })
-    // console.log(this.state.interests)
   }
 
   onChangeUsername(e) {
+                                                /*
+        This function is used to set the value for the username of the user 
+        Requirements(parameter): e is the whole thing related to the form passed 
+        This function is called when the user inputs anything on the username form
+    */
     this.setState({
       username: e.target.value
     });
   }
 
   onChangeSID(e) {
+                                                    /*
+        This function is used to set the value for the SID of the user
+        Requirements(parameter): e is the whole thing related to the form passed 
+        This function is called when the user inputs anything on the SID on the form
+    */
     this.setState({
       sid: e.target.value
     });
   }
 
   onChangePassword(e) {
+                                                        /*
+        This function is used to set the value for the password of the user
+        Requirements(parameter): e is the whole thing related to the form passed 
+        This function is called when the user inputs anything on the password section of the form
+    */
     this.setState({
       password: e.target.value
     });
   }
 
   onChangeCollege(e) {
+                                                            /*
+        This function is used to set the value for the college of the user
+        Requirements(parameter): e is the whole thing related to the form passed 
+        This function is called when the user inputs anything on the college section of the form
+    */
     this.setState({
       college: e.target.value
     });
   }
 
   onChangeRepassword(e) {
+                                                            /*
+        This function is used to set the value for the repeat password for the sign up
+        Requirements(parameter): e is the whole thing related to the form passed 
+        This function is called when the user inputs anything on the repeat password section of the form
+    */
     this.setState({
       repassword: e.target.value
     });
   }
 
   handleSignIn(e) {
+                            /*
+        This function is used to handle re-routing to the sign in page
+        Requirements(parameter): e is the whole thing related to the form passed 
+        This function is called when the user presses the sign in button in the signup page / component
+    */
     e.preventDefault();
     this.setState({
       message: "",
@@ -96,8 +129,13 @@ class SignUp extends React.Component {
   }
 
   handleRegister(e) {
+                                                            /*
+        This function is used to handle the register of the user in the back-end
+        Requirements(parameter): e is the whole thing related to the form passed 
+        This function is called when the user submits the register form / presses the register button
+    */
+
     e.preventDefault();
-    // console.log(this.state.interests);
     this.setState({
       message: "",
       successful: false

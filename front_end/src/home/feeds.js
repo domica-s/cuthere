@@ -1,3 +1,8 @@
+// The program to handle the functionalities and implementation related to the feeds
+// PROGRAMMER: Bryan
+// The codes are rendered when we open the about page / see the feeds section
+// Revised on 5/5/2022
+
 import React, { useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
 import AuthService from "../services/auth.service";
@@ -12,7 +17,10 @@ const APIfeed = params.baseBackURL + "/feed";
 
 
 function OneFeed(props){
-  
+                          /*
+      This is a functional component which is used to display one feed 
+      Requirement(parameters): The props which needs to be passed to the component is passed as props
+    */
   const currentUser = AuthService.getCurrentUser();
   const API_Query = params.baseBackURL + "/file/";
 
@@ -50,15 +58,19 @@ function OneFeed(props){
   const [img, setImg] = useState(dummyPic);
 
   const fetchImage = async () => {
+                              /*
+      This function is called to fetch image
+      This function is called directly when the specific feed is loaded / when the about page is rendered
+    */
     let api = API_Query + "user-" + sidData;
-    // console.log(api);
+
     const res = await fetch(api, {
       method: "GET",
       headers: new Headers({
         "x-access-token": currentUser.accessToken,
       }),
     });
-    //console.log(res);
+
     if (res.status == 200) {
       const imageBlob = await res.blob();
       const imageObjectURL = URL.createObjectURL(imageBlob);
@@ -115,51 +127,12 @@ function OneFeed(props){
 
 }
 
-/*
-class OneFeed extends React.Component {
-  // render one feed
-  render() {
-    let data = this.props.data[1];
-    let user = "user/" + data.sid;
-    let event = "event/" + data.event;
-    return (
-      <table>
-        <tbody>
-        <tr className="p-1">
-          <td style={{ width: "90px", textAlign: "center" }}>
-            <img
-              src="https://bootdey.com/img/Content/avatar/avatar6.png"
-              id="profile-pic"
-              alt="profile-pic"
-              className="rounded-circle p-1"
-              width="75"
-            />
-          </td>
-          <td>
-            <div>
-              <a href={user}>
-                <h5>{data.friend}</h5>
-              </a>
-              {data.type == "Register" ? (
-                <p className="mb-0">
-                  is attending  <a href={event}><b>{data.event}</b></a>
-                </p>
-              ) : (
-                <p className="mb-0">
-                  is hosting <a href={event}><b>{data.event}</b></a>
-                </p>
-              )}
-            </div>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    );
-  }
-}
-*/
 
 function OneProfile(props){
+                            /*
+      This is a functional component which is used to display one user profile
+      Requirement(parameters): The props which needs to be passed to the component is passed as props
+    */
   const currentUser = AuthService.getCurrentUser();
   const API_Query = params.baseBackURL + "/file/";
 
@@ -174,6 +147,10 @@ function OneProfile(props){
   const [img, setImg] = useState(dummyPic);
 
   const fetchImage = async () => {
+                                  /*
+      This function is called to fetch image
+      This function is called directly when the specific user profile is loaded / when the about page is rendered
+    */
     let api = API_Query + "user-" + sid;
     // console.log(api);
     const res = await fetch(api, {
@@ -232,60 +209,11 @@ function OneProfile(props){
   );
 }
 
-/*
-class OneProfile extends React.Component {
-  render() {
-    let data = this.props.data;
-    let sid = data[0];
-    let name = data[1];
-    let college = data[2];
-    let interests = data[3];
-    let userLink = "user/" + sid;
-
-    return (
-      <>
-      <hr/>
-      <table>
-        <tbody>
-        <tr className="p-1">
-          <td style={{ width: "90px", textAlign: "center" }}>
-            <img
-              src="https://bootdey.com/img/Content/avatar/avatar6.png"
-              id="profile-pic"
-              alt="profile-pic"
-              className="rounded-circle p-1"
-              width="75"
-            />
-          </td>
-          <td>
-            <div>
-              <a href={userLink}>
-                <h5>{name}</h5>
-              </a>
-              <p className="mb-0">
-                {college}
-              </p>
-              <p className="mb-0">
-                {interests.map((val, index) => {
-                  if (index != interests.length - 1) {
-                    return val + ", ";
-                  }
-                  else {
-                    return val;
-                  }
-                }) || ""}
-              </p>
-            </div>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-      </>
-    )
-  }
-}*/
-
 class Feed extends React.Component {
+                              /*
+      This is a class component which acts as the backbone for the feed structure in the about class
+      Requirement(parameters): The props which needs to be passed to the component is passed as props
+    */
   constructor(props) {
     super(props);
     this.state = {
@@ -324,42 +252,24 @@ class Feed extends React.Component {
 
     UserService.recommendFriends(currentUser)
     .then(successResponse => {
-      // console.log("called");
-      // console.log(successResponse);
+                /*
+      This function is called to set the recommended friends to the user based on things such as interests / college
+      This function is called directly when the about page is rendered
+    */
       if (successResponse.fromCollege && successResponse.fromInterests) {
         let fromCollege = successResponse.fromCollege.data;
         let fromInterests = successResponse.fromInterests.data;
-        
         let data1 = [];
         let data2 = [];
         fromCollege.fromCollege.map((val, index) => {
           data1[index] = val;
         })
-
         fromInterests.fromInterests.map((val, index) => {
           data2[index] = val;
         })
-
         let data = data1.concat(data2);
         const unique = [...new Map(data.map(item =>[item['sid'], item])).values()];
-        // console.log(unique);
         this.setState({recommendedFriends: unique});
-        // let dataUnique = [];
-        // let included = {};
-        // let counter = 0;
-        // data.forEach((e) => {
-        //   if (!included[e.Group]) {
-        //     dataUnique[counter] = e;
-        //     included[e.Group] = true;
-        //     counter += 1;
-        //   }
-        // });
-
-        // //data = [...new Set(data)];
-        // //console.log(data)
-        // //console.log(dataUnique);
-        // //data = data.slice(0,4);
-        // this.setState({recommendedFriends: dataUnique});
       }
       else {
         console.log("Load recommendation error");
@@ -367,19 +277,21 @@ class Feed extends React.Component {
       }
     },
     error => {
-      // console.log("called err");
       console.log("Load recommendation error");
       this.setState({recommendedFriends: ""});
     });
   }
 
   handleSearch(e) {
+                    /*
+      This function is called to search for a specific user
+      Requirement(parameter): e is the whole thing to be passed about the form
+      This function is called directly when the user presses the search button
+    */
     e.preventDefault();
     this.setState({
       searchTerm: e.target.value
     })
-
-    // console.log(this.state.searchTerm);
 
     let currentUser = AuthService.getCurrentUser();
     let userFromDB;
@@ -387,7 +299,7 @@ class Feed extends React.Component {
     UserService.getProfile(currentUser, this.state.searchTerm)
     .then(successResponse => {
       userFromDB = successResponse.data;
-      // console.log(userFromDB);
+ 
       this.setState({
         querySID: userFromDB.sid,
         queryName: userFromDB.name,
@@ -401,11 +313,16 @@ class Feed extends React.Component {
         queryMessage: error.response.data.message,
         searchTerm: ""
       })
-      // console.log(this.state.queryMessage);
+
     });
   }
 
   onChangeSearch(e) {
+                        /*
+      This function is called to set the value for the user to be searched in the search bar
+      Requirement(parameter): e is the whole thing to be passed about the form
+      This function is called directly when the user changes something in the search bar
+    */
     this.setState({
       searchTerm: e.target.value
     })
@@ -414,7 +331,6 @@ class Feed extends React.Component {
   
   
   render() {
-    // console.log(this.state.recommendedFriends);
     let feeds = (this.state.feeds) ? Object.entries(this.state.feeds): null;
     let queryRes = (this.state.querySID) ? [this.state.querySID, this.state.queryName, this.state.queryCollege, this.state.queryInterests]: null;
     return (

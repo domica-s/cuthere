@@ -15,6 +15,9 @@ import AuthService from "../services/auth.service";
 var params = require("../params/params");
 
 class Home extends React.Component {
+                              /*
+        This is a class component to render when the client / user goes to the home page
+    */
     constructor(props){
         super(props);
         this.state = {
