@@ -1,3 +1,8 @@
+// The program for the several functionalities of the event details page
+// PROGRAMMER: Ethan and Philip
+// This program is rendered when a specific event details page is opened
+// Revised on 6/5/2022
+
 import React from "react";
 import Container from "react-bootstrap/Container";
 import {useParams} from "react-router-dom";
@@ -11,8 +16,11 @@ var params = require("../params/params");
 var currentUser = AuthService.getCurrentUser();
 const API = params.baseBackURL + "/event/";
 
-
 function EventDetail() {
+            /*
+      This function is used to render the event detail based on the id passed in the params when opening the page
+      This function will be called immediately when the specific page related to the event is rendered
+    */
     let { id } = useParams();
     return (
         <OneEvent eventId={id}/>
@@ -20,6 +28,9 @@ function EventDetail() {
 }
 
 class OneEvent extends React.Component {
+                /*
+      This component will render one specific event according to the id passed into it
+    */
     constructor(props) {
         super(props);
 
@@ -44,6 +55,11 @@ class OneEvent extends React.Component {
     }
 
     onRegister(e) {
+            /*
+      This function is used to register the user to the event - prototype no.2
+      Requirements (Parameter): e is the whole data to be passed in the form 
+      This function will be called after the user presses the register button
+    */
         let API_register = API + 'register/' + this.props.eventId;
         let data = { _id: currentUser._id };
         fetch(API_register, {
@@ -62,6 +78,11 @@ class OneEvent extends React.Component {
     }
 
     onUnregister(e) {
+                    /*
+      This function is used to unregister the user from the event - prototype no.2
+      Requirements (Parameter): e is the whole data to be passed in the form 
+      This function will be called after the user presses the unregister button
+    */
         let API_register = API + 'unregister/' + this.props.eventId;
         let data = { _id: currentUser._id };
         fetch(API_register, {
@@ -80,12 +101,22 @@ class OneEvent extends React.Component {
     }
 
     onChangeChat(e) {
+                    /*
+      This function is used to set the value of the chat / comment - prototype no.2
+      Requirements (Parameter): e is the whole data to be passed in the form 
+      This function will be called after the user presses a key in the chat form
+    */
         this.setState({
             chatInput: e.target.value
         });
     }
     
     onSend(e) {
+            /*
+      This function is used to send the chat / comment to the back-end for processing --> Prototype no.2
+      Requirements (Parameter): e is the whole data to be passed in the form 
+      This function will be called after the user presses submit in the chat / comment form
+    */
         e.preventDefault();
         let API_register = API + 'chat/' + this.props.eventId;
         let data = { 
@@ -164,6 +195,9 @@ class OneEvent extends React.Component {
 }
 
 class OneChat extends React.Component {
+                    /*
+      This component will render one specific comment card according to the id passed into it
+    */
     constructor(props) {
         super(props);
     }

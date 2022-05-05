@@ -1,5 +1,5 @@
 // The program for the frontend of events
-// PROGRAMMER: Bryan Wilson Kheng
+// PROGRAMMER: Bryan, Domica, and Philip
 // The program is called when the user routes to /event
 // Revised on 5/5/2022
 
@@ -14,14 +14,10 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
 import AuthService from "../services/auth.service";
-// import { auto } from "@popperjs/core";
-// import { ThemeConsumer } from "react-bootstrap/esm/ThemeProvider";
-// import { Axios } from "axios";
 
 
 var params = require("../params/params");
 
-// const API = 'http://localhost:8080/allevents'
 const APIallEvents = params.baseBackURL + "/allevents";
 const API_Query = params.baseBackURL + "/file/";
 const currentUser = AuthService.getCurrentUser();
@@ -30,11 +26,12 @@ const eventAPI = params.baseBackURL + "/event/";
 
 
 class OneEvent extends React.Component {
-    // render one event
+                                /*
+      This component is to render the details of the event in the event widget
+    */
     render() {
         let data = this.props.data[1];
         let link_detail = "/event/" + data.eventID;
-        // console.log(link_detail);
         return (
             <Container>
                 <Row className="justify-content-sm-center">
@@ -56,7 +53,9 @@ class OneEvent extends React.Component {
 }
 
 class Event extends React.Component {
-   
+                               /*
+      This component is a the backbone for the all events page
+    */
     constructor(props) {
         super(props);
         this.state = {
@@ -87,12 +86,22 @@ class Event extends React.Component {
     }
 
     onChangeSearch(e) {
+                          /*
+      This function is used to called to change the input to the search bar so the events can be filtered
+      Requirements (Parameter): e is the whole data to be passed in the form 
+      This function will be called after the user changes any input in the search bar 
+    */
       this.setState({
         searchTerm: e.target.value
       });
     }
 
     onChangeFilter = (e) => {
+                                /*
+      This function is used to called to filter based on the searched input in the search bar
+      Requirements (Parameter): e is the whole data to be passed in the form 
+      This function will be called simultaneously after the user changes any input in the search bar 
+    */
       this.setState({
         filterTerm: e.target.value
       });
@@ -103,8 +112,13 @@ class Event extends React.Component {
     }
 
     submitFilter = (e) => {
+                                /*
+      This function is used to submit the filtering request
+      Requirements (Parameter): e is the whole data to be passed in the form 
+      This function will be called simultaneously after the user changes any input in the search bar 
+    */
       e.preventDefault()
-      // console.log(this.state.filterTerm) 
+
     }
 
     render() {
@@ -188,6 +202,9 @@ class Event extends React.Component {
 }
 
 class EventWidget extends React.Component{
+                            /*
+      This component is a specific event widget displayed in vertical fashion in the all events page
+    */
     constructor(props){
         super(props);
         this.state = {
@@ -278,7 +295,9 @@ class EventWidget extends React.Component{
 }
 
 function EventCard(props){
-
+                              /*
+      This is a functional component related to the event card which can be seen in the landing page of the app
+    */
   let data = props.data[1];
   let eventId = data.eventID;
   let date = new Date(data.start).toDateString();
@@ -301,6 +320,10 @@ function EventCard(props){
   }
 
   async function joinTheEvent() {
+                    /*
+      This function is used to register the specific user to the event in the back-end
+      This function will be called when the user clicks on the register event on the event card
+    */
     const request = await Axios.post(
       `${params.baseBackURL}/event/register/${eventId}`,
       { id: currentUser._id },
@@ -315,10 +338,13 @@ function EventCard(props){
     } else if (request.status == 200) {
       alert("Succesfully registered for this event");
     }
-    // console.log(request);
   }
 
   const onLoadPic = async (e) => {
+                        /*
+      This function is used to show the picture in the event card
+      This function will be called directly on rendering of the card
+    */
     const img = document.querySelector("#event-pic");
     let api = API_Query + "event-" + eventId;
     const loadResult = await fetch(api, {
@@ -392,142 +418,5 @@ function EventCard(props){
   );
 
 }
-
-/*
-class EventCard extends React.Component {
-  constructor(props) {
-    super(props);
-    this.onLoad = this.onLoad.bind(this);
-    this.state = {
-      data: this.props.data[1],
-      resultstatus: 0,
-      resultblob: 0,
-    };
-  }
-  
-  onLoad(e){
-    const img = document.querySelector("#event-pic");
-    if (this.state.resultstatus === 200) {
-      img.crossOrigin = "anonymous";
-      img.src = URL.createObjectURL(this.state.resultblob);
-    }
-  }
-
-  async componentDidMount() {
-    let currentUser = AuthService.getCurrentUser();
-    var data = this.state.data;
-    var eventId = data.eventID;
-    let api = API_Query + "event-" + eventId;
-    const loadResult = await fetch(api, {
-        method: "GET",
-        headers: new Headers({
-          "x-access-token": currentUser.accessToken,
-        }),
-    });
-    const resultStatus = await loadResult.clone().status;
-    const resultBlob = await loadResult.blob();
-    this.setState({
-      resultStatus: resultStatus,
-      resultBlob: resultBlob,
-    })
-  };
-    /*
-    let currentUser = AuthService.getCurrentUser();
-    if (currentUser === null) {
-    }
-    {
-      currentUser !== null &&
-        fetch(APIgetFile + data.filename, {
-          method: "GET",
-          headers: new Headers({
-            "x-access-token": currentUser.accessToken,
-          }),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            this.setState({
-              fileUrl: data.fileUrl,
-            });
-          });
-    }
-  }
-  render() {
-    let data = this.props.data[1];
-    let date = new Date(data.start).toDateString();
-    let time = new Date(data.date).toString().slice(16, 21);
-    let avail = data.numberOfParticipants + "/" + data.quota;
-    let link_detail = "/event/" + data.eventID;
-    let quota;
-    if (data.quota - data.numberOfParticipants > 3) {
-      quota = (
-        <Badge pill bg="success">
-          {avail}
-        </Badge>
-      );
-    } else {
-      quota = (
-        <Badge pill bg="warning">
-          {avail}
-        </Badge>
-      );
-    }
-    return (
-      <Card className="link" style={{ width: "12rem", height: "17.25rem" }}>
-        <a href={link_detail}>
-          <Card.Img
-            id="event-pic"
-            variant="top"
-            style={{ maxHeight: "200px" }}
-            src={"/image/" + data.activityCategory + ".jpeg"}
-            onLoad = {this.onLoad}
-          />
-        </a>
-        <Card.Body>
-          <a href={link_detail}>
-            <Card.Title
-              style={{
-                color: "black",
-                whiteSpace: "nowrap",
-                textAlign: "left",
-                width: "10rem",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                fontSize: "125%",
-              }}
-            >
-              <b>{data.title}</b>
-            </Card.Title>
-            <div style={{ color: "black", height: "2.75rem" }}>
-              <p className="text">
-                {date}
-                <span style={{ float: "right" }}>
-                  <Badge bg="dark">{time}</Badge>
-                </span>
-              </p>
-              <p className="text">{data.venue}</p>
-            </div>
-          </a>
-          <Container style={{ paddingLeft: "0px", paddingRight: "0px" }}>
-            <Row>
-              <Col xs={8}>
-                <h6 style={{ height: "1.2rem", textAlign: "left" }}>
-                  {" "}
-                  <Badge bg="secondary">{data.activityCategory}</Badge>
-                </h6>
-                <p className="text">Quota: {quota}</p>
-              </Col>
-              <Col style={{ paddingLeft: "0" }} xs={4}>
-                <Button variant="primary" className="mt-2">
-                  Join
-                </Button>
-              </Col>
-            </Row>
-          </Container>
-        </Card.Body>
-      </Card>
-    );
-  }
-}*/
-
 export {Event, EventWidget}
 export default EventCard

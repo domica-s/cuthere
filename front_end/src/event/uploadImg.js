@@ -5,7 +5,6 @@
 
 
 import React from "react";
-// import { useParams } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Form from 'react-bootstrap/Form';
 import Button from "react-bootstrap/Button";
@@ -37,12 +36,22 @@ class UploadImage extends React.Component {
     }
     
     onChangeFile(e) {
+                    /*
+      This function is used to handle the change of image files
+      Requirements (Parameter): e is the whole data to be passed in the form 
+      This function will be called after the user clicks the file to be uploaded
+    */
         this.setState({
             file: e.target.files[0]
         })
     }
     
     onSubmitFile(e) {
+                            /*
+      This function is used to uploading and storing of the file to the database in the back-end
+      Requirements (Parameter): e is the whole data to be passed in the form 
+      This function will be called after the user clicks the upload file button
+    */
         e.preventDefault();
         let data = new FormData();
         let file = this.state.file;
@@ -58,12 +67,22 @@ class UploadImage extends React.Component {
     }
 
     onChangeQuery(e) {
+                            /*
+      This function is used to set the query Image based on the query set by the user
+      Requirements (Parameter): e is the whole data to be passed in the form 
+      This function will be called simultaneously when the user types the query
+    */
         this.setState({
             queryImg: e.target.value
         })
     }
 
     onSubmitQuery(e) {
+                /*
+      This function is used to find the image matching based on the query from the database
+      Requirements (Parameter): e is the whole data to be passed in the form 
+      This function will be called after the user clicks the submit query button
+    */
         let api = API_Query + this.state.queryImg;
         fetch(api, {
             method: "GET",
@@ -83,12 +102,22 @@ class UploadImage extends React.Component {
     }
 
     onChangeDelete(e) {
+                        /*
+      This function is used to set the image to be deleted
+      Requirements (Parameter): e is the whole data to be passed in the form 
+      This function will be called simultaneously when the user picks the image to be deleted
+    */
         this.setState({
             deleteImg: e.target.value
         })
     }
 
     onSubmitDelete(e) {
+            /*
+      This function is used to delete the image associated with the specific component
+      Requirements (Parameter): e is the whole data to be passed in the form 
+      This function will be called after the user clicks the delete image button
+    */
         e.preventDefault();
 
         let api = API_DELETE + this.state.deleteImg;

@@ -1,3 +1,9 @@
+/* 
+The program is the css stylesheet for the event detail --> Prototype no.2
+Programmer: Bryan 
+The UI changes this program made can be seen in each individual event details page
+Revised on 5/5/2022
+*/
 .text{
   text-overflow: ellipsis;
   overflow: hidden;

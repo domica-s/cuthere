@@ -27,7 +27,10 @@ if (currentUser) {
 }
 
 function Logo() {
-    // returns the logo of CUthere
+        /*
+      This function is used to render the logo of our project 
+      The function is called upon rendering the create event page
+    */ 
     return(
         <Row className="justify-content-sm-center">
             <Col>
@@ -38,7 +41,10 @@ function Logo() {
 }
 
 function Description() {
-    // returns the description of CUthere
+            /*
+      This function is used to render the description of our project
+      The function is called upon rendering the create event page
+    */ 
     return (
         <Container>
             <h2>Create Your Own Events</h2>
@@ -51,8 +57,6 @@ function Description() {
 
 
 class CreateEvent extends React.Component {
-
-    // The class component of the create event form
     constructor(props) {
         super(props);
         this.handleCreate = this.handleCreate.bind(this);
@@ -76,6 +80,11 @@ class CreateEvent extends React.Component {
     }
 
     handleCreate(e) {
+            /*
+      This function is used to handle the creation of the event --> Passing the data to the back-end and send the necessary response
+      Requirements (Parameter): e is the whole data to be passed in the form 
+      This function will be called after the user submit the data for the event creation
+    */
         e.preventDefault();
         if (!this.state.quotaValidate) {
             window.alert('Quota input is invalid');
@@ -110,6 +119,11 @@ class CreateEvent extends React.Component {
     
 
     onChangeQuota(e) {
+                    /*
+      This function is used to called to call the setState to change this component's quota variable
+      Requirements (Parameter): e is the whole data to be passed in the form 
+      This function will be called after the user changes any input related to the quota data field
+    */
         let quotaInput = e.target.value;
         if (quotaInput < 1) {
             this.setState({
@@ -125,30 +139,55 @@ class CreateEvent extends React.Component {
     }
 
     onChangeTitle(e) {
+                            /*
+      This function is used to called to call the setState to change this component's title variable
+      Requirements (Parameter): e is the whole data to be passed in the form 
+      This function will be called after the user changes any input related to the title data field
+    */
         this.setState({
             title: e.target.value
         });
     }
 
     onChangeLocation(e) {
+            /*
+      This function is used to called to call the setState to change this component's location variable
+      Requirements (Parameter): e is the whole data to be passed in the form 
+      This function will be called after the user changes any input related to the location data field
+    */
         this.setState({
             location: e.target.value
         });
     }
 
     onChangeCategory(e) {
+            /*
+      This function is used to called to call the setState to change this component's category variable
+      Requirements (Parameter): e is the whole data to be passed in the form 
+      This function will be called after the user changes any input related to the category data field
+    */
         this.setState({
             category: e.target.value
         });
     }
 
     onChangeStart(e) {
+            /*
+      This function is used to called to call the setState to change this component's start date variable
+      Requirements (Parameter): e is the whole data to be passed in the form 
+      This function will be called after the user changes any input related to the start date data field
+    */
         this.setState({
             start: moment(e.target.value).toDate()
         });
     }
 
     onChangeEnd(e) {
+        /*
+      This function is used to called to call the setState to change this component's end date variable
+      Requirements (Parameter): e is the whole data to be passed in the form 
+      This function will be called after the user changes any input related to the end date data field
+    */
         this.setState({
             end: moment(e.target.value).toDate()
         });
