@@ -13,6 +13,10 @@ import AdminService from '../services/admin.service';
 import AuthService from '../services/auth.service';
 
 export function AdminDashboard() {
+                    /*
+      This function is a functional component related to the rendering and functionality / implementation of the Admin Dashboard
+      This codes will be rendered immediately when the admin opens the admin dashboard
+    */
 
     const myChatHistory = useRef(null);
     const myPinnedComment = useRef(null);
@@ -89,6 +93,10 @@ export function AdminDashboard() {
     let eventData = 0;
 
     const loadRecentData = () => {
+                            /*
+      This function aims to load all the recent data to populate the admin dashboard
+      This function will be called as soon as the admin opens the admin dashboard
+    */
         const currentUser = AuthService.getCurrentUser();
 
         AdminService.loadRecentUsersAndEvents(currentUser)
@@ -102,10 +110,20 @@ export function AdminDashboard() {
     }
 
     const handleInput = (e) => {
+                                    /*
+      This function aims to set the admin request to whatever is being typed by the admin
+      Requirement (parameter): the parameter e passed is the whole data related to the form
+      This function will be called as soon as the user types in anything related in the request part of admin dashboard
+    */
         setAdminRequest({ ...adminRequest, [e.target.name]: e.target.value });
     };
 
     const handleSubmitSID = (e) => {
+                    /*
+      This function aims to send the request for getting the user based on SID to the back-end for processing
+      Requirement (parameter): the parameter e passed is the whole data related to the form
+      This function will be called as soon as the admin presses the query user by SID button
+    */
         e.preventDefault();
         
         const currentUser = AuthService.getCurrentUser();
@@ -122,7 +140,11 @@ export function AdminDashboard() {
     }
 
     const handleSubmitEventID = (e) => {
-    
+                        /*
+      This function aims to send the request for getting the event based on event id to the back-end for processing
+      Requirement (parameter): the parameter e passed is the whole data related to the form
+      This function will be called as soon as the admin presses the query event by ID
+    */
         e.preventDefault();
         
         const currentUser = AuthService.getCurrentUser();
@@ -139,6 +161,11 @@ export function AdminDashboard() {
     }
 
     const handleDeleteEvent = (e) => {
+                            /*
+      This function aims to send the request for deleting a specific event to the back-end 
+      Requirement (parameter): the parameter e passed is the whole data related to the form
+      This function will be called as soon as the admin presses the delete event button
+    */
         e.preventDefault();
 
         const currentUser = AuthService.getCurrentUser();
@@ -156,16 +183,16 @@ export function AdminDashboard() {
         })
     }
 
-    // handle delete event comments
     const handleDeleteComment = (e) => {
+                                    /*
+      This function aims to delete all the comment related to a deleted event
+      Requirement (parameter): the parameter e passed is the whole data related to the form
+      This function will be called as soon as the admin presses the delete comment button
+    */
         e.preventDefault();
 
         const currentUser = AuthService.getCurrentUser();
         let eid = deleteEvent.eid;
-
-        // check if eid exists in chatHistory/ pinnedComment
-        // console.log(myChatHistory.current.outerHTML);
-        // console.log(myPinnedComment.current);
 
         if (!myChatHistory.current.outerHTML.includes(eid) && !myPinnedComment.current.outerHTML.includes(eid)) {
             setDeleteEvent({ successfulDeleteEvent: false, messageDeleteEvent: "Invalid comment _id" });
@@ -186,6 +213,11 @@ export function AdminDashboard() {
     }
     
     const handleDeleteUser = (e) => {
+                                            /*
+      This function aims to delete a specific user and sending this request to the back-end for processing
+      Requirement (parameter): the parameter e passed is the whole data related to the form
+      This function will be called as soon as the admin presses the delete user button
+    */
         e.preventDefault();
 
         const currentUser = AuthService.getCurrentUser();
@@ -204,6 +236,11 @@ export function AdminDashboard() {
     }
 
     const handleChangeUserPass = (e) => {
+                                            /*
+      This function aims to change a user's password and sending this request to the back-end for processing
+      Requirement (parameter): the parameter e passed is the whole data related to the form
+      This function will be called as soon as the admin presses the change user password button
+    */
         e.preventDefault();
 
         const currentUser = AuthService.getCurrentUser();
@@ -221,14 +258,19 @@ export function AdminDashboard() {
         })
     }
 
-    // delete user rating
+
     const handleDeleteRating = (e) => {
+                    /*
+      This function aims to delete a specific user rating and sending this request to the back-end for processing
+      Requirement (parameter): the parameter e passed is the whole data related to the form
+      This function will be called as soon as the admin presses the delete user rating button
+    */
         e.preventDefault();
 
         const currentUser = AuthService.getCurrentUser();
         let sid = deleteUser.sid;
 
-        // check if sid in list
+
         if (!myCommenters.current.outerHTML.includes(parseInt(adminRequest.deleteRating))) {
             setDeleteUser({ successfulDeleteUser: false, messageDeleteUser: "Invalid sid" });
         }
@@ -247,7 +289,11 @@ export function AdminDashboard() {
     }
 
     function convertToArrayObject (recentUsers, recentEvents) {
-
+                                            /*
+      This function aims to 
+      Requirement (parameter): the parameter is the recentUsers and recentEvents loaded from the previously called functions
+      This function will be called as soon as the admin open the admin dashboard.
+    */
         if (recentUsers && recentEvents) {
             let loadedUsers = Object.keys(recentUsers).map((key) => (
                 {"sid": recentUsers[key]["sid"], "username": recentUsers[key]["username"]}
