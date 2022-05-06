@@ -16,7 +16,6 @@ import EventInfo from './eventDetailsComponent/EventInfo'
 import CommentForm from './eventDetailsComponent/CommentForm';
 import { DayTableSlicer } from '@fullcalendar/daygrid';
 import { isDateSelectionValid } from '@fullcalendar/react';
-import './EventDetail.css'
 import { Card } from 'react-bootstrap';
 export default function (props) { 
     const [Event, setEvent] = useState([])
