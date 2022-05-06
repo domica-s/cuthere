@@ -16,7 +16,6 @@ import authService from './services/auth.service';
 import React from 'react';
 import Modal from 'react-modal';
 
-// Imports from calendar
 import Calendar from "./calendar/Calendar";
 
 import {CreateEvent} from "./event/createEventPage";
@@ -36,6 +35,10 @@ import AboutUs from './home/aboutPage';
 
 Modal.setAppElement("#root");
 class App extends React.Component {
+                                          /*
+        This is a class component which is used to render and handle all the components related to this app
+        The component is the central directory for this app
+    */
 
   constructor(props) {
     super(props);
@@ -58,6 +61,10 @@ class App extends React.Component {
   }
 
   handleLogout() {
+                            /*
+        This function is called to log the user out of the app
+        The program is called whenever the uses clicks log out
+    */
     const user = authService.getCurrentUser();
 
     if (user) {
@@ -123,6 +130,10 @@ class App extends React.Component {
 }
 
 class NavigationBar extends React.Component {
+                                          /*
+        This is a class component which is used to render and handle functionalities of the nav bar within the app - the header part!
+        The program is rendered throughout the usage of the app
+    */
 
   constructor(props) {
     super(props);
@@ -184,6 +195,10 @@ class NavigationBar extends React.Component {
 }
 
 function FooterBar() {
+                                          /*
+        This is a functional component used to render the footer of the app 
+        The program is rendered throughout the usage of the app
+    */
   return (
   <div className="footer-div">
     <footer className="footer mt-auto py-3 bg-light">
@@ -196,6 +211,10 @@ function FooterBar() {
 }
 
 function NoMatch() {
+                                      /*
+        This is a functional component used to render a no match route
+        The program is rendered when the user gets navigated to a route that's not found
+    */
   let location = useLocation();
   return (
     <div className="form-group">

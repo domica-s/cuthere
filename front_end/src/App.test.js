@@ -1,3 +1,4 @@
+// This test is used to test the react library and rendering
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
