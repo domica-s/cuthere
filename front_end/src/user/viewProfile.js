@@ -19,6 +19,10 @@ const API_Query = params.baseBackURL + "/file/";
 
 
 function ViewProfile()  {
+                          /*
+        This is a functional component related to the rendering and functionalities of vieweing another user's profile
+        This code is rendered upon opening another user's profile
+    */
   let {sid} = useParams();
 
   const initialUser = authService.getCurrentUser();
@@ -50,7 +54,11 @@ function ViewProfile()  {
     negRating: 0,
     };
 
-    const onLoadPic = async(e) => {
+    const onLoadPic = async() => {
+                              /*
+        This function aims to fetch the profile picture of that user and loads it into the profile
+        This code is rendered upon opening the user's profile
+    */
       const img = document.querySelector("#profile-pic");
   
       let api = API_Query + "user-" + sid;
@@ -84,7 +92,7 @@ function ViewProfile()  {
   useEffect(() => {
     const fetchData = async () => {
         const currentUser = authService.getCurrentUser();
-        // console.log(sid);
+
         const response = await Axios.get(`${params.baseBackURL}/user/${sid}`,
         {
             headers: {
@@ -92,7 +100,7 @@ function ViewProfile()  {
             }
         });
         const responseData = await response.data;
-        // console.log(responseData);
+ 
         await setPosRating(responseData.posRating);
         await setNegRating(responseData.negRating);
         await setReviewHistory(responseData.reviewHistory);
@@ -129,22 +137,20 @@ function ViewProfile()  {
             });
 
             setReviewHistory(userFromDB.reviewHistory);
-            // setPosRating(userFromDB.posRating);
-            // setNegRating(userFromDB.negRating);
+
             userService.getFolls(user, sid)
             .then(response => {
-              // console.log("hello");
-              // console.log(response.data);
+
               let followers = (response.data.followers);
               let following = (response.data.following);
-              // console.log(followers);
+   
 
               setFollowers(followers.length);
               setFollowing(following.length);
 
               setFollowingList(following);
               setFollowersList(followers);
-              // console.log(following);
+
             },
             error => {
               console.log(error.response.data);
@@ -155,7 +161,6 @@ function ViewProfile()  {
            
             console.log("error")
           })
-          // setUser(user.data);
           
       } catch (error) {
           console.log(error);
@@ -164,6 +169,10 @@ function ViewProfile()  {
   }, []);
 
   async function followUser(){
+                                  /*
+        This function is used to be passed to the back-end to handle following the user
+        This function is called once the follow user button is pressed
+    */
     let userID = initialUser.sid;
     const request = await Axios.post(`${params.baseBackURL}/user/follow/${sid}`,{sid: userID},         
       {
@@ -171,7 +180,6 @@ function ViewProfile()  {
               "x-access-token": initialUser.accessToken
           }
       })
-      // console.log(request);
       if (request.status == 202) {
         alert("You have followed this user");
       }
@@ -181,6 +189,10 @@ function ViewProfile()  {
   }
 
   async function unfollowUser() {
+                                      /*
+        This function is used to be passed to the back-end to handle un-following the user
+        This function is called once the unfollow user button is pressed
+    */
     let userID = initialUser.sid;
     const request = await Axios.post(
       `${params.baseBackURL}/user/unfollow/${sid}`,
@@ -191,7 +203,6 @@ function ViewProfile()  {
         },
       }
     );
-    // console.log(request);
     if (request.status == 202) {
       alert("You have not followed this user");
     } else if (request.status == 200) {
@@ -200,7 +211,10 @@ function ViewProfile()  {
   }
 
   async function addReview (writer, content, type){
-    // Set the request's body
+                                      /*
+        This function is used to be passed to the back-end to handle adding review for the user
+        This function is called once the follow add review button is pressed
+    */
     const body = {
       sid: writer.sid,
       name: writer.name,
@@ -208,38 +222,25 @@ function ViewProfile()  {
       type: type
      }
 
-     // Set the request
-    // console.log(sid);
-
-    // const request = await Axios.post(`http://localhost:8080/user/${sid}/comment`, body, {
-    //   headers: {
-    //       "x-access-token": writer.accessToken 
-    //   }
-    // })
 
     await Axios.post(`${params.baseBackURL}/user/${sid}/comment`, body, {
       headers: {
-          "x-access-token": writer.accessToken // Whose access token is this?
+          "x-access-token": writer.accessToken 
       }
     })
     .then(res => {
-      // console.log(res.data.message);
-      // console.log(res.data.response);
-      // console.log(res.data.response.reviewHistory);
+
       setReviewHistory(res.data.response.reviewHistory);
       setPosRating(res.data.response.posRating);
       setNegRating(res.data.response.negRating);
     },
     error => {
-      // console.log(error.response.data.message);
+
       setMessage(error.response.data.message);
       alert("You don't have any same events as this guy")
     });
     
-    // console.log(request)
-    // // Store reviewHistory
-    // console.log(request.data)
-    // setReviewHistory(request.data.response.reviewHistory)
+  
 
   }
       return (
@@ -260,7 +261,6 @@ function ViewProfile()  {
                         <div className="col-6 border-end border-light">
                             <p className="text-muted mt-1 mb-2 fw-normal">Followers</p>
                             <p className="mb-0 fw-bold" 
-                            // onClick ={() => setModalOpen(true)}
                             >{followers || 0}</p>
                         </div>
                         <div className="col-6 border-dark">
@@ -467,11 +467,11 @@ function ViewProfile()  {
     }
 
     function OneFollower(props){
+                                        /*
+        This is a functional component related to rendering and functionality / implementation of one follower
+        This function is called once the user's profile is opened
+    */
       const user = authService.getCurrentUser();
-    
-      // if (props.props) {
-      //   console.log(props.props.name);
-      // }
     
       const data = props.props;
       const link = "/user/" + data.sid;
@@ -491,7 +491,10 @@ function ViewProfile()  {
 
 
   function OneFollowing(props) {
-  
+                                          /*
+        This is a functional component related to rendering and functionality / implementation of one following
+        This function is called once the user's profile is opened
+    */
     const data = props.props;
     const link = '/user/' + data.sid;
     return(

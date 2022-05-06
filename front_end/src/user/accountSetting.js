@@ -39,6 +39,10 @@ const INITIAL_STATE = {
   };
 
 function ChangePicture () {
+                        /*
+        This is a functional component related to the rendering and functionalities of changing the picture 
+        This code is rendered upon opening the account setting 
+    */
   const [user, setUser] = useState(INITIAL_STATE);
 
     useEffect(() => {
@@ -50,7 +54,6 @@ function ChangePicture () {
             .then(successResponse => {
               
               userFromDB = successResponse.data;
-              // console.log(userFromDB.interests);
               setUser({
                 username: userFromDB.username,
                 email: userFromDB.email,
@@ -84,6 +87,11 @@ function ChangePicture () {
     }, []);
   
   const onChangeFile = async(e) => {
+                            /*
+        This function aims to handle setting the upload file
+        Requirements(Parameter): e is the data related to the form 
+        This function is called upon the user uploading a certain file to the interface
+    */
     try {
       setUser({
         uploadImg: e.target.files[0]
@@ -94,6 +102,11 @@ function ChangePicture () {
   }
 
   const onUploadFile = async(e) => {
+                                /*
+        This function aims to handle uploading the file to the back-end
+        Requirements(Parameter): e is the data related to the form 
+        This function is called upon the user pressing the upload file button after setting the file to be upload
+    */
     e.preventDefault();
     let api_delete = API_DELETE + "user-" + currentUser.sid;
     const deletePrevious = await fetch(api_delete, {
@@ -122,6 +135,12 @@ function ChangePicture () {
   }
   
   const onLoadPic = async(e) => {
+                                /*
+        This function aims to load the picture in the account setting dashboard
+        Requirements(Parameter): e is the data related to the form 
+        This function is called upon the user clicking the account setting
+    */
+
     const img = document.querySelector("#profile-pic");
   
     let api = API_Query + "user-" + currentUser.sid;
@@ -157,9 +176,12 @@ function ChangePicture () {
 
 }
 
-
-//handle change profile pic
 function GeneralInformation() {
+                                                  /*
+        This is a functional component related to rendering the general backbone and general information in the account setting
+        This function is called when anything the account setting section is opened up
+    */
+
     const [user, setUser] = useState(INITIAL_STATE);
 
     useEffect(() => {
@@ -171,7 +193,6 @@ function GeneralInformation() {
             .then(successResponse => {
               
               userFromDB = successResponse.data;
-              // console.log(userFromDB.interests);
               setUser({
                 username: userFromDB.username,
                 email: userFromDB.email,
@@ -196,7 +217,6 @@ function GeneralInformation() {
                 interests: user.interests,
               });
             })
-            // setUser(user.data);
             
         } catch (error) {
             console.log(error);
@@ -205,18 +225,26 @@ function GeneralInformation() {
     }, []);
 
     const handleInput = (e) => {
-        // console.log(e.target.name, " : ", e.target.value);
+                                /*
+        This function aims to setting the input to the variable
+        Requirements(Parameter): e is the data related to the form 
+        This function is called upon changing the input in the interface
+    */
         setUser({ ...user, [e.target.name]: e.target.value });
     };
 
     const handleInterests =(e, action) => {
+
       const value = e.map(x=>x.value)
-      // console.log(value);
       setUser({...user, [action.name]: value});
-      // console.log(action);
     }
 
     const handleGeneral = async (e) => {
+                                                      /*
+        This function is called to handle the general information of the account setting
+        Requirements(parameter): e is the data related to the form
+        This function is called whenever the account setting is opened
+    */
         e.preventDefault();
         let currentUser = authService.getCurrentUser();
         authService.updateProfile(currentUser, user.mobileNumber, user.interests, user.about, user.name, user.country)
@@ -227,7 +255,7 @@ function GeneralInformation() {
           .then(successResponse => {
             
             updatedUser = successResponse.data;
-            // console.log(updatedUser);
+
             setUser({
               username: updatedUser.username,
               email: updatedUser.email,
@@ -264,15 +292,13 @@ function GeneralInformation() {
     };
 
 
-    
-    // console.log(user.interests);
     const defaultSelectData = [];
     if (typeof user.interests != 'undefined') {
       user.interests.map((data, index) => {
         defaultSelectData.push({"label": data, "value": data});
       })
     }
-    // console.log(defaultSelectData);
+
 
     return(
         <Form onSubmit={handleGeneral}>
@@ -636,6 +662,10 @@ const CHANGEPW_STATE ={
 }
 
 function ChangePassword() {
+                                          /*
+        This is a functional component related to changing the password of the user
+        This function is called once the user's account setting is opened
+    */
     const [user, setUser] = useState(CHANGEPW_STATE);
 
     useEffect(() => {
@@ -660,11 +690,18 @@ function ChangePassword() {
     }, []);
 
     const handleInput = (e) => {
-        // console.log(e.target.name, " : ", e.target.value);
+                                                /*
+        This function is called to set the input value for the password change
+        This function is called when anything is entered in the password change section
+    */
         setUser({ ...user, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = async (e) => {
+                                                      /*
+        This function is called to send the password change to the back-end
+        This function is called when the users press the button to submit the password change
+    */
         e.preventDefault();
         try {
         let currentUser = authService.getCurrentUser();
@@ -746,6 +783,10 @@ const BIO_STATE = {
   };
 
 function DropdownMenu() {
+                                                  /*
+        This is a functional component related to rendering the drop down menu in the account setting page
+        This function is called when the account setting page is opened
+    */
     const [key, setKey] = useState('general');
   
     return (

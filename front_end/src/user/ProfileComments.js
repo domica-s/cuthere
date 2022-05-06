@@ -1,4 +1,7 @@
-// UNDER DEVELOPMENT
+// The program for the frontend for the rendering and implementation of the comments on the profile
+// PROGRAMMER: Pierson Tarrantino Limas
+// The program is called when the profile of a user is opened up / rendered
+// Revised on 5/5/2022
 
 import React from 'react'
 import Button from 'react-bootstrap/Button';
@@ -9,6 +12,10 @@ import authService from "../services/auth.service";
 import './UserRating.css';
 
 class ProfileComments extends React.Component {
+                            /*
+        This is a class component which renders the main structure of the comments of the specific user
+        This component is rendered as soon as a specific user's profile is opened
+    */
     render() {
         const {commentValue, handleSetType, handleCommentValue, enterCommentLine, submitCommentLine, reviewHistory, reviewType} = this.props; 
     
@@ -31,6 +38,10 @@ class ProfileComments extends React.Component {
 }
 
 class OneReview extends React.Component {
+                                /*
+        This is a class component which renders one component. This component is mapped for every comment there is for a specific user. 
+        This component is rendered as soon as a specific user's profile is opened
+    */
     constructor(props) {
         super(props);
     }

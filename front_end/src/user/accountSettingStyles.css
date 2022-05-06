@@ -1,5 +1,12 @@
+/* 
+The program is the css stylesheet for the account settings page
+Programmer: Pierson
+The UI changes this program made can be seen in the account settings page
+Revised on 5/5/2022
+*/
+
 .stick {
-  position: -webkit-sticky; /* Safari */
+  position: -webkit-sticky; 
   position: sticky;
 }
 

@@ -1,3 +1,10 @@
+/* 
+The program is the css stylesheet for the my Profile section
+Programmer: Pierson
+The UI changes this program made can be seen in the my profile section
+Revised on 5/5/2022
+*/
+
 .profilePic {
     width: 60%;
     display: flex;

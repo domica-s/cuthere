@@ -1,3 +1,10 @@
+/* 
+The program is the default option for user's interest
+Programmer: Pierson
+This code is exported ans used in handling the interest options for the user
+Revised on 5/5/2022
+*/
+
 export const interestOptions = [
     { value: "Basketball", label: "Basketball" },
     { value: "Badminton", label: "Badminton" },

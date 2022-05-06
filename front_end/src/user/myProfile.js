@@ -13,21 +13,21 @@ import ProfileComments from "./ProfileComments";
 
 var params = require("../params/params");
 
-
-//change user.user.attr into user.attr
-//change friend/activities placeholder
-
-
 function Profile()  {
-
-  // const API = params.baseBackURL + "/file/upload";
-  // const API_DELETE = params.baseBackURL + "/file/delete";
+                      /*
+        This is a functional component related to the rendering and functionality implementing for the profile
+        This code is rendered upon opening up and interacting with the profile section
+    */
   const API_Query = params.baseBackURL + "/file/";
   const initialUser = authService.getCurrentUser();
-  // console.log(initialUser);
+
 
   
-  const onLoadPic = async(e) => {
+  const onLoadPic = async() => {
+                          /*
+        This function aims to fetch the data in the back-end and load the profile picture for the specific profile
+        This code is rendered upon opening up the profile section
+    */
     const img = document.querySelector("#profile-pic");
 
     let api = API_Query + "user-" + initialUser.sid;
@@ -66,7 +66,6 @@ function Profile()  {
     const [following, setFollowing] = useState(0);
     const [followingList, setFollowingList] = useState([]);
     const [followersList, setFollowersList] = useState([]);
-    // const [followerObject, setFollowerObject] = useState('');
    
     useEffect(() => {
       const fetchData = async () => {
@@ -111,7 +110,6 @@ function Profile()  {
                 posRating: userFromDB.posRating,
                 negRating: userFromDB.negRating,
               });
-              // console.log(userFromDB.posRating)
               setReviewHistory(userFromDB.reviewHistory);
             },
             error => {
@@ -130,14 +128,11 @@ function Profile()  {
               });
               setReviewHistory(user.reviewHistory);
             })
-            // setUser(user.data);
 
             userService.getFolls(user, user.sid)
             .then(response => {
-              // console.log(response.data)
               let followers = (response.data.followers);
               let following = (response.data.following);
-              // console.log(followers);
 
               setFollowers(followers.length);
               setFollowing(following.length);
@@ -145,8 +140,7 @@ function Profile()  {
 
               setFollowingList(following);
               setFollowersList(followers);
-              // setFollowerObject(followers);
-              // console.log(followerObject);
+
             },
             error => {
               console.log(error.response.data);
@@ -158,40 +152,10 @@ function Profile()  {
         })();
     }, []);
     
-    // Add review to back-end --> The sid in params should be changed to the target SID. 
-
-      // returns --> success, fail1 (user have previously left a comment, update instead)
-      //, fail2 (source/target sid not found, no similar events or other errors)
-
-    // async function addReview (writer, content, type){
-    //   // Set the request's body
-    //   const body = {
-    //     sid: writer.sid,
-    //     name:writer.name,
-    //     content: content,
-    //     type: type
-    //    }
-
-    //    // Set the request
-    //   console.log(initialUser.sid)
-    //   const request = await Axios.post(`http://localhost:8080/user/${initialUser.sid}/comment`, body,        {
-    //     headers: {
-    //         "x-access-token": writer.accessToken // Whose access token is this?
-    //     }
-    //   })
-
-
-    //   // Store reviewHistory
-    //   console.log(request.data)
-    //   setReviewHistory(request.data.response.reviewHistory)
-
-    // }
 
     
     return (
       <Container className="myContainer">
-        {/* <div className="container">
-		<div className="main-body"> */}
 			<div className="row">
 
 
@@ -209,7 +173,6 @@ function Profile()  {
                         <div className="col-6 border-end border-light">
                             <p className="text-muted mt-1 mb-2 fw-normal">Followers</p>
                             <p className="mb-0 fw-bold" 
-                            // onClick ={() => setModalOpen(true)}
                             >{followers || 0}</p>
                         </div>
                         <div className="col-6 border-dark">
@@ -413,20 +376,17 @@ function Profile()  {
 				</div>
         
 			</div>
-		{/* </div>
-	</div> */}
-
  
   </Container>
     );
   }
 
 function OneFollower(props){
+                            /*
+        This is a functional component used for the functionality and also rendering of one follower of a user
+        This component is rendered upon opening up the profile of a user
+    */
   const user = authService.getCurrentUser();
-
-  // if (props.props) {
-  //   console.log(props.props.name);
-  // }
 
   const data = props.props;
   const link = "/user/" + data.sid;
@@ -445,7 +405,10 @@ function OneFollower(props){
 }
 
 function OneFollowing(props) {
-  // console.log(props.props);
+                            /*
+        This is a functional component used for the functionality and also rendering of one following of a user
+        This component is rendered upon opening up the profile of a user
+    */
   const data = props.props;
   const link = "/user/" + data.sid;
   return(
