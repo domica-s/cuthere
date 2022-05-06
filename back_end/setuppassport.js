@@ -1,3 +1,8 @@
+// The codes are used to set up passport - an authentication middleware for node js
+// PROGRAMMER: Domica
+// This js file is the functionalities / initialization of passport.js
+// Revised on 5/5/2022
+
 var passport = require("passport");
 var LocalStrategy = require("passport-local").Strategy;
 

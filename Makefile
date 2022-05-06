@@ -1,3 +1,7 @@
+# This is the makefile to run all the docker script directly
+# Programmer: Ethan Lee
+# This code is called when the user runs the 'make' script 
+
 start:
 	docker-compose -f docker-compose.yml build && docker-compose -f docker-compose.yml up
 
